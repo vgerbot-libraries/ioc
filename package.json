@@ -67,5 +67,8 @@
     "bugs": {
         "url": "https://github.com/y1j2x34/rollup-jest-boilerplate/issues"
     },
-    "homepage": "https://github.com/y1j2x34/rollup-jest-boilerplate#readme"
+    "homepage": "https://github.com/y1j2x34/rollup-jest-boilerplate#readme",
+    "dependencies": {
+        "reflect-metadata": "^0.1.13"
+    }
 }
