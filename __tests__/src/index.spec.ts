@@ -1,6 +1,6 @@
-import { hello } from '../../src/index';
+import { hello } from '../../src';
 
-describe('test index.ts', ()=> {
+describe('test index.ts', () => {
     it('should hello method returns "world"', () => {
         expect(hello()).toBe('world');
     });
