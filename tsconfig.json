@@ -3,7 +3,7 @@
         "module": "esnext",
         "moduleResolution": "node",
         "target": "es5",
-        "lib": ["esnext"],
+        "lib": ["esnext", "dom"],
         "strict": true,
         "noImplicitAny": true,
         "noUnusedLocals": true,
@@ -17,6 +17,10 @@
         "forceConsistentCasingInFileNames": true,
         "esModuleInterop": true,
         "experimentalDecorators": true,
+        "emitDecoratorMetadata": true,
+        "types": [
+            "reflect-metadata"
+        ],
         "typeRoots": [
             "node_modules/@types",
             "src/types"
