@@ -1,5 +1,6 @@
 import { ComponentClass } from '../foundation/ComponentClass';
 import { Metadata } from './Metadata';
+import { TaggedConstructor } from '../foundation/TaggedConstructor';
 
 export const PROPERTY_METADATA_KEY = 'ioc:metadata-property';
 
@@ -14,6 +15,13 @@ export class PropertyMetadata implements Metadata<PropertyMetadataReader> {
         if (!metadata) {
             metadata = new PropertyMetadata();
             Reflect.defineMetadata(PROPERTY_METADATA_KEY, metadata, target);
+            const constr = target as unknown as TaggedConstructor;
+            if (typeof constr.inject === 'function') {
+                const injects = constr.inject();
+                for (const key in injects) {
+                    metadata.recordPropertyConstructor(key, injects[key]);
+                }
+            }
         }
         return metadata;
     }
