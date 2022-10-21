@@ -8,7 +8,7 @@ import { MethodMetadata } from '../metadata/MethodMetadata';
  */
 export const LifecycleDecorator = (lifecycle: Lifecycle): MethodDecorator => {
     return (target: Object, propertyKey: string | symbol) => {
-        const metadata = MethodMetadata.record(target);
+        const metadata = MethodMetadata.getMetadata(target.constructor);
         metadata.addLifecycle(propertyKey, lifecycle);
     };
 };

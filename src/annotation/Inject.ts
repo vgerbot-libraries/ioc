@@ -1,9 +1,9 @@
 import { PropertyMetadata } from '../metadata/PropertyMetadata';
-import { Constructor } from '../foundation/Constructor';
+import { ComponentClass } from '../foundation/ComponentClass';
 
-export function Inject<T>(constr: Constructor<T>): PropertyDecorator {
+export function Inject<T>(constr: ComponentClass<T>): PropertyDecorator {
     return (target: Object, propertyKey: string | symbol) => {
-        const metadata = PropertyMetadata.record(target);
+        const metadata = PropertyMetadata.getMetadata(target.constructor);
         metadata.recordPropertyConstructor(propertyKey, constr);
     };
 }

@@ -1,31 +1,48 @@
-import { Constructor } from '../foundation/Constructor';
+import { ComponentClass } from '../foundation/ComponentClass';
+import { Metadata } from './Metadata';
 
-export const PROPERTY_METADATA_KEY = 'metadata:property';
+export const PROPERTY_METADATA_KEY = 'ioc:metadata-property';
 
-export class PropertyMetadata {
-    static record<T>(target: T) {
-        const metadata = PropertyMetadata.getMetadata(target);
-        if (metadata) {
-            return metadata;
+export interface PropertyMetadataReader {
+    getConstructor<T>(key: string | symbol): ComponentClass<T>;
+    get properties(): string[];
+}
+
+export class PropertyMetadata implements Metadata<PropertyMetadataReader> {
+    static getMetadata<T extends Function>(target: T): PropertyMetadata {
+        let metadata = PropertyMetadata._getMetadata(target);
+        if (!metadata) {
+            metadata = new PropertyMetadata();
+            Reflect.defineMetadata(PROPERTY_METADATA_KEY, metadata, target);
         }
-        const newMetadata = new PropertyMetadata();
-        Reflect.defineMetadata(PROPERTY_METADATA_KEY, newMetadata, target);
-        return newMetadata;
+        return metadata;
     }
-    static getMetadata<T>(target: T) {
-        return Reflect.getMetadata(PROPERTY_METADATA_KEY, target) as PropertyMetadata | undefined;
+    private static _getMetadata<T extends Function>(target: T): PropertyMetadata | undefined {
+        return Reflect.getMetadata(PROPERTY_METADATA_KEY, target);
     }
-    private constructorsMap: Record<string | symbol, Constructor<unknown>> = {};
-    private constructor() {
+    private constructorsMap: Record<string | symbol, ComponentClass<unknown>> = {};
+    constructor() {
         // PASS
     }
-    recordPropertyConstructor<T>(key: string | symbol, constr: Constructor<T>) {
+    recordPropertyConstructor<T>(key: string | symbol, constr: ComponentClass<T>) {
         this.constructorsMap[key] = constr;
     }
-    getConstructor<T>(key: string | symbol): Constructor<T> {
-        return this.constructorsMap[key] as Constructor<T>;
+    getConstructor<T>(key: string | symbol): ComponentClass<T> {
+        return this.constructorsMap[key] as ComponentClass<T>;
     }
     getInjectionProperties() {
         return Object.keys(this.constructorsMap);
+    }
+    reader() {
+        // eslint-disable-next-line @typescript-eslint/no-this-alias
+        const that = this;
+        return {
+            getConstructor<T>(key: string | symbol) {
+                return that.getConstructor<T>(key);
+            },
+            get properties() {
+                return that.getInjectionProperties();
+            }
+        };
     }
 }

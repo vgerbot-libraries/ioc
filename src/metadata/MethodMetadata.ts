@@ -1,20 +1,21 @@
 import 'reflect-metadata';
 import { Lifecycle } from '../foundation/Lifecycle';
+import { Metadata } from './Metadata';
 
 export const METHOD_METADATA_KEY = Symbol('ioc:method-metadata');
 
-export class MethodMetadata {
-    static record<T>(target: T) {
-        const metadata = MethodMetadata.getMetadata(target);
-        if (metadata) {
-            return metadata;
+export interface MethodMetadataReader {
+    getMethods(lifecycle: Lifecycle): Array<string | symbol>;
+}
+
+export class MethodMetadata implements Metadata<MethodMetadataReader> {
+    static getMetadata<T extends Function>(target: T): MethodMetadata {
+        let metadata = Reflect.getMetadata(METHOD_METADATA_KEY, target);
+        if (!metadata) {
+            metadata = new MethodMetadata();
+            Reflect.defineMetadata(METHOD_METADATA_KEY, metadata, target);
         }
-        const newMetadata = new MethodMetadata();
-        Reflect.defineMetadata(METHOD_METADATA_KEY, newMetadata, target);
-        return newMetadata;
-    }
-    static getMetadata<T>(target: T): MethodMetadata | undefined {
-        return Reflect.getMetadata(METHOD_METADATA_KEY, target);
+        return metadata;
     }
     private readonly lifecyclesMap: Record<string | symbol, Set<Lifecycle>> = {};
     private constructor() {
@@ -33,5 +34,12 @@ export class MethodMetadata {
             const lifecycles = this.lifecyclesMap[it];
             return lifecycles.has(lifecycle);
         });
+    }
+    reader() {
+        return {
+            getMethods: (lifecycle: Lifecycle) => {
+                return this.getMethods(lifecycle);
+            }
+        };
     }
 }
