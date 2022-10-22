@@ -1,5 +1,5 @@
 module.exports = {
-    extends: ['@commitlint/config-lerna-scopes', '@commitlint/config-conventional'],
+    extends: ['@commitlint/config-conventional'],
     rules: {
         'body-leading-blank': [1, 'always'],
         'footer-leading-blank': [1, 'always'],
