@@ -1,5 +1,5 @@
 import { InstanceGenerationGuard } from '../foundation/InstanceGenerationGuard';
-import { ComponentContainer } from '../foundation/Container';
+import { ComponentContainer } from '../foundation/ComponentContainer';
 import { ComponentClass } from '../foundation/ComponentClass';
 import { InstanceScope } from '../foundation/InstanceScope';
 

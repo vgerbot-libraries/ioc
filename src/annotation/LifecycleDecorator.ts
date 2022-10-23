@@ -1,6 +1,6 @@
 import 'reflect-metadata';
 import { Lifecycle } from '../foundation/Lifecycle';
-import { MethodMetadata } from '../metadata/MethodMetadata';
+import { ClassMetadata } from '../metadata/ClassMetadata';
 
 /**
  * Urn calls the methods annotated with @PostInject only once, just after the injection of properties.
@@ -8,7 +8,7 @@ import { MethodMetadata } from '../metadata/MethodMetadata';
  */
 export const LifecycleDecorator = (lifecycle: Lifecycle): MethodDecorator => {
     return (target: Object, propertyKey: string | symbol) => {
-        const metadata = MethodMetadata.getMetadata(target.constructor);
-        metadata.addLifecycle(propertyKey, lifecycle);
+        const metadata = ClassMetadata.getMetadata(target.constructor);
+        metadata.addLifecycleMethod(propertyKey, lifecycle);
     };
 };

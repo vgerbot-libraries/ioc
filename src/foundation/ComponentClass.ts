@@ -1,1 +1,3 @@
-export type ComponentClass<T> = new (...args: unknown[]) => T;
+import { UnknownTypeInstance } from './UnknownInstanceType';
+
+export type ComponentClass<T = UnknownTypeInstance> = new (...args: unknown[]) => T;

@@ -1,35 +1,39 @@
-import { ComponentClass } from './ComponentClass';
 import { InstanceScope } from './InstanceScope';
 import { InstanceGenerationGuard } from './InstanceGenerationGuard';
 import { Constructor } from './Constructor';
-import { DEFAULT_CONTAINER_ID } from './consts';
+import { TypeSymbol } from './TypeSymbol';
+import { ComponentFactory } from './ComponentFactory';
+import { EventEmitter, EventListener } from './EventEmitter';
+import { UnknownTypeInstance } from './UnknownTypeInstance';
 
-const CONTAINERS_LIST: ComponentContainer[] = [];
+const PRE_DESTROY_EVENT_KEY = 'container:event:pre-destroy';
 
 export class ComponentContainer {
     private guards = new Map<InstanceScope | string, InstanceGenerationGuard>();
-    static getContainer(id: string = DEFAULT_CONTAINER_ID) {
-        const container = getContainerById(id);
-        if (container) {
-            return container;
-        }
-        return new ComponentContainer(id);
-    }
-    private constructor(public readonly id: string) {
-        if (getContainerById(id)) {
-            throw new TypeError(`Duplicate container id: ${id}!`);
-        }
-        CONTAINERS_LIST.push(this);
+    private factories = new Map<TypeSymbol, ComponentFactory>();
+    private eventEmitter = new EventEmitter();
+    private constructor() {
+        // PASS
     }
 
-    getComponentInstance<T, O>(theClass: ComponentClass<T>, owner?: O): T {
+    getComponentInstance<T = unknown>(symbol: TypeSymbol<T>, owner?: UnknownTypeInstance): T {
         return null as unknown as T;
     }
-    destroy() {
-        const index = CONTAINERS_LIST.findIndex(it => it.id === this.id);
-        if (index > -1) {
-            CONTAINERS_LIST.splice(index, 1);
+    factory(symbol: TypeSymbol, factory: ComponentFactory) {
+        this.factories.set(symbol, factory);
+    }
+    invoke<TFunction extends Function = Function>(func: TFunction, context?: unknown) {
+        if (arguments.length > 1) {
+            func = func.bind(context);
         }
+        // TODO: INJECT AND INVOKE
+        return func();
+    }
+    destroy() {
+        // PASS
+    }
+    evaluate<T>(expression: string, owner?: unknown): T {
+        return null as T;
     }
     registerGuard(
         scope: InstanceScope | string,
@@ -41,8 +45,7 @@ export class ComponentContainer {
     getGuard(scope: InstanceScope | string) {
         return this.guards.get(scope);
     }
-}
-
-function getContainerById(id: string) {
-    return CONTAINERS_LIST.find(it => it.id === id);
+    onPreDestroy(listener: EventListener) {
+        return this.eventEmitter.on(PRE_DESTROY_EVENT_KEY, listener);
+    }
 }

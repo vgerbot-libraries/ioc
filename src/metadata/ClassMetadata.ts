@@ -1,14 +1,16 @@
 import { InstanceScope } from '../foundation/InstanceScope';
 import { TaggedConstructor } from '../foundation/TaggedConstructor';
 import { Metadata } from './Metadata';
-import { ComponentContainer } from '../foundation/ComponentContainer';
-import { DEFAULT_CONTAINER_ID } from '../foundation/consts';
+import { TypeSymbol } from '../foundation/TypeSymbol';
+import { Lifecycle } from '../foundation/Lifecycle';
 
 const CLASS_METADATA_KEY = 'ioc:class-metadata';
 
 export interface ClassMetadataReader {
-    get scope(): InstanceScope;
-    get container(): ComponentContainer;
+    getScope(): InstanceScope;
+    getConstructorParameterTypes(): Array<TypeSymbol>;
+    getMethods(lifecycle: Lifecycle): Array<string | symbol>;
+    getPropertyTypeMap(): Map<string | symbol, TypeSymbol>;
 }
 
 export class ClassMetadata implements Metadata<ClassMetadataReader> {
@@ -25,7 +27,9 @@ export class ClassMetadata implements Metadata<ClassMetadataReader> {
         return metadata;
     }
     private scope: InstanceScope = InstanceScope.SINGLETON;
-    private container: ComponentContainer = ComponentContainer.getContainer(DEFAULT_CONTAINER_ID);
+    private constructorParameterTypes: Array<TypeSymbol> = [];
+    private readonly lifecycleMethodsMap: Record<string | symbol, Set<Lifecycle>> = {};
+    private readonly propertyTypesMap = new Map<string | symbol, TypeSymbol>();
     private static _getMetadata<TFunction extends Function>(target: TFunction): ClassMetadata | undefined {
         return Reflect.getMetadata(CLASS_METADATA_KEY, target);
     }
@@ -35,19 +39,38 @@ export class ClassMetadata implements Metadata<ClassMetadataReader> {
     setScope(scope: InstanceScope) {
         this.scope = scope;
     }
-    setContainer(container: ComponentContainer) {
-        this.container = container;
+    setConstructorParameterType(index: number, cls: TypeSymbol) {
+        this.constructorParameterTypes[index] = cls;
+    }
+    recordPropertyType(propertyKey: string | symbol, type: TypeSymbol) {
+        this.propertyTypesMap.set(propertyKey, type);
+    }
+    addLifecycleMethod(methodName: string | symbol, lifecycle: Lifecycle) {
+        const lifecycles = this.getLifecycles(methodName);
+        lifecycles.add(lifecycle);
+        this.lifecycleMethodsMap[methodName] = lifecycles;
+    }
+    private getLifecycles(methodName: string | symbol) {
+        return this.lifecycleMethodsMap[methodName] || new Set<Lifecycle>();
+    }
+    getMethods(lifecycle: Lifecycle): Array<string | symbol> {
+        return Object.keys(this.lifecycleMethodsMap).filter(it => {
+            const lifecycles = this.lifecycleMethodsMap[it];
+            return lifecycles.has(lifecycle);
+        });
     }
     reader() {
-        // eslint-disable-next-line @typescript-eslint/no-this-alias
-        const that = this;
         return {
-            get scope() {
-                return that.scope;
+            getScope: () => {
+                return this.scope;
             },
-            get container() {
-                return that.container;
-            }
+            getConstructorParameterTypes: () => {
+                return this.constructorParameterTypes.slice(0);
+            },
+            getMethods: (lifecycle: Lifecycle) => {
+                return this.getMethods(lifecycle);
+            },
+            getPropertyTypeMap: () => new Map(this.propertyTypesMap)
         };
     }
 }
