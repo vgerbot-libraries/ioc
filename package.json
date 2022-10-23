@@ -69,6 +69,7 @@
     },
     "homepage": "https://github.com/y1j2x34/rollup-jest-boilerplate#readme",
     "dependencies": {
-        "reflect-metadata": "^0.1.13"
+        "reflect-metadata": "^0.1.13",
+        "tslib": "^2.4.0"
     }
 }

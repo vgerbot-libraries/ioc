@@ -18,6 +18,7 @@
         "esModuleInterop": true,
         "experimentalDecorators": true,
         "emitDecoratorMetadata": true,
+        "downlevelIteration": true,
         "types": [
             "reflect-metadata"
         ],
