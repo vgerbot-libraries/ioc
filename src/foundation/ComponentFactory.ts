@@ -1,3 +1,7 @@
-import { ComponentContainer } from './ComponentContainer';
+import { ApplicationContext } from './ApplicationContext';
+import { UnknownTypeInstance } from './UnknownTypeInstance';
 
-export type ComponentFactory<O = unknown> = (container: ComponentContainer, owner?: O) => PropertyDescriptor;
+export type ComponentFactory<O extends UnknownTypeInstance = UnknownTypeInstance> = (
+    container: ApplicationContext,
+    owner?: O
+) => PropertyDescriptor;

@@ -1,13 +1,24 @@
 import { InstanceGenerationGuard } from '../foundation/InstanceGenerationGuard';
-import { ComponentContainer } from '../foundation/ComponentContainer';
 import { ComponentClass } from '../foundation/ComponentClass';
 import { InstanceScope } from '../foundation/InstanceScope';
 
-export class SingletonInstanceGenerationGuard extends InstanceGenerationGuard {
+export class SingletonInstanceGenerationGuard implements InstanceGenerationGuard {
     getScopeName() {
         return InstanceScope.SINGLETON;
     }
-    shouldGenerate<T>(container: ComponentContainer, componentClass: ComponentClass<T>): boolean {
-        return false;
+    private readonly INSTANCE_MAP = new Map();
+    getInstance<T>(cls: ComponentClass<T>): T {
+        return this.INSTANCE_MAP.get(cls);
+    }
+
+    saveInstance(instance: ComponentClass): void {
+        this.INSTANCE_MAP.set(instance.constructor, instance);
+    }
+
+    shouldGenerate<T>(componentClass: ComponentClass<T>): boolean {
+        return !this.INSTANCE_MAP.has(componentClass);
+    }
+    destroy() {
+        //
     }
 }

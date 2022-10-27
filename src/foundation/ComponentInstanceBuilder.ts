@@ -1,10 +1,11 @@
 import { ComponentClass } from './ComponentClass';
 import { ClassMetadataReader } from '../metadata/ClassMetadata';
-import { ComponentContainer } from './ComponentContainer';
+import { ApplicationContext } from './ApplicationContext';
 import { GlobalMetadata } from '../metadata/GlobalMetadata';
 import { ComponentFactory } from './ComponentFactory';
 import { Lifecycle } from './Lifecycle';
 import { UnknownTypeInstance } from './UnknownTypeInstance';
+import { AnyFunction } from '../types/AnyCallback';
 
 export class ComponentInstanceBuilder {
     private getConstructorArgs: () => unknown[] = () => [];
@@ -12,7 +13,7 @@ export class ComponentInstanceBuilder {
     private preInjectMethods: Array<string | symbol> = [];
     private postInjectMethods: Array<string | symbol> = [];
     private preDestroyMethods: Array<string | symbol> = [];
-    constructor(private readonly componentClass: ComponentClass, private readonly container: ComponentContainer) {
+    constructor(private readonly componentClass: ComponentClass, private readonly container: ApplicationContext) {
         //
     }
     appendClassMetadata(classMetadataReader: ClassMetadataReader) {
@@ -51,7 +52,7 @@ export class ComponentInstanceBuilder {
     }
     private invokeLifecycleMethods(instance: UnknownTypeInstance, methodKeys: Array<string | symbol>) {
         methodKeys.forEach(key => {
-            this.container.invoke(instance[key] as Function, instance);
+            this.container.invoke(instance[key] as AnyFunction, instance);
         });
     }
 }

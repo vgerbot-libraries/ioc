@@ -3,6 +3,7 @@ import { TaggedConstructor } from '../foundation/TaggedConstructor';
 import { Metadata } from './Metadata';
 import { TypeSymbol } from '../foundation/TypeSymbol';
 import { Lifecycle } from '../foundation/Lifecycle';
+import { ComponentClass } from '../foundation/ComponentClass';
 
 const CLASS_METADATA_KEY = 'ioc:class-metadata';
 
@@ -14,7 +15,7 @@ export interface ClassMetadataReader {
 }
 
 export class ClassMetadata implements Metadata<ClassMetadataReader> {
-    static getMetadata<TFunction extends Function>(target: TFunction): ClassMetadata {
+    static getMetadata<T extends ComponentClass>(target: T): ClassMetadata {
         let metadata = ClassMetadata._getMetadata(target);
         if (!metadata) {
             const constr = target as unknown as TaggedConstructor;
@@ -30,7 +31,7 @@ export class ClassMetadata implements Metadata<ClassMetadataReader> {
     private constructorParameterTypes: Array<TypeSymbol> = [];
     private readonly lifecycleMethodsMap: Record<string | symbol, Set<Lifecycle>> = {};
     private readonly propertyTypesMap = new Map<string | symbol, TypeSymbol>();
-    private static _getMetadata<TFunction extends Function>(target: TFunction): ClassMetadata | undefined {
+    private static _getMetadata<T extends ComponentClass>(target: T): ClassMetadata | undefined {
         return Reflect.getMetadata(CLASS_METADATA_KEY, target);
     }
     private constructor() {

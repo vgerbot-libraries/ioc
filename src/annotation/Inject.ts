@@ -8,7 +8,9 @@ export type ConstructorParameterDecorator<TFunction extends ComponentClass> = (
     index: number
 ) => void;
 
-export function Inject<T>(constr: TypeSymbol<T>): PropertyDecorator | ConstructorParameterDecorator<ComponentClass<T>> {
+export function Inject<T>(
+    constr: TypeSymbol<T>
+): PropertyDecorator | ConstructorParameterDecorator<ComponentClass<T>> | ParameterDecorator {
     return function (target: Object, propertyKey?: string | symbol, parameterIndex?: number) {
         if (typeof target === 'function' && typeof parameterIndex === 'number') {
             const targetConstr = target as ComponentClass<T>;

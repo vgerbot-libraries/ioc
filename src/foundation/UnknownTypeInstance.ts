@@ -1,1 +1,1 @@
-export type UnknownTypeInstance = Record<string | symbol, unknown>;
+export type UnknownTypeInstance = any;

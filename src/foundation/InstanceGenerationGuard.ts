@@ -1,8 +1,13 @@
 import { ComponentClass } from './ComponentClass';
-import { ComponentContainer } from './ComponentContainer';
 
-export abstract class InstanceGenerationGuard {
-    abstract getScopeName(): string;
+export interface InstanceGenerationGuard {
+    getScopeName(): string;
 
-    abstract shouldGenerate<T, Owner>(container: ComponentContainer, componentClass: ComponentClass<T>, owner?: Owner): boolean;
+    shouldGenerate<T, Owner>(componentClass: ComponentClass<T>, owner?: Owner): boolean;
+
+    saveInstance(instance: ComponentClass): void;
+
+    getInstance<T, Owner>(cls: ComponentClass<T>, owner?: Owner): T | undefined;
+
+    destroy(): void;
 }

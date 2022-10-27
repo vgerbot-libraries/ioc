@@ -2,6 +2,7 @@ import { Metadata } from './Metadata';
 import { TypeSymbol } from '../foundation/TypeSymbol';
 import { ComponentClass } from '../foundation/ComponentClass';
 import { ComponentFactory } from '../foundation/ComponentFactory';
+import { Key } from '../types/Key';
 
 export interface GlobalMetadataReader {
     getComponentFactory(key: TypeSymbol): ComponentFactory | null | undefined;
@@ -18,19 +19,19 @@ export class GlobalMetadata implements Metadata<GlobalMetadataReader> {
     static getInstance() {
         return GlobalMetadata.INSTANCE;
     }
-    private classSymbolMap = new Map<ComponentClass, Set<string | symbol>>();
-    private componentFactories = new Map<string | symbol, ComponentFactory>();
-    recordClassSymbol(sbl: string | symbol, cls: ComponentClass) {
-        const symbols = this.classSymbolMap.get(cls) || new Set<string | symbol>();
+    private classSymbolMap = new Map<ComponentClass, Set<Key>>();
+    private componentFactories = new Map<Key, ComponentFactory>();
+    recordClassSymbol(sbl: Key, cls: ComponentClass) {
+        const symbols = this.classSymbolMap.get(cls) || new Set<Key>();
         symbols.add(sbl);
         this.recordFactory(sbl, createFactory(cls));
     }
-    recordFactory(symbol: string | symbol, factory: ComponentFactory) {
+    recordFactory(symbol: Key, factory: ComponentFactory) {
         this.componentFactories.set(symbol, factory);
     }
     reader() {
         return {
-            getComponentFactory: (key: TypeSymbol) => {
+            getComponentFactory: (key: Key) => {
                 if (typeof key === 'function') {
                     const symbols = Array.from(this.classSymbolMap.get(key) || []);
                     if (!symbols.length) {
