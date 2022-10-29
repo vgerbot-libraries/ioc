@@ -1,8 +1,10 @@
-import { ComponentClass } from '../foundation/ComponentClass';
 import { GlobalMetadata } from '../metadata/GlobalMetadata';
+import { ClassMetadata } from '../metadata/ClassMetadata';
+import { MetadataFactory } from '../metadata/MetadataFactory';
 
-export function Bind(symbol: string | symbol): ClassDecorator {
+export function Bind(aliasName: string | symbol): ClassDecorator {
     return <TFunction extends Function>(target: TFunction) => {
-        GlobalMetadata.getInstance().recordClassSymbol(symbol, target as unknown as ComponentClass);
+        const metadata = MetadataFactory.getMetadata(target, ClassMetadata);
+        GlobalMetadata.getInstance().recordClassAlias(aliasName, metadata);
     };
 }

@@ -1,49 +1,50 @@
 import { InstanceScope } from '../foundation/InstanceScope';
-import { TaggedConstructor } from '../foundation/TaggedConstructor';
+import { JsServiceClass } from '../foundation/JsServiceClass';
 import { Metadata } from './Metadata';
-import { TypeSymbol } from '../foundation/TypeSymbol';
+import { Identifier } from '../foundation/Identifier';
 import { Lifecycle } from '../foundation/Lifecycle';
-import { ComponentClass } from '../foundation/ComponentClass';
+import { Newable } from '../foundation/Newable';
 
 const CLASS_METADATA_KEY = 'ioc:class-metadata';
 
 export interface ClassMetadataReader {
+    getClass(): Newable<any>;
     getScope(): InstanceScope;
-    getConstructorParameterTypes(): Array<TypeSymbol>;
+    getConstructorParameterTypes(): Array<Identifier>;
     getMethods(lifecycle: Lifecycle): Array<string | symbol>;
-    getPropertyTypeMap(): Map<string | symbol, TypeSymbol>;
+    getPropertyTypeMap(): Map<string | symbol, Identifier>;
 }
 
 export class ClassMetadata implements Metadata<ClassMetadataReader> {
-    static getMetadata<T extends ComponentClass>(target: T): ClassMetadata {
-        let metadata = ClassMetadata._getMetadata(target);
-        if (!metadata) {
-            const constr = target as unknown as TaggedConstructor;
-            metadata = new ClassMetadata();
-            if (typeof constr.scope === 'function') {
-                metadata.setScope(constr.scope());
-            }
-            Reflect.defineMetadata(CLASS_METADATA_KEY, metadata, target);
-        }
-        return metadata;
+    static getReflectKey() {
+        return CLASS_METADATA_KEY;
     }
     private scope: InstanceScope = InstanceScope.SINGLETON;
-    private constructorParameterTypes: Array<TypeSymbol> = [];
+    private constructorParameterTypes: Array<Identifier> = [];
     private readonly lifecycleMethodsMap: Record<string | symbol, Set<Lifecycle>> = {};
-    private readonly propertyTypesMap = new Map<string | symbol, TypeSymbol>();
-    private static _getMetadata<T extends ComponentClass>(target: T): ClassMetadata | undefined {
-        return Reflect.getMetadata(CLASS_METADATA_KEY, target);
-    }
-    private constructor() {
-        // PASS
+    private readonly propertyTypesMap = new Map<string | symbol, Identifier>();
+    private clazz!: Newable<any>;
+
+    init<T>(target: T) {
+        this.clazz = target as Newable<any>;
+        const constr = target as JsServiceClass<unknown>;
+        if (typeof constr.scope === 'function') {
+            this.setScope(constr.scope());
+        }
+        if (typeof constr.inject === 'function') {
+            const injections = constr.inject();
+            for (const key in injections) {
+                this.recordPropertyType(key, injections[key]);
+            }
+        }
     }
     setScope(scope: InstanceScope) {
         this.scope = scope;
     }
-    setConstructorParameterType(index: number, cls: TypeSymbol) {
+    setConstructorParameterType(index: number, cls: Identifier) {
         this.constructorParameterTypes[index] = cls;
     }
-    recordPropertyType(propertyKey: string | symbol, type: TypeSymbol) {
+    recordPropertyType(propertyKey: string | symbol, type: Identifier) {
         this.propertyTypesMap.set(propertyKey, type);
     }
     addLifecycleMethod(methodName: string | symbol, lifecycle: Lifecycle) {
@@ -62,6 +63,7 @@ export class ClassMetadata implements Metadata<ClassMetadataReader> {
     }
     reader() {
         return {
+            getClass: () => this.clazz,
             getScope: () => {
                 return this.scope;
             },

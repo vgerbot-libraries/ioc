@@ -1,23 +1,18 @@
-import { ComponentClass } from '../foundation/ComponentClass';
+import { Newable } from '../foundation/Newable';
 import { ClassMetadata } from '../metadata/ClassMetadata';
-import { TypeSymbol } from '../foundation/TypeSymbol';
+import { Identifier } from '../foundation/Identifier';
+import { MetadataFactory } from '../metadata/MetadataFactory';
 
-export type ConstructorParameterDecorator<TFunction extends ComponentClass> = (
-    target: TFunction,
-    key: undefined,
-    index: number
-) => void;
+export type ConstructorParameterDecorator<T> = (target: Newable<T>, key: undefined, index: number) => void;
 
-export function Inject<T>(
-    constr: TypeSymbol<T>
-): PropertyDecorator | ConstructorParameterDecorator<ComponentClass<T>> | ParameterDecorator {
+export function Inject<T>(constr: Identifier<T>): PropertyDecorator | ConstructorParameterDecorator<T> | ParameterDecorator {
     return function (target: Object, propertyKey?: string | symbol, parameterIndex?: number) {
         if (typeof target === 'function' && typeof parameterIndex === 'number') {
-            const targetConstr = target as ComponentClass<T>;
-            const classMetadata = ClassMetadata.getMetadata(targetConstr);
+            const targetConstr = target as Newable<T>;
+            const classMetadata = MetadataFactory.getMetadata(targetConstr, ClassMetadata);
             classMetadata.setConstructorParameterType(parameterIndex, constr);
         } else if (typeof target === 'object' && propertyKey !== undefined) {
-            const metadata = ClassMetadata.getMetadata(target.constructor);
+            const metadata = MetadataFactory.getMetadata(target.constructor, ClassMetadata);
             metadata.recordPropertyType(propertyKey, constr);
         }
     };

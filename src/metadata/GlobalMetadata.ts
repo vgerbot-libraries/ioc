@@ -1,46 +1,37 @@
 import { Metadata } from './Metadata';
-import { TypeSymbol } from '../foundation/TypeSymbol';
-import { ComponentClass } from '../foundation/ComponentClass';
-import { ComponentFactory } from '../foundation/ComponentFactory';
-import { Key } from '../types/Key';
+import { Identifier } from '../foundation/Identifier';
+import { ServiceFactory } from '../foundation/ServiceFactory';
+import { FactoryIdentifier } from '../types/FactoryIdentifier';
+import { ClassMetadata } from './ClassMetadata';
+import { FactoryDef } from '../types/FactoryDef';
 
 export interface GlobalMetadataReader {
-    getComponentFactory(key: TypeSymbol): ComponentFactory | null | undefined;
-}
-function createFactory(cls: ComponentClass): ComponentFactory {
-    return (container, owner) => {
-        return {
-            value: container.getComponentInstance(cls, owner)
-        };
-    };
+    getComponentFactory<T>(key: Identifier): FactoryDef<T> | undefined;
+    getClassMetadata(aliasName: string | symbol): ClassMetadata | undefined;
 }
 export class GlobalMetadata implements Metadata<GlobalMetadataReader> {
     private static readonly INSTANCE = new GlobalMetadata();
     static getInstance() {
         return GlobalMetadata.INSTANCE;
     }
-    private classSymbolMap = new Map<ComponentClass, Set<Key>>();
-    private componentFactories = new Map<Key, ComponentFactory>();
-    recordClassSymbol(sbl: Key, cls: ComponentClass) {
-        const symbols = this.classSymbolMap.get(cls) || new Set<Key>();
-        symbols.add(sbl);
-        this.recordFactory(sbl, createFactory(cls));
+    private classAliasMetadataMap = new Map<string | symbol, ClassMetadata>();
+    private componentFactories = new Map<FactoryIdentifier, FactoryDef<any>>();
+    recordFactory<T>(symbol: FactoryIdentifier, factory: ServiceFactory<T>, injections?: Identifier[]) {
+        this.componentFactories.set(symbol, new FactoryDef(factory, injections));
     }
-    recordFactory(symbol: Key, factory: ComponentFactory) {
-        this.componentFactories.set(symbol, factory);
+    recordClassAlias(aliasName: string | symbol, metadata: ClassMetadata) {
+        this.classAliasMetadataMap.set(aliasName, metadata);
+    }
+    init() {
+        // PASS;
     }
     reader() {
         return {
-            getComponentFactory: (key: Key) => {
-                if (typeof key === 'function') {
-                    const symbols = Array.from(this.classSymbolMap.get(key) || []);
-                    if (!symbols.length) {
-                        return createFactory(key);
-                    } else {
-                        return this.componentFactories.get(symbols[0]);
-                    }
-                }
+            getComponentFactory: (key: FactoryIdentifier) => {
                 return this.componentFactories.get(key);
+            },
+            getClassMetadata: (aliasName: string | symbol): ClassMetadata | undefined => {
+                return this.classAliasMetadataMap.get(aliasName);
             }
         };
     }

@@ -1,22 +1,25 @@
 import { GlobalMetadata } from '../metadata/GlobalMetadata';
-import { ComponentClass } from '../foundation/ComponentClass';
+import { Newable } from '../foundation/Newable';
+import { FactoryIdentifier } from '../types/FactoryIdentifier';
+import { Identifier } from '../foundation/Identifier';
 
-export function Factory(type: string | symbol): MethodDecorator {
-    return (target: Object, propertyKey: string | symbol, descriptor) => {
+export function Factory(identifier: FactoryIdentifier, injections: Identifier[] = []): MethodDecorator {
+    return (target: Object, propertyKey: string | symbol) => {
         const metadata = GlobalMetadata.getInstance();
-        const clazz = target.constructor as ComponentClass;
-        metadata.recordFactory(type, (container, owner) => {
-            const instance = container.getComponentInstance(clazz, owner);
-            const func = descriptor.get !== undefined ? descriptor.get.call(instance) : descriptor.value;
-            if (typeof func === 'function') {
-                return {
-                    value: container.invoke(func, instance)
-                };
-            } else {
-                return {
-                    value: func
-                };
-            }
-        });
+        const clazz = target.constructor as Newable<any>;
+
+        metadata.recordFactory(
+            identifier,
+            (container, owner) => {
+                const instance = container.getInstance(clazz, owner);
+                const func = instance[propertyKey];
+                if (typeof func === 'function') {
+                    return func;
+                } else {
+                    return () => func;
+                }
+            },
+            injections
+        );
     };
 }
