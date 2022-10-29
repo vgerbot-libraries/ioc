@@ -1,26 +1,15 @@
+export { Bind } from './annotation/Bind';
+export { Scope } from './annotation/Scope';
+export { Inject } from './annotation/Inject';
+export { Factory } from './annotation/Factory';
+export { PostInject } from './annotation/PostInject';
+export { PreInject } from './annotation/PreInject';
+export { PreDestroy } from './annotation/PreDestroy';
+export { Value } from './annotation/Value';
+
+export { InstanceScope } from './foundation/InstanceScope';
+export { ApplicationContext } from './foundation/ApplicationContext';
+
 export function hello() {
     return 'world';
 }
-function Inject(): ParameterDecorator {
-    return function (target, key, index) {
-        console.log(typeof target, key, index);
-    };
-}
-
-function InjectAll(): ClassDecorator {
-    return (constr: Function) => {
-        console.log(constr);
-    };
-}
-
-@InjectAll()
-class A {
-    constructor(@Inject() a: string) {
-        // PASS
-    }
-    hello(@Inject() b: string) {
-        // PASS
-    }
-}
-
-new A('123456').hello('asdasd');
