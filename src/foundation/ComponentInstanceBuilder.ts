@@ -1,15 +1,15 @@
 import { Newable } from './Newable';
 import { ClassMetadataReader } from '../metadata/ClassMetadata';
 import { ApplicationContext } from './ApplicationContext';
-import { ServiceFactory } from './ServiceFactory';
 import { Lifecycle } from './Lifecycle';
 import { Instance } from './Instance';
 import { AnyFunction } from '../types/AnyFunction';
 import { defineLazyProperty } from '../utils/defineLazyProperty';
+import { FactoryDef } from '../types/FactoryDef';
 
 export class ComponentInstanceBuilder<T> {
     private getConstructorArgs: () => unknown[] = () => [];
-    private propertyFactories: Record<string | symbol, ServiceFactory<any>> = {};
+    private propertyFactories: Record<string | symbol, FactoryDef<any>> = {};
     private preInjectMethods: Array<string | symbol> = [];
     private postInjectMethods: Array<string | symbol> = [];
     private preDestroyMethods: Array<string | symbol> = [];
@@ -26,9 +26,9 @@ export class ComponentInstanceBuilder<T> {
         const properties = classMetadataReader.getPropertyTypeMap();
         for (const [propertyName, propertyType] of properties) {
             if (typeof propertyType === 'function') {
-                this.propertyFactories[propertyName] = (container, owner) => {
-                    return container.getInstance(propertyType, owner) as any;
-                };
+                this.propertyFactories[propertyName] = new FactoryDef((container, owner) => {
+                    return () => container.getInstance(propertyType, owner);
+                });
                 continue;
             }
             const factory = this.container.getFactory(propertyType);
@@ -46,9 +46,12 @@ export class ComponentInstanceBuilder<T> {
         const instance = new this.componentClass(...args) as Instance<T>;
         this.invokeLifecycleMethods(instance, this.preInjectMethods);
         for (const key in this.propertyFactories) {
-            const factory = this.propertyFactories[key];
+            const { factory, injections } = this.propertyFactories[key];
+            const fn = factory(this.container, instance);
             defineLazyProperty(instance, key, () => {
-                return factory(this.container, instance);
+                return this.container.invoke(fn, {
+                    injections
+                });
             });
         }
         this.invokeLifecycleMethods(instance, this.postInjectMethods);
