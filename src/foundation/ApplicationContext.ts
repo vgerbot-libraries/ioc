@@ -14,6 +14,9 @@ import { ApplicationContextOptions } from './ApplicationContextOptions';
 import { Newable } from './Newable';
 import { MetadataFactory } from '../metadata/MetadataFactory';
 import { FactoryDef } from '../types/FactoryDef';
+import { SingletonInstanceResolution } from '../resolution/SingletonInstanceResolution';
+import { GlobalSharedInstanceResolution } from '../resolution/GlobalSharedInstanceResolution';
+import { TransientInstanceResolution } from '../resolution/TransientInstanceResolution';
 
 const PRE_DESTROY_EVENT_KEY = 'container:event:pre-destroy';
 
@@ -24,6 +27,9 @@ export class ApplicationContext {
     private readonly defaultScope: InstanceScope;
     public constructor(private options: ApplicationContextOptions = {}) {
         this.defaultScope = this.options.defaultScope || InstanceScope.SINGLETON;
+        this.registerInstanceScopeResolution(InstanceScope.SINGLETON, SingletonInstanceResolution);
+        this.registerInstanceScopeResolution(InstanceScope.GLOBAL_SHARED_SINGLETON, GlobalSharedInstanceResolution);
+        this.registerInstanceScopeResolution(InstanceScope.TRANSIENT, TransientInstanceResolution);
     }
     getInstance<T, O>(symbol: Identifier<T>, owner?: O): T {
         if (typeof symbol === 'string' || typeof symbol === 'symbol') {
