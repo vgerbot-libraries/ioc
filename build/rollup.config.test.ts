@@ -18,7 +18,15 @@ const rollupConfig: RollupOptions = {
         }),
         typescript({
             tsconfig: 'tsconfig.test.json'
-        })
+        }),
+        {
+            name: 'PrintError',
+            buildEnd(err) {
+                if (err) {
+                    console.error('Rollup Error: ', err);
+                }
+            }
+        }
     ]
 };
 
