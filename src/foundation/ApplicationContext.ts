@@ -56,7 +56,9 @@ export class ApplicationContext {
         if (resolution.shouldGenerate(componentClass, owner)) {
             const builder = new ComponentInstanceBuilder(componentClass, this);
             builder.appendClassMetadata(reader);
-            return builder.build();
+            const instance = builder.build();
+            resolution.saveInstance(instance);
+            return instance;
         } else {
             return resolution.getInstance(componentClass, owner) as T;
         }
