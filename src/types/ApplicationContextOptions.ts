@@ -1,4 +1,4 @@
-import { InstanceScope } from './InstanceScope';
+import { InstanceScope } from '../foundation/InstanceScope';
 
 export interface ApplicationContextOptions {
     defaultScope?: InstanceScope;

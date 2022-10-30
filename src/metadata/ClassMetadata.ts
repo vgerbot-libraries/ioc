@@ -1,9 +1,9 @@
 import { InstanceScope } from '../foundation/InstanceScope';
-import { JsServiceClass } from '../foundation/JsServiceClass';
-import { Metadata } from './Metadata';
-import { Identifier } from '../foundation/Identifier';
+import { JsServiceClass } from '../types/JsServiceClass';
+import { Metadata } from '../types/Metadata';
+import { Identifier } from '../types/Identifier';
 import { Lifecycle } from '../foundation/Lifecycle';
-import { Newable } from '../foundation/Newable';
+import { Newable } from '../types/Newable';
 
 const CLASS_METADATA_KEY = 'ioc:class-metadata';
 

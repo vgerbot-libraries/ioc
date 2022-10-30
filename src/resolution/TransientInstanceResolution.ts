@@ -1,6 +1,6 @@
-import { InstanceResolution } from '../foundation/InstanceResolution';
+import { InstanceResolution } from '../types/InstanceResolution';
 import { InstanceScope } from '../foundation/InstanceScope';
-import { Newable } from '../foundation/Newable';
+import { Newable } from '../types/Newable';
 
 export class TransientInstanceResolution implements InstanceResolution {
     getScopeName(): string {

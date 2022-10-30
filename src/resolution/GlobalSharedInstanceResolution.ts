@@ -1,5 +1,5 @@
-import { InstanceResolution } from '../foundation/InstanceResolution';
-import { Newable } from '../foundation/Newable';
+import { InstanceResolution } from '../types/InstanceResolution';
+import { Newable } from '../types/Newable';
 import { InstanceScope } from '../foundation/InstanceScope';
 import { SingletonInstanceResolution } from './SingletonInstanceResolution';
 

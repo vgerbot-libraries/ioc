@@ -1,4 +1,4 @@
-import { InstanceScope } from './InstanceScope';
+import { InstanceScope } from '../foundation/InstanceScope';
 import { Identifier } from './Identifier';
 
 export interface JsServiceClass<T> extends Function {

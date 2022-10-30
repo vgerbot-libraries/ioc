@@ -1,4 +1,4 @@
-import { Newable } from '../foundation/Newable';
+import { Newable } from './Newable';
 
 export interface Metadata<T extends MetadataReader> {
     init<T>(target: T): void;

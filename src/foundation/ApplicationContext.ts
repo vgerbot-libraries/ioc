@@ -1,7 +1,7 @@
 import { InstanceScope } from './InstanceScope';
-import { InstanceResolution } from './InstanceResolution';
-import { Identifier } from './Identifier';
-import { ServiceFactory } from './ServiceFactory';
+import { InstanceResolution } from '../types/InstanceResolution';
+import { Identifier } from '../types/Identifier';
+import { ServiceFactory } from '../types/ServiceFactory';
 import { EventEmitter, EventListener } from './EventEmitter';
 import { AnyFunction } from '../types/AnyFunction';
 import { hasArgs, hasInjections, InvokeFunctionOptions } from './InvokeFunctionOptions';
@@ -10,10 +10,10 @@ import { FactoryIdentifier } from '../types/FactoryIdentifier';
 import { ClassMetadata } from '../metadata/ClassMetadata';
 import { ComponentInstanceBuilder } from './ComponentInstanceBuilder';
 import { FunctionMetadata } from '../metadata/FunctionMetadata';
-import { ApplicationContextOptions } from './ApplicationContextOptions';
-import { Newable } from './Newable';
+import { ApplicationContextOptions } from '../types/ApplicationContextOptions';
+import { Newable } from '../types/Newable';
 import { MetadataFactory } from '../metadata/MetadataFactory';
-import { FactoryDef } from '../types/FactoryDef';
+import { ServiceFactoryDef } from './ServiceFactoryDef';
 import { SingletonInstanceResolution } from '../resolution/SingletonInstanceResolution';
 import { GlobalSharedInstanceResolution } from '../resolution/GlobalSharedInstanceResolution';
 import { TransientInstanceResolution } from '../resolution/TransientInstanceResolution';
@@ -22,7 +22,7 @@ const PRE_DESTROY_EVENT_KEY = 'container:event:pre-destroy';
 
 export class ApplicationContext {
     private resolutions = new Map<InstanceScope | string, InstanceResolution>();
-    private factories = new Map<FactoryIdentifier, FactoryDef<any>>();
+    private factories = new Map<FactoryIdentifier, ServiceFactoryDef<any>>();
     private eventEmitter = new EventEmitter();
     private readonly defaultScope: InstanceScope;
     public constructor(private options: ApplicationContextOptions = {}) {
@@ -71,7 +71,7 @@ export class ApplicationContext {
         return factory;
     }
     bindFactory<T>(symbol: FactoryIdentifier, factory: ServiceFactory<T>, injections?: Identifier[]) {
-        this.factories.set(symbol, new FactoryDef(factory, injections));
+        this.factories.set(symbol, new ServiceFactoryDef(factory, injections));
     }
     invoke<TFunction extends AnyFunction = AnyFunction>(
         func: TFunction,

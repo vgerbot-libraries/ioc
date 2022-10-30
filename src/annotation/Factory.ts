@@ -1,7 +1,7 @@
 import { GlobalMetadata } from '../metadata/GlobalMetadata';
-import { Newable } from '../foundation/Newable';
+import { Newable } from '../types/Newable';
 import { FactoryIdentifier } from '../types/FactoryIdentifier';
-import { Identifier } from '../foundation/Identifier';
+import { Identifier } from '../types/Identifier';
 
 export function Factory(identifier: FactoryIdentifier, injections: Identifier[] = []): MethodDecorator {
     return (target: Object, propertyKey: string | symbol) => {

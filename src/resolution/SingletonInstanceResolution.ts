@@ -1,7 +1,7 @@
-import { InstanceResolution } from '../foundation/InstanceResolution';
-import { Newable } from '../foundation/Newable';
+import { InstanceResolution } from '../types/InstanceResolution';
+import { Newable } from '../types/Newable';
 import { InstanceScope } from '../foundation/InstanceScope';
-import { Instance } from '../foundation/Instance';
+import { Instance } from '../types/Instance';
 
 export class SingletonInstanceResolution implements InstanceResolution {
     getScopeName() {

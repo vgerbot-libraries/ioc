@@ -1,4 +1,4 @@
-import { Metadata, MetadataClass, MetadataReader } from './Metadata';
+import { Metadata, MetadataClass, MetadataReader } from '../types/Metadata';
 
 export class MetadataFactory {
     static getMetadata<M extends Metadata<MetadataReader>, T extends Object>(target: T, metadataClass: MetadataClass<M>) {

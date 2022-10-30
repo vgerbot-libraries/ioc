@@ -1,4 +1,4 @@
-import { Identifier } from './Identifier';
+import { Identifier } from '../types/Identifier';
 
 type InvokeFunctionArgs = {
     args?: unknown[];

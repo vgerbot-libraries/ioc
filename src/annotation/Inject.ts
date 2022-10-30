@@ -1,6 +1,6 @@
-import { Newable } from '../foundation/Newable';
+import { Newable } from '../types/Newable';
 import { ClassMetadata } from '../metadata/ClassMetadata';
-import { Identifier } from '../foundation/Identifier';
+import { Identifier } from '../types/Identifier';
 import { MetadataFactory } from '../metadata/MetadataFactory';
 
 export type ConstructorParameterDecorator<T> = (target: Newable<T>, key: undefined, index: number) => void;

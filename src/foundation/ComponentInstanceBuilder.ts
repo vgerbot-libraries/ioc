@@ -1,15 +1,15 @@
-import { Newable } from './Newable';
+import { Newable } from '../types/Newable';
 import { ClassMetadataReader } from '../metadata/ClassMetadata';
 import { ApplicationContext } from './ApplicationContext';
 import { Lifecycle } from './Lifecycle';
-import { Instance } from './Instance';
+import { Instance } from '../types/Instance';
 import { AnyFunction } from '../types/AnyFunction';
 import { defineLazyProperty } from '../utils/defineLazyProperty';
-import { FactoryDef } from '../types/FactoryDef';
+import { ServiceFactoryDef } from './ServiceFactoryDef';
 
 export class ComponentInstanceBuilder<T> {
     private getConstructorArgs: () => unknown[] = () => [];
-    private propertyFactories: Record<string | symbol, FactoryDef<any>> = {};
+    private propertyFactories: Record<string | symbol, ServiceFactoryDef<any>> = {};
     private preInjectMethods: Array<string | symbol> = [];
     private postInjectMethods: Array<string | symbol> = [];
     private preDestroyMethods: Array<string | symbol> = [];
@@ -26,7 +26,7 @@ export class ComponentInstanceBuilder<T> {
         const properties = classMetadataReader.getPropertyTypeMap();
         for (const [propertyName, propertyType] of properties) {
             if (typeof propertyType === 'function') {
-                this.propertyFactories[propertyName] = new FactoryDef((container, owner) => {
+                this.propertyFactories[propertyName] = new ServiceFactoryDef((container, owner) => {
                     return () => container.getInstance(propertyType, owner);
                 });
                 continue;
