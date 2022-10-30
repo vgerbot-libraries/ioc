@@ -1,0 +1,11 @@
+{
+  "extends": "../tsconfig.build.json",
+  "compilerOptions": {
+    "moduleResolution": "node",
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "types": [
+      "node"
+    ]
+  }
+}
