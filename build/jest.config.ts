@@ -1,6 +1,7 @@
 import path from 'path';
 
 export default {
+    verbose: true,
     transform: {
         '\\.tsx?$': [
             'rollup-jest',
@@ -12,8 +13,8 @@ export default {
     testEnvironment: 'node', // dom
     testMatch: ['**/__tests__/**/*.spec.ts'],
     moduleFileExtensions: ['ts', 'js'],
-    collectCoverage: false,
-    collectCoverageFrom: ['src/**/*.ts', '!**/node_modules/**'],
+    collectCoverage: true,
+    collectCoverageFrom: ['src/**/*.ts', '!**/node_modules/**/*', '!__tests__/**/*', '!src/types/*.ts'],
     coverageDirectory: './report/coverage',
     coverageReporters: ['cobertura', 'html', 'text-summary'],
     reporters: [
