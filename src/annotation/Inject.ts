@@ -5,8 +5,8 @@ import { MetadataFactory } from '../metadata/MetadataFactory';
 
 export type ConstructorParameterDecorator<T> = (target: Newable<T>, key: undefined, index: number) => void;
 
-export function Inject<T>(constr: Identifier<T>): PropertyDecorator | ConstructorParameterDecorator<T> | ParameterDecorator {
-    return function (target: Object, propertyKey?: string | symbol, parameterIndex?: number) {
+export function Inject<T>(constr: Identifier<T>) {
+    return function (target: any, propertyKey: string | symbol, parameterIndex?: number) {
         if (typeof target === 'function' && typeof parameterIndex === 'number') {
             const targetConstr = target as Newable<T>;
             const classMetadata = MetadataFactory.getMetadata(targetConstr, ClassMetadata);
