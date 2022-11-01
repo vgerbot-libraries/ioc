@@ -22,6 +22,7 @@ const PRE_DESTROY_EVENT_KEY = 'container:event:pre-destroy';
 
 export class ApplicationContext {
     private resolutions = new Map<InstanceScope | string, InstanceResolution>();
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     private factories = new Map<FactoryIdentifier, ServiceFactoryDef<any>>();
     private eventEmitter = new EventEmitter();
     private readonly defaultScope: InstanceScope;
@@ -41,7 +42,7 @@ export class ApplicationContext {
                     injections
                 });
             } else {
-                const classMetadata = GlobalMetadata.getInstance().reader().getClassMetadata(symbol);
+                const classMetadata = GlobalMetadata.getInstance().reader().getClassMetadata<T>(symbol);
                 if (!classMetadata) {
                     throw new Error('');
                 } else {
@@ -70,29 +71,29 @@ export class ApplicationContext {
         }
         return factory;
     }
-    bindFactory<T>(symbol: FactoryIdentifier, factory: ServiceFactory<T>, injections?: Identifier[]) {
+    bindFactory<T>(symbol: FactoryIdentifier, factory: ServiceFactory<T, unknown>, injections?: Identifier[]) {
         this.factories.set(symbol, new ServiceFactoryDef(factory, injections));
     }
-    invoke<TFunction extends AnyFunction = AnyFunction>(
-        func: TFunction,
-        options: InvokeFunctionOptions<ThisType<TFunction>> = {}
-    ): ReturnType<TFunction> {
+    invoke<R, Ctx>(func: AnyFunction<R, Ctx>, options: InvokeFunctionOptions<Ctx> = {}): R {
+        let fn: AnyFunction<R>;
         if (arguments.length > 1) {
-            func = func.bind(options.context) as TFunction;
+            fn = func.bind(options.context as ThisParameterType<typeof func>) as AnyFunction<R>;
+        } else {
+            fn = func as AnyFunction<R>;
         }
         if (hasArgs(options)) {
-            return options.args ? func(...options.args) : func();
+            return options.args ? fn(...options.args) : fn();
         }
         if (hasInjections(options)) {
             const args = options.injections ? options.injections.map(it => this.getInstance(it)) : [];
-            return args.length > 0 ? func(...args) : func();
+            return args.length > 0 ? fn(...args) : fn();
         }
-        const metadata = MetadataFactory.getMetadata(func, FunctionMetadata).reader();
+        const metadata = MetadataFactory.getMetadata(fn, FunctionMetadata).reader();
         const parameterIdentifiers = metadata.getParameters();
         const args = parameterIdentifiers.map(identifier => {
             return this.getInstance(identifier);
         });
-        return func(...args);
+        return fn(...args);
     }
     destroy() {
         this.resolutions.forEach(guard => {

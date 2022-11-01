@@ -3,20 +3,19 @@ import { ClassMetadataReader } from '../metadata/ClassMetadata';
 import { ApplicationContext } from './ApplicationContext';
 import { Lifecycle } from './Lifecycle';
 import { Instance } from '../types/Instance';
-import { AnyFunction } from '../types/AnyFunction';
 import { defineLazyProperty } from '../utils/defineLazyProperty';
 import { ServiceFactoryDef } from './ServiceFactoryDef';
 
 export class ComponentInstanceBuilder<T> {
     private getConstructorArgs: () => unknown[] = () => [];
-    private propertyFactories: Record<string | symbol, ServiceFactoryDef<any>> = {};
+    private propertyFactories: Record<string | symbol, ServiceFactoryDef<unknown>> = {};
     private preInjectMethods: Array<string | symbol> = [];
     private postInjectMethods: Array<string | symbol> = [];
     private preDestroyMethods: Array<string | symbol> = [];
     constructor(private readonly componentClass: Newable<T>, private readonly container: ApplicationContext) {
         //
     }
-    appendClassMetadata(classMetadataReader: ClassMetadataReader) {
+    appendClassMetadata<T>(classMetadataReader: ClassMetadataReader<T>) {
         const types = classMetadataReader.getConstructorParameterTypes();
         this.getConstructorArgs = () => {
             return types.map(it => {
@@ -63,7 +62,7 @@ export class ComponentInstanceBuilder<T> {
     }
     private invokeLifecycleMethods(instance: Instance<T>, methodKeys: Array<string | symbol>) {
         methodKeys.forEach(key => {
-            this.container.invoke(instance[key] as AnyFunction, {
+            this.container.invoke(instance[key], {
                 context: instance
             });
         });

@@ -1,21 +1,21 @@
 import { InstanceScope } from '../foundation/InstanceScope';
 import { JsServiceClass } from '../types/JsServiceClass';
-import { Metadata } from '../types/Metadata';
+import { Metadata, MetadataReader } from '../types/Metadata';
 import { Identifier } from '../types/Identifier';
 import { Lifecycle } from '../foundation/Lifecycle';
 import { Newable } from '../types/Newable';
 
 const CLASS_METADATA_KEY = 'ioc:class-metadata';
 
-export interface ClassMetadataReader {
-    getClass(): Newable<any>;
+export interface ClassMetadataReader<T> extends MetadataReader {
+    getClass(): Newable<T>;
     getScope(): InstanceScope | string;
     getConstructorParameterTypes(): Array<Identifier>;
     getMethods(lifecycle: Lifecycle): Array<string | symbol>;
     getPropertyTypeMap(): Map<string | symbol, Identifier>;
 }
 
-export class ClassMetadata implements Metadata<ClassMetadataReader> {
+export class ClassMetadata<T> implements Metadata<ClassMetadataReader<T>, Newable<T>> {
     static getReflectKey() {
         return CLASS_METADATA_KEY;
     }
@@ -23,10 +23,10 @@ export class ClassMetadata implements Metadata<ClassMetadataReader> {
     private constructorParameterTypes: Array<Identifier> = [];
     private readonly lifecycleMethodsMap: Record<string | symbol, Set<Lifecycle>> = {};
     private readonly propertyTypesMap = new Map<string | symbol, Identifier>();
-    private clazz!: Newable<any>;
+    private clazz!: Newable<T>;
 
-    init<T>(target: T) {
-        this.clazz = target as Newable<any>;
+    init(target: Newable<T>) {
+        this.clazz = target;
         const constr = target as JsServiceClass<unknown>;
         if (typeof constr.scope === 'function') {
             this.setScope(constr.scope());
@@ -61,7 +61,7 @@ export class ClassMetadata implements Metadata<ClassMetadataReader> {
             return lifecycles.has(lifecycle);
         });
     }
-    reader() {
+    reader(): ClassMetadataReader<T> {
         return {
             getClass: () => this.clazz,
             getScope: () => {

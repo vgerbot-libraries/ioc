@@ -11,7 +11,7 @@ export interface FunctionMetadataReader {
     getScope(): InstanceScope | undefined;
 }
 
-export class FunctionMetadata implements Metadata<FunctionMetadataReader> {
+export class FunctionMetadata implements Metadata<FunctionMetadataReader, Function> {
     static getReflectKey() {
         return FUNCTION_METADATA_KEY;
     }

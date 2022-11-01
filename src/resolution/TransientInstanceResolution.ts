@@ -1,6 +1,5 @@
 import { InstanceResolution } from '../types/InstanceResolution';
 import { InstanceScope } from '../foundation/InstanceScope';
-import { Newable } from '../types/Newable';
 
 export class TransientInstanceResolution implements InstanceResolution {
     getScopeName(): string {
@@ -11,11 +10,11 @@ export class TransientInstanceResolution implements InstanceResolution {
         return true;
     }
 
-    getInstance<T>(cls: Newable<T>): T | undefined {
+    getInstance<T>(): T | undefined {
         return;
     }
 
-    saveInstance<T>(instance: T): void {
+    saveInstance(): void {
         // PASS
     }
     destroy() {

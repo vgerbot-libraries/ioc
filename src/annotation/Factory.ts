@@ -2,11 +2,12 @@ import { GlobalMetadata } from '../metadata/GlobalMetadata';
 import { Newable } from '../types/Newable';
 import { FactoryIdentifier } from '../types/FactoryIdentifier';
 import { Identifier } from '../types/Identifier';
+import { Instance } from '../types/Instance';
 
 export function Factory(identifier: FactoryIdentifier, injections: Identifier[] = []): MethodDecorator {
     return (target: Object, propertyKey: string | symbol) => {
         const metadata = GlobalMetadata.getInstance();
-        const clazz = target.constructor as Newable<any>;
+        const clazz = target.constructor as Newable<Instance<unknown>>;
 
         metadata.recordFactory(
             identifier,

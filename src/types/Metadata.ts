@@ -1,13 +1,13 @@
 import { Newable } from './Newable';
 
-export interface Metadata<T extends MetadataReader> {
-    init<T>(target: T): void;
-    reader(): T;
+export interface Metadata<R extends MetadataReader, Target> {
+    init(target: Target): void;
+    reader(): R;
 }
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface MetadataReader {
     // EMPTY
 }
-export type MetadataClass<T extends Metadata<MetadataReader>> = Newable<T> & {
+export type MetadataClass<R extends MetadataReader, T, M extends Metadata<R, T>> = Newable<M> & {
     getReflectKey(): string | symbol;
 };

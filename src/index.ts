@@ -9,7 +9,3 @@ export { Value } from './annotation/Value';
 
 export { InstanceScope } from './foundation/InstanceScope';
 export { ApplicationContext } from './foundation/ApplicationContext';
-
-export function hello() {
-    return 'world';
-}

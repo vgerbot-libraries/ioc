@@ -6,20 +6,20 @@ import { ClassMetadata } from './ClassMetadata';
 import { ServiceFactoryDef } from '../foundation/ServiceFactoryDef';
 
 export interface GlobalMetadataReader {
-    getComponentFactory<T>(key: Identifier): ServiceFactoryDef<T> | undefined;
-    getClassMetadata(aliasName: string | symbol): ClassMetadata | undefined;
+    getComponentFactory<T>(key: FactoryIdentifier): ServiceFactoryDef<T> | undefined;
+    getClassMetadata<T>(aliasName: string | symbol): ClassMetadata<T> | undefined;
 }
-export class GlobalMetadata implements Metadata<GlobalMetadataReader> {
+export class GlobalMetadata implements Metadata<GlobalMetadataReader, void> {
     private static readonly INSTANCE = new GlobalMetadata();
     static getInstance() {
         return GlobalMetadata.INSTANCE;
     }
-    private classAliasMetadataMap = new Map<string | symbol, ClassMetadata>();
-    private componentFactories = new Map<FactoryIdentifier, ServiceFactoryDef<any>>();
-    recordFactory<T>(symbol: FactoryIdentifier, factory: ServiceFactory<T>, injections?: Identifier[]) {
+    private classAliasMetadataMap = new Map<string | symbol, ClassMetadata<unknown>>();
+    private componentFactories = new Map<FactoryIdentifier, ServiceFactoryDef<unknown>>();
+    recordFactory<T>(symbol: FactoryIdentifier, factory: ServiceFactory<T, unknown>, injections?: Identifier[]) {
         this.componentFactories.set(symbol, new ServiceFactoryDef(factory, injections));
     }
-    recordClassAlias(aliasName: string | symbol, metadata: ClassMetadata) {
+    recordClassAlias<T>(aliasName: string | symbol, metadata: ClassMetadata<T>) {
         this.classAliasMetadataMap.set(aliasName, metadata);
     }
     init() {
@@ -27,11 +27,11 @@ export class GlobalMetadata implements Metadata<GlobalMetadataReader> {
     }
     reader() {
         return {
-            getComponentFactory: (key: FactoryIdentifier) => {
-                return this.componentFactories.get(key);
+            getComponentFactory: <T>(key: FactoryIdentifier): ServiceFactoryDef<T> | undefined => {
+                return this.componentFactories.get(key) as ServiceFactoryDef<T> | undefined;
             },
-            getClassMetadata: (aliasName: string | symbol): ClassMetadata | undefined => {
-                return this.classAliasMetadataMap.get(aliasName);
+            getClassMetadata: <T>(aliasName: string | symbol): ClassMetadata<T> | undefined => {
+                return this.classAliasMetadataMap.get(aliasName) as ClassMetadata<T> | undefined;
             }
         };
     }
