@@ -8,6 +8,7 @@
     "distDir": "dist/",
     "library": "boilerplate",
     "types": "dist/index.d.ts",
+    "typings": "dist/index.d.ts",
     "scripts": {
         "test": "cross-env NODE_ENV=test jest",
         "debug": "cross-env NODE_ENV=test node --inspect-brk ./node_modules/.bin/jest",
@@ -27,7 +28,7 @@
     },
     "repository": {
         "type": "git",
-        "url": "git+https://github.com/y1j2x34/rollup-jest-boilerplate.git"
+        "url": "git+https://github.com/vgerbot-libraries/ioc.git"
     },
     "keywords": [],
     "author": "",
@@ -60,17 +61,17 @@
         "rollup-plugin-terser": "^7.0.2",
         "rollup-plugin-typescript2": "^0.34.0",
         "sucrase": "^3.27.0",
+        "tslib": "^2.4.0",
         "ts-node": "^10.9.1",
         "typedoc": "^0.23.15",
         "typescript": "^4.8.4",
         "zx": "^4.3.0"
     },
     "bugs": {
-        "url": "https://github.com/y1j2x34/rollup-jest-boilerplate/issues"
+        "url": "https://github.com/vgerbot-libraries/ioc/issues"
     },
-    "homepage": "https://github.com/y1j2x34/rollup-jest-boilerplate#readme",
+    "homepage": "https://github.com/vgerbot-libraries/ioc#readme",
     "dependencies": {
-        "reflect-metadata": "^0.1.13",
-        "tslib": "^2.4.0"
+        "reflect-metadata": "^0.1.13"
     }
 }
