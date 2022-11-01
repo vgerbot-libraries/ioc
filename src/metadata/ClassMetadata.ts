@@ -9,7 +9,7 @@ const CLASS_METADATA_KEY = 'ioc:class-metadata';
 
 export interface ClassMetadataReader {
     getClass(): Newable<any>;
-    getScope(): InstanceScope;
+    getScope(): InstanceScope | string;
     getConstructorParameterTypes(): Array<Identifier>;
     getMethods(lifecycle: Lifecycle): Array<string | symbol>;
     getPropertyTypeMap(): Map<string | symbol, Identifier>;
@@ -19,7 +19,7 @@ export class ClassMetadata implements Metadata<ClassMetadataReader> {
     static getReflectKey() {
         return CLASS_METADATA_KEY;
     }
-    private scope: InstanceScope = InstanceScope.SINGLETON;
+    private scope: InstanceScope | string = InstanceScope.SINGLETON;
     private constructorParameterTypes: Array<Identifier> = [];
     private readonly lifecycleMethodsMap: Record<string | symbol, Set<Lifecycle>> = {};
     private readonly propertyTypesMap = new Map<string | symbol, Identifier>();
@@ -38,7 +38,7 @@ export class ClassMetadata implements Metadata<ClassMetadataReader> {
             }
         }
     }
-    setScope(scope: InstanceScope) {
+    setScope(scope: InstanceScope | string) {
         this.scope = scope;
     }
     setConstructorParameterType(index: number, cls: Identifier) {
