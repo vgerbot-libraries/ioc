@@ -103,12 +103,12 @@ export class ApplicationContext {
     evaluate<T>(expression: string, owner?: unknown): T {
         return null as T;
     }
-    registerInstanceScopeResolution(
+    registerInstanceScopeResolution<T extends Newable<InstanceResolution>>(
         scope: InstanceScope | string,
-        guardConstructor: Newable<InstanceResolution>,
-        constructorArgs: unknown[] = []
+        guardConstructor: T,
+        constructorArgs?: ConstructorParameters<T>
     ) {
-        this.resolutions.set(scope, new guardConstructor(...constructorArgs));
+        this.resolutions.set(scope, new guardConstructor(...(constructorArgs || [])));
     }
     onPreDestroy(listener: EventListener) {
         return this.eventEmitter.on(PRE_DESTROY_EVENT_KEY, listener);

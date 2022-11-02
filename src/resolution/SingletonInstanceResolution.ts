@@ -1,12 +1,8 @@
 import { InstanceResolution } from '../types/InstanceResolution';
 import { Newable } from '../types/Newable';
-import { InstanceScope } from '../foundation/InstanceScope';
 import { Instance } from '../types/Instance';
 
 export class SingletonInstanceResolution implements InstanceResolution {
-    getScopeName() {
-        return InstanceScope.SINGLETON;
-    }
     private readonly INSTANCE_MAP = new Map();
     getInstance<T>(cls: Newable<T>): T {
         return this.INSTANCE_MAP.get(cls);
