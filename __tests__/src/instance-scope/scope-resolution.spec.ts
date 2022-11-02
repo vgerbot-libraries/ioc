@@ -1,4 +1,5 @@
-import { ApplicationContext, InstanceScope, Scope } from '../../../src';
+import { ApplicationContext, InstanceResolution, InstanceScope, Scope } from '../../../src';
+import { Newable } from '../../../src/types/Newable';
 
 describe('InstanceScope', () => {
     describe('SINGLETON', () => {
@@ -32,6 +33,64 @@ describe('InstanceScope', () => {
             const service2 = context.getInstance(Service);
 
             expect(service1 === service2).toBeFalsy();
+        });
+    });
+    describe('Custom instance scope', () => {
+        const CUSTOM_INSTANCE_SCOPE_NAME = 'custom-instance-scope';
+
+        @Scope(CUSTOM_INSTANCE_SCOPE_NAME)
+        class RootTreeNodeService {
+            //
+        }
+
+        class TreeNode {
+            constructor(public parent?: TreeNode) {
+                // PASS
+            }
+        }
+
+        class CustomInstanceSolution implements InstanceResolution {
+            static METADATA_KEY = Symbol('');
+            destroy(): void {
+                // PASS
+            }
+            getInstance<T, O>(cls: Newable<T>, owner?: O): T | undefined {
+                if (!owner) {
+                    return;
+                }
+                const root = this.getRoot(owner as unknown as TreeNode);
+                const instances = (Reflect.getMetadata(CustomInstanceSolution.METADATA_KEY, root) || []) as T[];
+                return instances.find(it => it instanceof cls);
+            }
+            saveInstance<T, O>(instance: T, owner?: O): void {
+                if (!owner) {
+                    return;
+                }
+                const root = this.getRoot(owner as unknown as TreeNode);
+                const instances = (Reflect.getMetadata(CustomInstanceSolution.METADATA_KEY, root) || []) as T[];
+                instances.push(instance);
+                Reflect.defineMetadata(CustomInstanceSolution.METADATA_KEY, instances, root);
+            }
+            getRoot(owner: TreeNode) {
+                let root = owner;
+                while (root.parent) {
+                    root = root.parent;
+                }
+                return root;
+            }
+            shouldGenerate<T = RootTreeNodeService, O = TreeNode>(componentClass: Newable<T>, owner?: O): boolean {
+                return !!this.getInstance(componentClass, owner);
+            }
+        }
+
+        it('Should custom scope resolution work correctly', () => {
+            const context = new ApplicationContext();
+            context.registerInstanceScopeResolution(CUSTOM_INSTANCE_SCOPE_NAME, CustomInstanceSolution);
+            const root = new TreeNode();
+            const child0 = new TreeNode(root);
+            const child1 = new TreeNode(root);
+
+            expect(context.getInstance(RootTreeNodeService, child0)).toBe(context.getInstance(RootTreeNodeService, child1));
         });
     });
 });
