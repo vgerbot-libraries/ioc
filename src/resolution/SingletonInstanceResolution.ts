@@ -1,19 +1,17 @@
-import { InstanceResolution } from '../types/InstanceResolution';
-import { Newable } from '../types/Newable';
-import { Instance } from '../types/Instance';
+import { GetInstanceOptions, InstanceResolution, SaveInstanceOptions } from '../types/InstanceResolution';
 
 export class SingletonInstanceResolution implements InstanceResolution {
     private readonly INSTANCE_MAP = new Map();
-    getInstance<T>(cls: Newable<T>): T {
-        return this.INSTANCE_MAP.get(cls);
+    getInstance<T, O>(options: GetInstanceOptions<T, O>): T {
+        return this.INSTANCE_MAP.get(options.identifier);
     }
 
-    saveInstance<T>(instance: T): void {
-        this.INSTANCE_MAP.set((instance as Instance<T>).constructor, instance);
+    saveInstance<T, O>(options: SaveInstanceOptions<T, O>): void {
+        this.INSTANCE_MAP.set(options.identifier, options.instance);
     }
 
-    shouldGenerate<T>(componentClass: Newable<T>): boolean {
-        return !this.INSTANCE_MAP.has(componentClass);
+    shouldGenerate<T, O>(options: GetInstanceOptions<T, O>): boolean {
+        return !this.INSTANCE_MAP.has(options.identifier);
     }
     destroy() {
         //

@@ -54,14 +54,23 @@ export class ApplicationContext {
         const reader = MetadataFactory.getMetadata(componentClass, ClassMetadata).reader();
         const scope = reader.getScope();
         const resolution = (this.resolutions.get(scope) || this.resolutions.get(this.defaultScope)) as InstanceResolution;
-        if (resolution.shouldGenerate(componentClass, owner)) {
+        const getInstanceOptions = {
+            identifier: componentClass,
+            owner,
+            ownerPropertyKey: undefined
+        };
+        if (resolution.shouldGenerate(getInstanceOptions)) {
             const builder = new ComponentInstanceBuilder(componentClass, this);
             builder.appendClassMetadata(reader);
             const instance = builder.build();
-            resolution.saveInstance(instance);
+            const saveInstanceOptions = {
+                ...getInstanceOptions,
+                instance
+            };
+            resolution.saveInstance(saveInstanceOptions);
             return instance;
         } else {
-            return resolution.getInstance(componentClass, owner) as T;
+            return resolution.getInstance(getInstanceOptions) as T;
         }
     }
     getFactory(key: FactoryIdentifier) {
@@ -96,19 +105,22 @@ export class ApplicationContext {
         return fn(...args);
     }
     destroy() {
-        this.resolutions.forEach(guard => {
-            guard.destroy();
+        this.resolutions.forEach(it => {
+            it.destroy();
         });
     }
     evaluate<T>(expression: string, owner?: unknown): T {
         return null as T;
     }
+    bindInstance<T>(identifier: string | symbol, instance: T) {
+        //
+    }
     registerInstanceScopeResolution<T extends Newable<InstanceResolution>>(
         scope: InstanceScope | string,
-        guardConstructor: T,
+        resolutionConstructor: T,
         constructorArgs?: ConstructorParameters<T>
     ) {
-        this.resolutions.set(scope, new guardConstructor(...(constructorArgs || [])));
+        this.resolutions.set(scope, new resolutionConstructor(...(constructorArgs || [])));
     }
     onPreDestroy(listener: EventListener) {
         return this.eventEmitter.on(PRE_DESTROY_EVENT_KEY, listener);

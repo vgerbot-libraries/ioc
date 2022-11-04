@@ -1,5 +1,5 @@
 export enum InstanceScope {
-    SINGLETON = 'ioc-guard:container-singleton',
-    TRANSIENT = 'ioc-guard:transient',
-    GLOBAL_SHARED_SINGLETON = 'ioc-guard:global-shared-singleton'
+    SINGLETON = 'ioc-resolution:container-singleton',
+    TRANSIENT = 'ioc-resolution:transient',
+    GLOBAL_SHARED_SINGLETON = 'ioc-resolution:global-shared-singleton'
 }

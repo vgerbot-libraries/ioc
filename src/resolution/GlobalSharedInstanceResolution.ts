@@ -1,20 +1,19 @@
-import { InstanceResolution } from '../types/InstanceResolution';
-import { Newable } from '../types/Newable';
+import { GetInstanceOptions, InstanceResolution, SaveInstanceOptions } from '../types/InstanceResolution';
 import { SingletonInstanceResolution } from './SingletonInstanceResolution';
 
 const SINGLETON_INSTANCE_SINGLETON = new SingletonInstanceResolution();
 
 export class GlobalSharedInstanceResolution implements InstanceResolution {
-    getInstance<T>(cls: Newable<T>): T {
-        return SINGLETON_INSTANCE_SINGLETON.getInstance(cls);
+    getInstance<T, O>(options: GetInstanceOptions<T, O>): T {
+        return SINGLETON_INSTANCE_SINGLETON.getInstance(options);
     }
 
-    saveInstance<T>(instance: T): void {
-        SINGLETON_INSTANCE_SINGLETON.saveInstance(instance);
+    saveInstance<T, O>(options: SaveInstanceOptions<T, O>): void {
+        SINGLETON_INSTANCE_SINGLETON.saveInstance(options);
     }
 
-    shouldGenerate<T>(componentClass: Newable<T>): boolean {
-        return SINGLETON_INSTANCE_SINGLETON.shouldGenerate(componentClass);
+    shouldGenerate<T, O>(options: GetInstanceOptions<T, O>): boolean {
+        return SINGLETON_INSTANCE_SINGLETON.shouldGenerate(options);
     }
     destroy() {
         // PASS;
