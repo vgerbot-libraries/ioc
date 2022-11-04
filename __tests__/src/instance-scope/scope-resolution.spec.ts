@@ -1,5 +1,5 @@
 import { ApplicationContext, InstanceResolution, InstanceScope, Scope } from '../../../src';
-import { Newable } from '../../../src/types/Newable';
+import { GetInstanceOptions } from '../../../src/types/InstanceResolution';
 
 describe('InstanceScope', () => {
     describe('SINGLETON', () => {
@@ -54,11 +54,15 @@ describe('InstanceScope', () => {
             destroy(): void {
                 // PASS
             }
-            getInstance<T, O>(cls: Newable<T>, owner?: O): T | undefined {
-                if (!owner) {
+            getInstance<T, O>(options: GetInstanceOptions<T, O>): T | undefined {
+                if (!options.owner) {
                     return;
                 }
-                const root = this.getRoot(owner as unknown as TreeNode);
+                const cls = options.identifier;
+                if (typeof cls !== 'function') {
+                    return;
+                }
+                const root = this.getRoot(options.owner as unknown as TreeNode);
                 const instances = (Reflect.getMetadata(CustomInstanceSolution.METADATA_KEY, root) || []) as T[];
                 return instances.find(it => it instanceof cls);
             }
@@ -78,8 +82,8 @@ describe('InstanceScope', () => {
                 }
                 return root;
             }
-            shouldGenerate<T = RootTreeNodeService, O = TreeNode>(componentClass: Newable<T>, owner?: O): boolean {
-                return !!this.getInstance(componentClass, owner);
+            shouldGenerate<T = RootTreeNodeService, O = TreeNode>(options: GetInstanceOptions<T, O>): boolean {
+                return !!this.getInstance(options);
             }
         }
 
