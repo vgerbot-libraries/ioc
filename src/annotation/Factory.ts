@@ -15,7 +15,10 @@ export function Factory(identifier: FactoryIdentifier, injections: Identifier[] 
                 const instance = container.getInstance(clazz, owner);
                 const func = instance[propertyKey];
                 if (typeof func === 'function') {
-                    return func;
+                    return (...args) => {
+                        const instance = container.getInstance(clazz);
+                        return func.apply(instance, args);
+                    };
                 } else {
                     return () => func;
                 }

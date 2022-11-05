@@ -10,3 +10,5 @@ export { Value } from './annotation/Value';
 export { InstanceScope } from './foundation/InstanceScope';
 export { ApplicationContext } from './foundation/ApplicationContext';
 export { InstanceResolution } from './types/InstanceResolution';
+export { ExpressionType } from './types/EvaluateOptions';
+export { Evaluator } from './types/Evaluator';

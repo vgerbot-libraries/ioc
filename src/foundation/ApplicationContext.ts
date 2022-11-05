@@ -17,6 +17,11 @@ import { ServiceFactoryDef } from './ServiceFactoryDef';
 import { SingletonInstanceResolution } from '../resolution/SingletonInstanceResolution';
 import { GlobalSharedInstanceResolution } from '../resolution/GlobalSharedInstanceResolution';
 import { TransientInstanceResolution } from '../resolution/TransientInstanceResolution';
+import { EvaluationOptions, ExpressionType } from '../types/EvaluateOptions';
+import { JSONData } from '../types/JSONData';
+import { Evaluator } from '../types/Evaluator';
+import { JSONDataEvaluator } from './JSONDataEvaluator';
+import { EnvironmentEvaluator } from './EnvironmentEvaluator';
 
 const PRE_DESTROY_EVENT_KEY = 'container:event:pre-destroy';
 
@@ -24,6 +29,7 @@ export class ApplicationContext {
     private resolutions = new Map<InstanceScope | string, InstanceResolution>();
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     private factories = new Map<FactoryIdentifier, ServiceFactoryDef<any>>();
+    private evaluatorClasses = new Map<string, Newable<Evaluator>>();
     private eventEmitter = new EventEmitter();
     private readonly defaultScope: InstanceScope;
     public constructor(private options: ApplicationContextOptions = {}) {
@@ -31,6 +37,8 @@ export class ApplicationContext {
         this.registerInstanceScopeResolution(InstanceScope.SINGLETON, SingletonInstanceResolution);
         this.registerInstanceScopeResolution(InstanceScope.GLOBAL_SHARED_SINGLETON, GlobalSharedInstanceResolution);
         this.registerInstanceScopeResolution(InstanceScope.TRANSIENT, TransientInstanceResolution);
+        this.registerEvaluator(ExpressionType.JSON_PATH, JSONDataEvaluator);
+        this.registerEvaluator(ExpressionType.ENV, EnvironmentEvaluator);
     }
     getInstance<T, O>(symbol: Identifier<T>, owner?: O): T {
         if (typeof symbol === 'string' || typeof symbol === 'symbol') {
@@ -109,11 +117,24 @@ export class ApplicationContext {
             it.destroy();
         });
     }
-    evaluate<T>(expression: string, owner?: unknown): T {
-        return null as T;
+    evaluate<T, O>(expression: string, options: EvaluationOptions<O, string>): T | undefined {
+        const evaluatorClass = this.evaluatorClasses.get(options.type);
+        if (!evaluatorClass) {
+            throw new TypeError(`Unknown evaluator name: ${options.type}`);
+        }
+        const evaluator = this.getInstance(evaluatorClass);
+        return evaluator.eval(this, expression);
+    }
+    recordJSONData(namespace: string, data: JSONData) {
+        const evaluator = this.getInstance(JSONDataEvaluator);
+        evaluator.recordData(namespace, data);
     }
     bindInstance<T>(identifier: string | symbol, instance: T) {
-        //
+        const resolution = this.resolutions.get(InstanceScope.SINGLETON);
+        resolution?.saveInstance({
+            identifier,
+            instance
+        });
     }
     registerInstanceScopeResolution<T extends Newable<InstanceResolution>>(
         scope: InstanceScope | string,
@@ -121,6 +142,11 @@ export class ApplicationContext {
         constructorArgs?: ConstructorParameters<T>
     ) {
         this.resolutions.set(scope, new resolutionConstructor(...(constructorArgs || [])));
+    }
+    registerEvaluator(name: string, evaluatorClass: Newable<Evaluator>) {
+        const metadata = MetadataFactory.getMetadata(evaluatorClass, ClassMetadata);
+        metadata.setScope(InstanceScope.SINGLETON);
+        this.evaluatorClasses.set(name, evaluatorClass);
     }
     onPreDestroy(listener: EventListener) {
         return this.eventEmitter.on(PRE_DESTROY_EVENT_KEY, listener);
