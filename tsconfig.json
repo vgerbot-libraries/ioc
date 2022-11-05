@@ -20,7 +20,8 @@
         "emitDecoratorMetadata": true,
         "downlevelIteration": true,
         "types": [
-            "reflect-metadata"
+            "reflect-metadata",
+            "node"
         ],
         "typeRoots": [
             "node_modules/@types",

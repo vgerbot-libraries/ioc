@@ -5,7 +5,9 @@
             "@src": ["/src"]
         },
         "types": [
-            "jest"
+            "reflect-metadata",
+            "jest",
+            "node"
         ]
     },
     "include": [
