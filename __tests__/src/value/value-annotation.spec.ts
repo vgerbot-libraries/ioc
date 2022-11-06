@@ -1,9 +1,12 @@
-import { ApplicationContext, ExpressionType, Value } from '../../../src';
+import { ApplicationContext } from '../../../src';
+import { JSONData } from '../../../src/annotation/JSONData';
+import { Env } from '../../../src/annotation/Env';
+import { Argv } from '../../../src/annotation/Argv';
 
 describe('@Value Annotation', () => {
     it('Should inject value correctly', () => {
         class Service {
-            @Value('i18n:sidebar.toggle', ExpressionType.JSON_PATH)
+            @JSONData('i18n', 'sidebar.toggle')
             value!: string;
         }
         const context = new ApplicationContext();
@@ -14,10 +17,31 @@ describe('@Value Annotation', () => {
             }
         });
 
-        debugger;
-
         const service = context.getInstance(Service);
 
         expect(service.value).toBe(TOGGLE_VALUE);
+    });
+    it('Should inject environment variables correctly', () => {
+        class Service {
+            @Env('PATH')
+            value!: string;
+        }
+        const context = new ApplicationContext();
+
+        const service = context.getInstance(Service);
+
+        console.log(service.value);
+    });
+    it('Should inject argument options correctly', () => {
+        const ARGV = ['--value', 'value-str'];
+        class Service {
+            @Argv('value', ARGV)
+            value!: string;
+        }
+        const context = new ApplicationContext();
+
+        const service = context.getInstance(Service);
+
+        expect(service.value).toBe(ARGV[1]);
     });
 });
