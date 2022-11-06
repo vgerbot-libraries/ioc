@@ -1,10 +1,12 @@
-export interface EvaluationOptions<O, E extends string> {
+export interface EvaluationOptions<O, E extends string, A = unknown> {
     type: E;
     owner?: O;
     propertyName?: string | symbol;
+    externalArgs?: A;
 }
 
 export enum ExpressionType {
-    ENV = 'environment',
-    JSON_PATH = 'json-path'
+    ENV = 'inject-environment-variables',
+    JSON_PATH = 'inject-json-data',
+    ARGV = 'inject-argv'
 }

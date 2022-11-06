@@ -20,8 +20,10 @@ import { TransientInstanceResolution } from '../resolution/TransientInstanceReso
 import { EvaluationOptions, ExpressionType } from '../types/EvaluateOptions';
 import { JSONData } from '../types/JSONData';
 import { Evaluator } from '../types/Evaluator';
-import { JSONDataEvaluator } from './JSONDataEvaluator';
-import { EnvironmentEvaluator } from './EnvironmentEvaluator';
+import { JSONDataEvaluator } from '../evaluator/JSONDataEvaluator';
+import { EnvironmentEvaluator } from '../evaluator/EnvironmentEvaluator';
+import { ArgvEvaluator } from '../evaluator/ArgvEvaluator';
+import { isNodeJs } from '../common/isNodeJs';
 
 const PRE_DESTROY_EVENT_KEY = 'container:event:pre-destroy';
 
@@ -38,7 +40,10 @@ export class ApplicationContext {
         this.registerInstanceScopeResolution(InstanceScope.GLOBAL_SHARED_SINGLETON, GlobalSharedInstanceResolution);
         this.registerInstanceScopeResolution(InstanceScope.TRANSIENT, TransientInstanceResolution);
         this.registerEvaluator(ExpressionType.JSON_PATH, JSONDataEvaluator);
-        this.registerEvaluator(ExpressionType.ENV, EnvironmentEvaluator);
+        if (isNodeJs) {
+            this.registerEvaluator(ExpressionType.ENV, EnvironmentEvaluator);
+            this.registerEvaluator(ExpressionType.ARGV, ArgvEvaluator);
+        }
     }
     getInstance<T, O>(symbol: Identifier<T>, owner?: O): T {
         if (typeof symbol === 'string' || typeof symbol === 'symbol') {
@@ -117,13 +122,13 @@ export class ApplicationContext {
             it.destroy();
         });
     }
-    evaluate<T, O>(expression: string, options: EvaluationOptions<O, string>): T | undefined {
+    evaluate<T, O, A>(expression: string, options: EvaluationOptions<O, string, A>): T | undefined {
         const evaluatorClass = this.evaluatorClasses.get(options.type);
         if (!evaluatorClass) {
             throw new TypeError(`Unknown evaluator name: ${options.type}`);
         }
         const evaluator = this.getInstance(evaluatorClass);
-        return evaluator.eval(this, expression);
+        return evaluator.eval(this, expression, options.externalArgs);
     }
     recordJSONData(namespace: string, data: JSONData) {
         const evaluator = this.getInstance(JSONDataEvaluator);

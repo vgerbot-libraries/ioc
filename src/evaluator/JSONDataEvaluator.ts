@@ -1,5 +1,5 @@
 import { Evaluator } from '../types/Evaluator';
-import { ApplicationContext } from './ApplicationContext';
+import { ApplicationContext } from '../foundation/ApplicationContext';
 import { JSONData } from '../types/JSONData';
 
 export class JSONDataEvaluator implements Evaluator {

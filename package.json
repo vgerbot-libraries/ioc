@@ -73,5 +73,8 @@
     "homepage": "https://github.com/vgerbot-libraries/ioc#readme",
     "dependencies": {
         "reflect-metadata": "^0.1.13"
+    },
+    "optionalDependencies": {
+        "minimist": "^1.2.7"
     }
 }
