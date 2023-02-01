@@ -15,13 +15,13 @@
         "postinstall": "husky install",
         "release": "standard-version",
         "commit": "commit",
-        "lint": " eslint {src,build,__test__}/**/*.{ts,tsx}",
-        "format": "eslint --fix {src,build,__test__}/**/*.{ts,tsx}",
+        "lint": " eslint --no-error-on-unmatched-pattern {src,build,__tests__}/**/*.{ts,tsx}",
+        "format": "eslint --no-error-on-unmatched-pattern --fix {src,build,__tests__}/**/*.{ts,tsx}",
         "build": "cross-env NODE_ENV=production rollup -c ./rollup.config.js",
         "gendoc": "typedoc ./src  --out dist/docs --name rollup-jest-boilerplate --hideGenerator"
     },
     "lint-staged": {
-        "{src,test}/**/*.{js,ts,tsx}": [
+        "{src,__tests__}/**/*.{js,ts,tsx}": [
             "npm run format",
             "git add"
         ]
