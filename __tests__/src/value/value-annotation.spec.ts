@@ -30,7 +30,7 @@ describe('@Value Annotation', () => {
 
         const service = context.getInstance(Service);
 
-        console.log(service.value);
+        expect(service.value).toBe(process.env.PATH);
     });
     it('Should inject argument options correctly', () => {
         const ARGV = ['--value', 'value-str'];
