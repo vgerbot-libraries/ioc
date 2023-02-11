@@ -71,5 +71,40 @@ describe('Lifecycle', () => {
             ctx.destroy();
             expect(destroyFn).toBeCalled();
         });
+        it('Should destroy instances in the desired order', () => {
+            const destroyFn0 = jest.fn();
+            const destroyFn1 = jest.fn();
+
+            class Service0 {
+                @PreDestroy()
+                doDestroy() {
+                    destroyFn0();
+                }
+            }
+            class Service1 {
+                @Inject(Service0)
+                private service0!: Service0;
+                @PostInject()
+                init() {
+                    // noinspection BadExpressionStatementJS
+                    this.service0;
+                }
+                @PreDestroy()
+                doDestroy() {
+                    destroyFn1();
+                }
+            }
+            const ctx = new ApplicationContext();
+            ctx.getInstance(Service1);
+            ctx.destroy();
+
+            expect(destroyFn0).toBeCalledTimes(1);
+            expect(destroyFn1).toBeCalledTimes(1);
+
+            const order0 = destroyFn0.mock.invocationCallOrder[0];
+            const order1 = destroyFn1.mock.invocationCallOrder[0];
+
+            expect(order1).toBeLessThan(order0);
+        });
     });
 });
