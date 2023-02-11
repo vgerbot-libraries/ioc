@@ -1,4 +1,4 @@
-import { ApplicationContext, Inject, PreInject, PostInject } from '../../../src';
+import { ApplicationContext, Inject, PreInject, PostInject, PreDestroy } from '../../../src';
 
 describe('Lifecycle', () => {
     describe('PreInject', () => {
@@ -54,6 +54,22 @@ describe('Lifecycle', () => {
             expect(testFn).toHaveBeenCalledTimes(1);
             expect(service.service2).toBeDefined();
             expect(testFn).toHaveBeenCalledWith(service.service2);
+        });
+    });
+    describe('PreDestroy', () => {
+        it('Should methods marked with this lifecycle be called before destruction', () => {
+            const destroyFn = jest.fn();
+            class Service {
+                @PreDestroy()
+                doDestroy() {
+                    destroyFn();
+                }
+            }
+            const ctx = new ApplicationContext();
+            ctx.getInstance(Service);
+            expect(destroyFn).not.toBeCalled();
+            ctx.destroy();
+            expect(destroyFn).toBeCalled();
         });
     });
 });
