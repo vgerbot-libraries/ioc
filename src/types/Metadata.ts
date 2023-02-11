@@ -9,5 +9,6 @@ export interface MetadataReader {
     // EMPTY
 }
 export type MetadataClass<R extends MetadataReader, T, M extends Metadata<R, T>> = Newable<M> & {
+    prototype: M;
     getReflectKey(): string | symbol;
 };
