@@ -7,7 +7,6 @@ export class ArgvEvaluator implements Evaluator {
         // eslint-disable-next-line @typescript-eslint/no-var-requires
         const minimist = require('minimist');
         const map = minimist(argv);
-        console.log(args, map);
         return map[expression];
     }
 }
