@@ -11,7 +11,6 @@ export class ComponentInstanceBuilder<T> {
     private propertyFactories: Record<string | symbol, ServiceFactoryDef<unknown>> = {};
     private preInjectMethods: Array<string | symbol> = [];
     private postInjectMethods: Array<string | symbol> = [];
-    private preDestroyMethods: Array<string | symbol> = [];
     constructor(private readonly componentClass: Newable<T>, private readonly container: ApplicationContext) {
         //
     }
@@ -38,7 +37,6 @@ export class ComponentInstanceBuilder<T> {
         }
         this.preInjectMethods = classMetadataReader.getMethods(Lifecycle.PRE_INJECT);
         this.postInjectMethods = classMetadataReader.getMethods(Lifecycle.POST_INJECT);
-        this.preDestroyMethods = classMetadataReader.getMethods(Lifecycle.PRE_DESTROY);
     }
     build() {
         const args = this.getConstructorArgs();
@@ -54,10 +52,6 @@ export class ComponentInstanceBuilder<T> {
             });
         }
         this.invokeLifecycleMethods(instance, this.postInjectMethods);
-        const off = this.container.onPreDestroy(() => {
-            this.invokeLifecycleMethods(instance, this.preDestroyMethods);
-            off();
-        });
         return instance;
     }
     private invokeLifecycleMethods(instance: Instance<T>, methodKeys: Array<string | symbol>) {

@@ -53,7 +53,7 @@ export class ApplicationContext {
                 const fn = factory(this, owner);
                 return this.invoke(fn, {
                     injections
-                });
+                }) as T;
             } else {
                 const classMetadata = GlobalMetadata.getInstance().reader().getClassMetadata<T>(symbol);
                 if (!classMetadata) {
