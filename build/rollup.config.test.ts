@@ -1,7 +1,7 @@
 import { RollupOptions } from 'rollup';
 import { nodeResolve } from '@rollup/plugin-node-resolve';
 import commonjs from '@rollup/plugin-commonjs';
-import typescript from 'rollup-plugin-typescript2';
+import typescript from '@rollup/plugin-typescript';
 
 const rollupConfig: RollupOptions = {
     output: {
@@ -9,7 +9,8 @@ const rollupConfig: RollupOptions = {
     },
     plugins: [
         nodeResolve({
-            mainFields: ['module', 'browser', 'main']
+            mainFields: ['module', 'browser', 'main'],
+            extensions: ['.js', '.ts']
         }),
         commonjs({
             include: 'node_modules/**',
@@ -18,7 +19,10 @@ const rollupConfig: RollupOptions = {
         }),
         typescript({
             tsconfig: 'tsconfig.test.json',
-            clean: true
+            include: '*.ts',
+            exclude: ['node_modules/**'],
+            sourceMap: true,
+            inlineSourceMap: true
         }),
         {
             name: 'PrintError',

@@ -3,7 +3,7 @@ import path from 'path';
 export default {
     verbose: true,
     transform: {
-        '\\.tsx?$': [
+        '\\.ts$': [
             'rollup-jest',
             {
                 configFile: path.resolve(__dirname, '../rollup.config.test.js')
@@ -13,7 +13,7 @@ export default {
     testEnvironment: 'node', // dom
     testMatch: ['**/__tests__/**/*.spec.ts'],
     moduleFileExtensions: ['ts', 'js'],
-    collectCoverage: true,
+    collectCoverage: process.env.DEBUG !== 'true',
     collectCoverageFrom: ['src/**/*.ts', '!**/node_modules/**/*', '!__tests__/**/*', '!src/types/*.ts'],
     coverageDirectory: './report/coverage',
     coverageReporters: ['cobertura', 'html', 'text-summary'],

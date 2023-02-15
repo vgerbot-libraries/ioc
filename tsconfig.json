@@ -13,6 +13,7 @@
         "sourceMap": true,
         "importHelpers": true,
         "declaration": true,
+        "outDir": "./dist",
         "listFiles": true,
         "forceConsistentCasingInFileNames": true,
         "esModuleInterop": true,

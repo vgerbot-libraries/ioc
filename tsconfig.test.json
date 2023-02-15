@@ -1,6 +1,7 @@
 {
     "extends": "./tsconfig.json",
     "compilerOptions": {
+        "rootDir": "./",
         "paths": {
             "@src": ["/src"]
         },
@@ -8,9 +9,12 @@
             "reflect-metadata",
             "jest",
             "node"
-        ]
+        ],
+        "declaration": false,
+        "sourceMap": true,
+        "inlineSourceMap": true
     },
     "include": [
-        "./__tests__/src/**/*.ts"
+        "**/*.ts"
     ]
 }

@@ -1,10 +1,8 @@
 import { OutputOptions, RollupOptions } from 'rollup';
 import path from 'path';
 import { nodeResolve } from '@rollup/plugin-node-resolve';
-// const { nodeResolve } = require('@rollup/plugin-node-resolve');
 import commonjs from '@rollup/plugin-commonjs';
-import typescript from 'rollup-plugin-typescript2';
-import { terser } from 'rollup-plugin-terser';
+import typescript from '@rollup/plugin-typescript';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const pkg = require(path.resolve(process.cwd(), 'package.json'));
@@ -25,10 +23,12 @@ const rollupConfig: RollupOptions = {
         commonjs({
             include: 'node_modules/**',
             ignore: [],
-            sourceMap: false
+            sourceMap: true
         }),
-        typescript(),
-        terser()
+        typescript({
+            sourceMap: true,
+            inlineSourceMap: true
+        })
     ]
 };
 
@@ -39,7 +39,7 @@ function createOutputConfig(file: string, format: string, cfg: OutputOptions = {
         {
             file: path.resolve(process.cwd(), file),
             format,
-            sourcemap: true,
+            sourcemap: 'inline',
             name: pkg.library,
             exports: 'named'
         },
