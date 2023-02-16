@@ -20,7 +20,8 @@ const rollupConfig: RollupOptions = {
         typescript({
             tsconfig: '__tests__/tsconfig.json',
             include: '**/*.ts',
-            exclude: ['node_modules/**']
+            exclude: ['node_modules/**'],
+            clean: true
         })
     ]
 };
