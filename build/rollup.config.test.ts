@@ -1,7 +1,7 @@
 import { RollupOptions } from 'rollup';
 import { nodeResolve } from '@rollup/plugin-node-resolve';
 import commonjs from '@rollup/plugin-commonjs';
-import typescript from '@rollup/plugin-typescript';
+import typescript from 'rollup-plugin-typescript2';
 
 const rollupConfig: RollupOptions = {
     output: {
@@ -18,20 +18,10 @@ const rollupConfig: RollupOptions = {
             sourceMap: false
         }),
         typescript({
-            tsconfig: 'tsconfig.test.json',
-            include: '*.ts',
-            exclude: ['node_modules/**'],
-            sourceMap: true,
-            inlineSourceMap: true
-        }),
-        {
-            name: 'PrintError',
-            buildEnd(err) {
-                if (err) {
-                    console.error('Rollup Error: ', err);
-                }
-            }
-        }
+            tsconfig: '__tests__/tsconfig.json',
+            include: '**/*.ts',
+            exclude: ['node_modules/**']
+        })
     ]
 };
 

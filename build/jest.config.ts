@@ -3,9 +3,10 @@ import path from 'path';
 export default {
     verbose: true,
     transform: {
-        '\\.ts$': [
+        '\\.tsx?$': [
             'rollup-jest',
             {
+                useCache: false,
                 configFile: path.resolve(__dirname, '../rollup.config.test.js')
             }
         ]
