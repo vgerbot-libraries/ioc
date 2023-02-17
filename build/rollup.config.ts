@@ -2,7 +2,7 @@ import { OutputOptions, RollupOptions } from 'rollup';
 import path from 'path';
 import { nodeResolve } from '@rollup/plugin-node-resolve';
 import commonjs from '@rollup/plugin-commonjs';
-import typescript from '@rollup/plugin-typescript';
+import typescript from 'rollup-plugin-typescript2';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const pkg = require(path.resolve(process.cwd(), 'package.json'));
@@ -25,10 +25,7 @@ const rollupConfig: RollupOptions = {
             ignore: [],
             sourceMap: true
         }),
-        typescript({
-            sourceMap: true,
-            inlineSourceMap: true
-        })
+        typescript({})
     ]
 };
 
