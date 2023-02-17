@@ -5,6 +5,7 @@ import { Lifecycle } from './Lifecycle';
 import { Instance } from '../types/Instance';
 import { defineLazyProperty } from '../utils/defineLazyProperty';
 import { ServiceFactoryDef } from './ServiceFactoryDef';
+import { GlobalMetadata } from '../metadata/GlobalMetadata';
 
 export class ComponentInstanceBuilder<T> {
     private getConstructorArgs: () => unknown[] = () => [];
@@ -21,6 +22,7 @@ export class ComponentInstanceBuilder<T> {
                 return this.container.getInstance(it);
             });
         };
+        const globalMetadataReader = GlobalMetadata.getInstance().reader();
         const properties = classMetadataReader.getPropertyTypeMap();
         for (const [propertyName, propertyType] of properties) {
             if (typeof propertyType === 'function') {
@@ -30,10 +32,20 @@ export class ComponentInstanceBuilder<T> {
                 continue;
             }
             const factory = this.container.getFactory(propertyType);
-            if (!factory) {
+            if (factory) {
+                this.propertyFactories[propertyName] = factory;
                 continue;
             }
-            this.propertyFactories[propertyName] = factory;
+            const propertyClassMetadata = globalMetadataReader.getClassMetadata(propertyType);
+            if (propertyClassMetadata) {
+                this.propertyFactories[propertyName] = ServiceFactoryDef.createFromClassMetadata(propertyClassMetadata);
+                continue;
+            }
+            const propertyFactory = globalMetadataReader.getComponentFactory(propertyType);
+            if (propertyFactory) {
+                this.propertyFactories[propertyName] = propertyFactory;
+                continue;
+            }
         }
         this.preInjectMethods = classMetadataReader.getMethods(Lifecycle.PRE_INJECT);
         this.postInjectMethods = classMetadataReader.getMethods(Lifecycle.POST_INJECT);
