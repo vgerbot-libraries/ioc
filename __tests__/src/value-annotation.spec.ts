@@ -1,7 +1,7 @@
-import { ApplicationContext } from '../../../src';
-import { JSONData } from '../../../src/annotation/JSONData';
-import { Env } from '../../../src/annotation/Env';
-import { Argv } from '../../../src/annotation/Argv';
+import { ApplicationContext } from '../../src';
+import { JSONData } from '../../src/annotation/JSONData';
+import { Env } from '../../src/annotation/Env';
+import { Argv } from '../../src/annotation/Argv';
 
 describe('@Value Annotation', () => {
     it('Should inject value correctly', () => {

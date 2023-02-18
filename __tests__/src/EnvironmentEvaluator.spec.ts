@@ -1,5 +1,5 @@
-import { EnvironmentEvaluator } from '../../../src/evaluator/EnvironmentEvaluator';
-import { ApplicationContext } from '../../../src';
+import { EnvironmentEvaluator } from '../../src/evaluator/EnvironmentEvaluator';
+import { ApplicationContext } from '../../src';
 
 describe('EnvironmentEvaluator', () => {
     const env = process.env;

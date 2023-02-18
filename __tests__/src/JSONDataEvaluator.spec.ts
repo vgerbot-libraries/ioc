@@ -1,5 +1,5 @@
-import { ApplicationContext } from '../../../src';
-import { JSONDataEvaluator } from '../../../src/evaluator/JSONDataEvaluator';
+import { ApplicationContext } from '../../src';
+import { JSONDataEvaluator } from '../../src/evaluator/JSONDataEvaluator';
 
 describe('JSONDataEvaluator', () => {
     const ctx = new ApplicationContext();

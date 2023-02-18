@@ -1,4 +1,4 @@
-import { ApplicationContext, Inject, PreInject, PostInject, PreDestroy } from '../../../src';
+import { ApplicationContext, Inject, PreInject, PostInject, PreDestroy } from '../../src';
 
 describe('Lifecycle', () => {
     describe('PreInject', () => {

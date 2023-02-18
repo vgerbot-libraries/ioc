@@ -1,5 +1,5 @@
-import { ApplicationContext, InstanceResolution, InstanceScope, Scope } from '../../../src';
-import { GetInstanceOptions } from '../../../src/types/InstanceResolution';
+import { ApplicationContext, InstanceResolution, InstanceScope, Scope } from '../../src';
+import { GetInstanceOptions } from '../../src/types/InstanceResolution';
 
 describe('InstanceScope', () => {
     describe('SINGLETON', () => {

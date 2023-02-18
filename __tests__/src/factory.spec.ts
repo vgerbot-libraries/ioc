@@ -1,4 +1,4 @@
-import { ApplicationContext, Factory, Inject } from '../../../src';
+import { ApplicationContext, Factory, Inject } from '../../src';
 
 describe('ServiceFactory', () => {
     it('should be able to inject value created by factory', () => {
