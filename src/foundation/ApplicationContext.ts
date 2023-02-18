@@ -118,6 +118,7 @@ export class ApplicationContext {
         return fn(...args);
     }
     destroy() {
+        this.eventEmitter.emit(PRE_DESTROY_EVENT_KEY);
         this.resolutions.forEach(it => {
             it.destroy();
         });

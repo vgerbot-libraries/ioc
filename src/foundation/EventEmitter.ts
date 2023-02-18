@@ -1,4 +1,6 @@
-export type EventListener = () => void;
+import { AnyFunction } from '../types/AnyFunction';
+
+export type EventListener = AnyFunction;
 export class EventEmitter {
     private readonly events = new Map<string | symbol, EventListener[]>();
 
@@ -9,7 +11,7 @@ export class EventEmitter {
                 listeners.push(listener);
             }
         } else {
-            listeners = [];
+            listeners = [listener];
             this.events.set(type, listeners);
         }
         return () => {
@@ -19,5 +21,10 @@ export class EventEmitter {
                 ls.splice(index, 1);
             }
         };
+    }
+    emit(type: string | symbol, ...args: unknown[]) {
+        this.events.get(type)?.forEach(fn => {
+            fn(...args);
+        });
     }
 }
