@@ -24,6 +24,8 @@ import { JSONDataEvaluator } from '../evaluator/JSONDataEvaluator';
 import { EnvironmentEvaluator } from '../evaluator/EnvironmentEvaluator';
 import { ArgvEvaluator } from '../evaluator/ArgvEvaluator';
 import { isNodeJs } from '../common/isNodeJs';
+import { PartialInstAwareProcessor } from '../types/InstantiationAwareProcessor';
+import { InstAwareProcessorMetadata } from '../metadata/InstAwareProcessorMetadata';
 
 const PRE_DESTROY_EVENT_KEY = 'container:event:pre-destroy';
 
@@ -34,6 +36,7 @@ export class ApplicationContext {
     private evaluatorClasses = new Map<string, Newable<Evaluator>>();
     private eventEmitter = new EventEmitter();
     private readonly defaultScope: InstanceScope;
+    private readonly instAwareProcessors: Set<Newable<PartialInstAwareProcessor>> = new Set();
     public constructor(private options: ApplicationContextOptions = {}) {
         this.defaultScope = this.options.defaultScope || InstanceScope.SINGLETON;
         this.registerInstanceScopeResolution(InstanceScope.SINGLETON, SingletonInstanceResolution);
@@ -75,6 +78,12 @@ export class ApplicationContext {
         if (resolution.shouldGenerate(getInstanceOptions)) {
             const builder = new ComponentInstanceBuilder(componentClass, this);
             builder.appendClassMetadata(reader);
+            const instAwareProcessorMetadata = MetadataFactory.getMetadata(componentClass, InstAwareProcessorMetadata).reader();
+            const globalInstAwareProcessors = instAwareProcessorMetadata.getInstAwareProcessorClasses();
+            const allInstAwareProcessors = new Set<Newable<PartialInstAwareProcessor>>(
+                globalInstAwareProcessors.concat(Array.from(this.instAwareProcessors))
+            );
+            builder.appendInstAwareProcessorClasses(Array.from(allInstAwareProcessors));
             const instance = builder.build();
             const saveInstanceOptions = {
                 ...getInstanceOptions,
@@ -153,6 +162,9 @@ export class ApplicationContext {
         const metadata = MetadataFactory.getMetadata(evaluatorClass, ClassMetadata);
         metadata.setScope(InstanceScope.SINGLETON);
         this.evaluatorClasses.set(name, evaluatorClass);
+    }
+    registerInstAwareProcessor(clazz: Newable<PartialInstAwareProcessor>) {
+        this.instAwareProcessors.add(clazz);
     }
     onPreDestroy(listener: EventListener) {
         return this.eventEmitter.on(PRE_DESTROY_EVENT_KEY, listener);

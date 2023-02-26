@@ -6,14 +6,19 @@ import { Instance } from '../types/Instance';
 import { defineLazyProperty } from '../utils/defineLazyProperty';
 import { ServiceFactoryDef } from './ServiceFactoryDef';
 import { GlobalMetadata } from '../metadata/GlobalMetadata';
+import { PartialInstAwareProcessor } from '../types/InstantiationAwareProcessor';
 
 export class ComponentInstanceBuilder<T> {
     private getConstructorArgs: () => unknown[] = () => [];
     private propertyFactories: Record<string | symbol, ServiceFactoryDef<unknown>> = {};
     private preInjectMethods: Array<string | symbol> = [];
     private postInjectMethods: Array<string | symbol> = [];
+    private instAwareProcessorClasses: Array<Newable<PartialInstAwareProcessor>> = [];
     constructor(private readonly componentClass: Newable<T>, private readonly container: ApplicationContext) {
         //
+    }
+    appendInstAwareProcessorClasses(instAwareProcessorClasses: Array<Newable<PartialInstAwareProcessor>>) {
+        this.instAwareProcessorClasses.push(...instAwareProcessorClasses);
     }
     appendClassMetadata<T>(classMetadataReader: ClassMetadataReader<T>) {
         const types = classMetadataReader.getConstructorParameterTypes();
@@ -52,19 +57,61 @@ export class ComponentInstanceBuilder<T> {
     }
     build() {
         const args = this.getConstructorArgs();
-        const instance = new this.componentClass(...args) as Instance<T>;
-        this.invokeLifecycleMethods(instance, this.preInjectMethods);
+        const properties = this.createPropertiesGetterBuilder();
+        const isCreatingInstAwareProcessor =
+            this.instAwareProcessorClasses.indexOf(this.componentClass as Newable<PartialInstAwareProcessor>) > -1;
+        if (isCreatingInstAwareProcessor) {
+            const instance = new this.componentClass(...args) as Instance<T>;
+            this.invokeLifecycleMethods(instance, this.preInjectMethods);
+            for (const key in properties) {
+                const getter = properties[key](instance);
+                defineLazyProperty(instance, key, getter);
+            }
+            this.invokeLifecycleMethods(instance, this.postInjectMethods);
+            return instance;
+        } else {
+            let instance: Instance<T> | undefined;
+            const instAwareProcessors = this.instAwareProcessorClasses.map(
+                it => this.container.getInstance(it) as PartialInstAwareProcessor
+            );
+            instAwareProcessors.some(processor => {
+                if (!processor.beforeInstantiation) {
+                    return false;
+                }
+                instance = processor.beforeInstantiation<T>(this.componentClass, args) as Instance<T>;
+                return !!instance;
+            });
+            if (!instance) {
+                instance = new this.componentClass(...args) as Instance<T>;
+            }
+            this.invokeLifecycleMethods(instance, this.preInjectMethods);
+            for (const key in properties) {
+                const getter = properties[key](instance);
+                defineLazyProperty(instance, key, getter);
+            }
+            instAwareProcessors.forEach(processor => {
+                if (processor.afterInstantiation) {
+                    processor.afterInstantiation(instance);
+                }
+            });
+            this.invokeLifecycleMethods(instance, this.postInjectMethods);
+            return instance;
+        }
+    }
+    private createPropertiesGetterBuilder() {
+        const result = {} as Record<keyof T, (instance: T) => () => unknown>;
         for (const key in this.propertyFactories) {
             const { factory, injections } = this.propertyFactories[key];
-            const fn = factory(this.container, instance);
-            defineLazyProperty(instance, key, () => {
-                return this.container.invoke(fn, {
-                    injections
-                });
-            });
+            result[key as keyof T] = <T>(instance: T) => {
+                const fn = factory(this.container, instance);
+                return () => {
+                    return this.container.invoke(fn, {
+                        injections
+                    });
+                };
+            };
         }
-        this.invokeLifecycleMethods(instance, this.postInjectMethods);
-        return instance;
+        return result;
     }
     private invokeLifecycleMethods(instance: Instance<T>, methodKeys: Array<string | symbol>) {
         methodKeys.forEach(key => {
