@@ -106,17 +106,49 @@ describe('InstantiationAwareProcessor', () => {
             }
             const app = new ApplicationContext();
             const fn = jest.fn();
+            const fn1 = jest.fn();
+            let result;
             app.registerInstAwareProcessor(
                 class implements PartialInstAwareProcessor {
                     afterInstantiation<T>(instance: T) {
-                        const result = new Proxy(instance as object, {}) as T;
-                        fn(result);
+                        result = new Proxy(instance as object, {}) as T;
+                        fn(instance);
+                        fn1(result);
                         return result;
                     }
                 }
             );
             const service = app.getInstance(Service);
+            expect(fn).toBeCalled();
+            expect(fn1).toBeCalled();
+            expect(service).toBe(result);
+        });
+        it('multiple beforeInstantiation methods should be called', () => {
+            class Service {
+                // PASS
+            }
+            const app = new ApplicationContext();
+            const fn = jest.fn();
+            const fn1 = jest.fn();
+            app.registerInstAwareProcessor(
+                class implements PartialInstAwareProcessor {
+                    afterInstantiation<T>(instance: T) {
+                        fn(instance);
+                        return instance;
+                    }
+                }
+            );
+            app.registerInstAwareProcessor(
+                class implements PartialInstAwareProcessor {
+                    afterInstantiation<T>(instance: T) {
+                        fn1(instance);
+                        return instance;
+                    }
+                }
+            );
+            const service = app.getInstance(Service);
             expect(fn).toBeCalledWith(service);
+            expect(fn1).toBeCalledWith(service);
         });
     });
 });
