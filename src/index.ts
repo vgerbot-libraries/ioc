@@ -12,3 +12,4 @@ export { ApplicationContext } from './foundation/ApplicationContext';
 export { InstanceResolution } from './types/InstanceResolution';
 export { ExpressionType } from './types/EvaluateOptions';
 export { Evaluator } from './types/Evaluator';
+export { InstantiationAwareProcessor, PartialInstAwareProcessor } from './types/InstantiationAwareProcessor';
