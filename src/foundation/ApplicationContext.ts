@@ -80,10 +80,8 @@ export class ApplicationContext {
             builder.appendClassMetadata(reader);
             const instAwareProcessorMetadata = MetadataFactory.getMetadata(componentClass, InstAwareProcessorMetadata).reader();
             const globalInstAwareProcessors = instAwareProcessorMetadata.getInstAwareProcessorClasses();
-            const allInstAwareProcessors = new Set<Newable<PartialInstAwareProcessor>>(
-                globalInstAwareProcessors.concat(Array.from(this.instAwareProcessors))
-            );
-            builder.appendInstAwareProcessorClasses(Array.from(allInstAwareProcessors));
+            builder.appendInstAwareProcessorClasses(globalInstAwareProcessors);
+            builder.appendInstAwareProcessorClasses(this.instAwareProcessors);
             const instance = builder.build();
             const saveInstanceOptions = {
                 ...getInstanceOptions,

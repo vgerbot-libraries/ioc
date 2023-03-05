@@ -13,12 +13,16 @@ export class ComponentInstanceBuilder<T> {
     private propertyFactories: Record<string | symbol, ServiceFactoryDef<unknown>> = {};
     private preInjectMethods: Array<string | symbol> = [];
     private postInjectMethods: Array<string | symbol> = [];
-    private instAwareProcessorClasses: Array<Newable<PartialInstAwareProcessor>> = [];
+    private instAwareProcessorClasses: Set<Newable<PartialInstAwareProcessor>> = new Set();
     constructor(private readonly componentClass: Newable<T>, private readonly container: ApplicationContext) {
         //
     }
-    appendInstAwareProcessorClasses(instAwareProcessorClasses: Array<Newable<PartialInstAwareProcessor>>) {
-        this.instAwareProcessorClasses.push(...instAwareProcessorClasses);
+    appendInstAwareProcessorClasses(
+        instAwareProcessorClasses: Set<Newable<PartialInstAwareProcessor>> | Array<Newable<PartialInstAwareProcessor>>
+    ) {
+        instAwareProcessorClasses.forEach(it => {
+            this.instAwareProcessorClasses.add(it);
+        });
     }
     appendClassMetadata<T>(classMetadataReader: ClassMetadataReader<T>) {
         const types = classMetadataReader.getConstructorParameterTypes();
@@ -58,8 +62,9 @@ export class ComponentInstanceBuilder<T> {
     build() {
         const args = this.getConstructorArgs();
         const properties = this.createPropertiesGetterBuilder();
-        const isCreatingInstAwareProcessor =
-            this.instAwareProcessorClasses.indexOf(this.componentClass as Newable<PartialInstAwareProcessor>) > -1;
+        const isCreatingInstAwareProcessor = this.instAwareProcessorClasses.has(
+            this.componentClass as Newable<PartialInstAwareProcessor>
+        );
         if (isCreatingInstAwareProcessor) {
             const instance = new this.componentClass(...args) as Instance<T>;
             this.invokeLifecycleMethods(instance, this.preInjectMethods);
@@ -71,8 +76,9 @@ export class ComponentInstanceBuilder<T> {
             return instance;
         } else {
             let instance: Instance<T> | undefined;
-            const instAwareProcessors = this.instAwareProcessorClasses.map(
-                it => this.container.getInstance(it) as PartialInstAwareProcessor
+            const instAwareProcessorClasses = Array.from(this.instAwareProcessorClasses);
+            const instAwareProcessors = instAwareProcessorClasses.map(it =>
+                this.container.getInstance<PartialInstAwareProcessor, void>(it)
             );
             instAwareProcessors.some(processor => {
                 if (!processor.beforeInstantiation) {
