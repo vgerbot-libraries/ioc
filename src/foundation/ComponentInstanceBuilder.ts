@@ -97,7 +97,10 @@ export class ComponentInstanceBuilder<T> {
             }
             instAwareProcessors.forEach(processor => {
                 if (processor.afterInstantiation) {
-                    processor.afterInstantiation(instance);
+                    const result = processor.afterInstantiation(instance);
+                    if (!!result) {
+                        instance = result;
+                    }
                 }
             });
             this.invokeLifecycleMethods(instance, this.postInjectMethods);
