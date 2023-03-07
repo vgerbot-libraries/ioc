@@ -7,6 +7,7 @@ import { DefaultValueMap } from '../common/DefaultValueMap';
 export interface AspectClassMetadataReader<T> extends MetadataReader {
     getClass(): Newable<T>;
     getAdviceAspectMap(methodName: string | symbol): Map<AdviceEnum, AspectClassMap>;
+    isAdviceClass(): boolean;
 }
 type AspectClassMap = DefaultValueMap<Newable<unknown>, Set<string | symbol>>;
 export class AspectClassMetadata<T> implements Metadata<AspectClassMetadataReader<T>, Newable<T>> {
@@ -14,6 +15,7 @@ export class AspectClassMetadata<T> implements Metadata<AspectClassMetadataReade
         return 'ioc:aop:aspect-class-metadata';
     }
     private clazz!: Newable<T>;
+    private isAdviceClass: boolean = false;
     private methodAdviceAspectMap = new DefaultValueMap<string | symbol, DefaultValueMap<AdviceEnum, AspectClassMap>>(() => {
         return new DefaultValueMap<AdviceEnum, AspectClassMap>(() => {
             return new DefaultValueMap(() => {
@@ -33,6 +35,7 @@ export class AspectClassMetadata<T> implements Metadata<AspectClassMetadataReade
             const aspectMap = adviceAspectMap.get(aspectInfo.advice);
             const aspectMethods = aspectMap.get(aspectInfo.aspectClass);
             aspectMethods.add(aspectInfo.methodName);
+            this.isAdviceClass = true;
         });
     }
 
@@ -43,6 +46,9 @@ export class AspectClassMetadata<T> implements Metadata<AspectClassMetadataReade
             },
             getAdviceAspectMap: (methodName): Map<AdviceEnum, AspectClassMap> => {
                 return this.methodAdviceAspectMap.get(methodName);
+            },
+            isAdviceClass: () => {
+                return this.isAdviceClass;
             }
         };
     }
