@@ -26,6 +26,7 @@ import { ArgvEvaluator } from '../evaluator/ArgvEvaluator';
 import { isNodeJs } from '../common/isNodeJs';
 import { PartialInstAwareProcessor } from '../types/InstantiationAwareProcessor';
 import { InstAwareProcessorMetadata } from '../metadata/InstAwareProcessorMetadata';
+import { AOPInstantiationAwareProcessor } from '../aop/AOPInstantiationAwareProcessor';
 
 const PRE_DESTROY_EVENT_KEY = 'container:event:pre-destroy';
 
@@ -47,6 +48,7 @@ export class ApplicationContext {
             this.registerEvaluator(ExpressionType.ENV, EnvironmentEvaluator);
             this.registerEvaluator(ExpressionType.ARGV, ArgvEvaluator);
         }
+        this.registerInstAwareProcessor(AOPInstantiationAwareProcessor.create(this));
     }
     getInstance<T, O>(symbol: Identifier<T>, owner?: O): T {
         if (symbol === ApplicationContext) {

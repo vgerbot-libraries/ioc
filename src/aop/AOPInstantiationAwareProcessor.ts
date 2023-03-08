@@ -3,9 +3,15 @@ import { MetadataFactory } from '../metadata/MetadataFactory';
 import type { ApplicationContext } from '../foundation/ApplicationContext';
 import { createAspect } from './createAspect';
 import { AOPClassMetadata } from './AOPClassMetadata';
+import { Newable } from '../types/Newable';
 
-export class AOPInstantiationAwareProcessor implements PartialInstAwareProcessor {
-    constructor(private readonly appCtx: ApplicationContext) {}
+export abstract class AOPInstantiationAwareProcessor implements PartialInstAwareProcessor {
+    static create(appCtx: ApplicationContext): Newable<AOPInstantiationAwareProcessor> {
+        return class extends AOPInstantiationAwareProcessor {
+            protected readonly appCtx: ApplicationContext = appCtx;
+        };
+    }
+    protected abstract readonly appCtx: ApplicationContext;
     afterInstantiation<T extends object>(instance: T): T {
         const clazz = instance.constructor;
 

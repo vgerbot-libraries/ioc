@@ -97,9 +97,9 @@ export class ComponentInstanceBuilder<T> {
             }
             instAwareProcessors.forEach(processor => {
                 if (processor.afterInstantiation) {
-                    const result = processor.afterInstantiation(instance);
+                    const result = processor.afterInstantiation(instance!);
                     if (!!result) {
-                        instance = result;
+                        instance = result as Instance<T>;
                     }
                 }
             });
