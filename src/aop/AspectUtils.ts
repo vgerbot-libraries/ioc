@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { AdviceEnum } from './AdviceEnum';
+import { Advice } from './Advice';
 
 type BeforeHook = (args: any[]) => void;
 type AfterHook = (args: any[]) => void;
@@ -16,31 +16,31 @@ export class AspectUtils {
     private afterReturnHooks: Array<AfterReturnHook> = [];
     private aroundHooks: Array<AroundHook> = [];
     constructor(private fn: (...args: any[]) => any) {}
-    append(advice: AdviceEnum.Before, hook: BeforeHook): void;
-    append(advice: AdviceEnum.After, hook: AfterHook): void;
-    append(advice: AdviceEnum.TryCatch, hook: ThrownHook): void;
-    append(advice: AdviceEnum.TryFinally, hook: FinallyHook): void;
-    append(advice: AdviceEnum.AfterReturn, hook: AfterReturnHook): void;
-    append(advice: AdviceEnum.Around, hook: AroundHook): void;
-    append(advice: AdviceEnum, hook: Function) {
+    append(advice: Advice.Before, hook: BeforeHook): void;
+    append(advice: Advice.After, hook: AfterHook): void;
+    append(advice: Advice.Thrown, hook: ThrownHook): void;
+    append(advice: Advice.Finally, hook: FinallyHook): void;
+    append(advice: Advice.AfterReturn, hook: AfterReturnHook): void;
+    append(advice: Advice.Around, hook: AroundHook): void;
+    append(advice: Advice, hook: Function) {
         let hooksArray: Function[] | undefined;
         switch (advice) {
-            case AdviceEnum.Before:
+            case Advice.Before:
                 hooksArray = this.beforeHooks;
                 break;
-            case AdviceEnum.After:
+            case Advice.After:
                 hooksArray = this.afterHooks;
                 break;
-            case AdviceEnum.TryCatch:
+            case Advice.Thrown:
                 hooksArray = this.thrownHooks;
                 break;
-            case AdviceEnum.TryFinally:
+            case Advice.Finally:
                 hooksArray = this.finallyHooks;
                 break;
-            case AdviceEnum.AfterReturn:
+            case Advice.AfterReturn:
                 hooksArray = this.afterReturnHooks;
                 break;
-            case AdviceEnum.Around:
+            case Advice.Around:
                 hooksArray = this.aroundHooks;
                 break;
         }

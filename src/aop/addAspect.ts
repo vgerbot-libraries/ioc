@@ -3,12 +3,12 @@ import { Newable } from '../types/Newable';
 import { ComponentMethodAspect } from './ComponentMethodAspect';
 import { MetadataFactory } from '../metadata/MetadataFactory';
 import { AOPClassMetadata } from './AOPClassMetadata';
-import { AdviceEnum } from './AdviceEnum';
+import { Advice } from './Advice';
 
 export function addAspect(
     componentAspectClass: Newable<unknown>,
     methodName: string | symbol,
-    advice: AdviceEnum,
+    advice: Advice,
     pointcut: Pointcut
 ) {
     const AspectClass = ComponentMethodAspect.create(componentAspectClass, methodName);

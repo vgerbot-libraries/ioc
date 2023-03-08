@@ -1,10 +1,10 @@
 import { Newable } from '../types/Newable';
-import { AdviceEnum } from './AdviceEnum';
+import { Advice } from './Advice';
 import { Pointcut } from './Pointcut';
 
 export interface AspectInfo<T> {
     aspectClass: Newable<T>;
     methodName: string | symbol;
-    advice: AdviceEnum;
+    advice: Advice;
     pointcut: Pointcut;
 }

@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import type { ApplicationContext } from '../foundation/ApplicationContext';
-import { AdviceEnum } from './AdviceEnum';
+import { Advice } from './Advice';
 import { Newable } from '../types/Newable';
 import { Aspect, JoinPoint, ProceedingJoinPoint } from './Aspect';
 import { AspectUtils } from './AspectUtils';
@@ -14,7 +14,7 @@ export function createAspect<T>(
     metadata: UseAspectMetadataReader
 ) {
     const createAspectCtx = (
-        advice: AdviceEnum,
+        advice: Advice,
         args: any[],
         returnValue: any = null,
         error: any = null,
@@ -32,32 +32,32 @@ export function createAspect<T>(
     };
     const aspectUtils = new AspectUtils(methodFunc as (...args: any[]) => any);
     const ClassToInstance = (AspectClass: Newable<Aspect>) => appCtx.getInstance(AspectClass);
-    const beforeAdviceAspects = metadata.getAspectsOf(methodName, AdviceEnum.Before).map(ClassToInstance);
-    const afterAdviceAspects = metadata.getAspectsOf(methodName, AdviceEnum.After).map(ClassToInstance);
-    const tryCatchAdviceAspects = metadata.getAspectsOf(methodName, AdviceEnum.TryCatch).map(ClassToInstance);
-    const tryFinallyAdviceAspects = metadata.getAspectsOf(methodName, AdviceEnum.TryFinally).map(ClassToInstance);
-    const afterReturnAdviceAspects = metadata.getAspectsOf(methodName, AdviceEnum.AfterReturn).map(ClassToInstance);
-    const aroundAdviceAspects = metadata.getAspectsOf(methodName, AdviceEnum.Around).map(ClassToInstance);
+    const beforeAdviceAspects = metadata.getAspectsOf(methodName, Advice.Before).map(ClassToInstance);
+    const afterAdviceAspects = metadata.getAspectsOf(methodName, Advice.After).map(ClassToInstance);
+    const tryCatchAdviceAspects = metadata.getAspectsOf(methodName, Advice.Thrown).map(ClassToInstance);
+    const tryFinallyAdviceAspects = metadata.getAspectsOf(methodName, Advice.Finally).map(ClassToInstance);
+    const afterReturnAdviceAspects = metadata.getAspectsOf(methodName, Advice.AfterReturn).map(ClassToInstance);
+    const aroundAdviceAspects = metadata.getAspectsOf(methodName, Advice.Around).map(ClassToInstance);
 
     if (beforeAdviceAspects.length > 0) {
-        aspectUtils.append(AdviceEnum.Before, (args: any[]) => {
-            const joinPoint = createAspectCtx(AdviceEnum.Before, args);
+        aspectUtils.append(Advice.Before, (args: any[]) => {
+            const joinPoint = createAspectCtx(Advice.Before, args);
             beforeAdviceAspects.forEach(aspect => {
                 aspect.execute(joinPoint);
             });
         });
     }
     if (afterAdviceAspects.length > 0) {
-        aspectUtils.append(AdviceEnum.After, (args: any[]) => {
-            const joinPoint = createAspectCtx(AdviceEnum.After, args);
+        aspectUtils.append(Advice.After, (args: any[]) => {
+            const joinPoint = createAspectCtx(Advice.After, args);
             afterAdviceAspects.forEach(aspect => {
                 aspect.execute(joinPoint);
             });
         });
     }
     if (tryCatchAdviceAspects.length > 0) {
-        aspectUtils.append(AdviceEnum.TryCatch, (error, args) => {
-            const joinPoint = createAspectCtx(AdviceEnum.TryCatch, args, null, error);
+        aspectUtils.append(Advice.Thrown, (error, args) => {
+            const joinPoint = createAspectCtx(Advice.Thrown, args, null, error);
             tryCatchAdviceAspects.forEach(aspect => {
                 aspect.execute(joinPoint);
             });
@@ -65,8 +65,8 @@ export function createAspect<T>(
     }
 
     if (tryFinallyAdviceAspects.length > 0) {
-        aspectUtils.append(AdviceEnum.TryFinally, (args: any[]) => {
-            const joinPoint = createAspectCtx(AdviceEnum.TryFinally, args);
+        aspectUtils.append(Advice.Finally, (args: any[]) => {
+            const joinPoint = createAspectCtx(Advice.Finally, args);
             tryFinallyAdviceAspects.forEach(aspect => {
                 aspect.execute(joinPoint);
             });
@@ -74,9 +74,9 @@ export function createAspect<T>(
     }
 
     if (afterReturnAdviceAspects.length > 0) {
-        aspectUtils.append(AdviceEnum.AfterReturn, (returnValue, args) => {
+        aspectUtils.append(Advice.AfterReturn, (returnValue, args) => {
             afterReturnAdviceAspects.reduce((prevReturnValue, aspect) => {
-                const joinPoint = createAspectCtx(AdviceEnum.AfterReturn, args, returnValue);
+                const joinPoint = createAspectCtx(Advice.AfterReturn, args, returnValue);
                 return aspect.execute(joinPoint);
             }, returnValue);
         });
@@ -84,8 +84,8 @@ export function createAspect<T>(
 
     if (aroundAdviceAspects.length > 0) {
         aroundAdviceAspects.forEach(aspect => {
-            aspectUtils.append(AdviceEnum.Around, (originFn, args) => {
-                const joinPoint = createAspectCtx(AdviceEnum.Around, args, null) as ProceedingJoinPoint;
+            aspectUtils.append(Advice.Around, (originFn, args) => {
+                const joinPoint = createAspectCtx(Advice.Around, args, null) as ProceedingJoinPoint;
                 joinPoint.proceed = (jpArgs = args) => {
                     return originFn(jpArgs);
                 };

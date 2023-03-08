@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { AdviceEnum } from './AdviceEnum';
+import { Advice } from './Advice';
 
 export interface Aspect {
     execute(ctx: JoinPoint): any;
@@ -10,7 +10,7 @@ export interface JoinPoint {
     functionParams: any[];
     returnValue: any;
     error: any;
-    advice: AdviceEnum;
+    advice: Advice;
     aspectParams?: any;
 }
 
