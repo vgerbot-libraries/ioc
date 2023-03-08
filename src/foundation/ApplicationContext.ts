@@ -49,6 +49,9 @@ export class ApplicationContext {
         }
     }
     getInstance<T, O>(symbol: Identifier<T>, owner?: O): T {
+        if (symbol === ApplicationContext) {
+            return this as unknown as T;
+        }
         if (typeof symbol === 'string' || typeof symbol === 'symbol') {
             const factoryDef = this.getFactory(symbol);
             if (factoryDef) {

@@ -1,15 +1,18 @@
 import { PartialInstAwareProcessor } from '../types/InstantiationAwareProcessor';
 import { MetadataFactory } from '../metadata/MetadataFactory';
-import { AspectClassMetadata } from './AspectClassMetadata';
 import type { ApplicationContext } from '../foundation/ApplicationContext';
 import { createAspect } from './createAspect';
+import { AOPClassMetadata } from './AOPClassMetadata';
 
 export class AOPInstantiationAwareProcessor implements PartialInstAwareProcessor {
     constructor(private readonly appCtx: ApplicationContext) {}
     afterInstantiation<T extends object>(instance: T): T {
         const clazz = instance.constructor;
-        const metadata = MetadataFactory.getMetadata(clazz, AspectClassMetadata);
-        if (!metadata.reader().isAdviceClass()) {
+
+        const useAspectMetadata = MetadataFactory.getMetadata(clazz, AOPClassMetadata);
+        const useAspectMetadataReader = useAspectMetadata.reader();
+        const useAspectsMap = useAspectMetadataReader.getAspects();
+        if (useAspectsMap.size === 0) {
             return instance;
         }
 
@@ -24,8 +27,7 @@ export class AOPInstantiationAwareProcessor implements PartialInstAwareProcessor
                     if (aspectMap.has(prop)) {
                         return aspectMap.get(prop);
                     }
-                    const adviceAspectMap = metadata.reader().getAdviceAspectMap(prop);
-                    const aspectFn = createAspect(this.appCtx, target, prop, originValue, adviceAspectMap);
+                    const aspectFn = createAspect(this.appCtx, target, prop, originValue, useAspectMetadataReader);
                     aspectMap.set(prop, aspectFn);
                     return aspectFn;
                 }

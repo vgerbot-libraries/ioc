@@ -3,15 +3,15 @@ import type { ApplicationContext } from '../foundation/ApplicationContext';
 import { AdviceEnum } from './AdviceEnum';
 import { Newable } from '../types/Newable';
 import { Aspect, JoinPoint, ProceedingJoinPoint } from './Aspect';
-import { defineLazyProperty } from '../utils/defineLazyProperty';
 import { AspectUtils } from './AspectUtils';
+import { UseAspectMetadataReader } from './AOPClassMetadata';
 
 export function createAspect<T>(
     appCtx: ApplicationContext,
     target: T,
     methodName: string | symbol,
     methodFunc: Function,
-    adviceAspectMap: Map<AdviceEnum, Map<Newable<unknown>, Set<string | symbol>>>
+    metadata: UseAspectMetadataReader
 ) {
     const createAspectCtx = (
         advice: AdviceEnum,
@@ -31,64 +31,59 @@ export function createAspect<T>(
         };
     };
     const aspectUtils = new AspectUtils(methodFunc as (...args: any[]) => any);
+    const ClassToInstance = (AspectClass: Newable<Aspect>) => appCtx.getInstance(AspectClass);
+    const beforeAdviceAspects = metadata.getAspectsOf(methodName, AdviceEnum.Before).map(ClassToInstance);
+    const afterAdviceAspects = metadata.getAspectsOf(methodName, AdviceEnum.After).map(ClassToInstance);
+    const tryCatchAdviceAspects = metadata.getAspectsOf(methodName, AdviceEnum.TryCatch).map(ClassToInstance);
+    const tryFinallyAdviceAspects = metadata.getAspectsOf(methodName, AdviceEnum.TryFinally).map(ClassToInstance);
+    const afterReturnAdviceAspects = metadata.getAspectsOf(methodName, AdviceEnum.AfterReturn).map(ClassToInstance);
+    const aroundAdviceAspects = metadata.getAspectsOf(methodName, AdviceEnum.Around).map(ClassToInstance);
 
-    if (adviceAspectMap.has(AdviceEnum.Before)) {
-        const aspectClassMap = adviceAspectMap.get(AdviceEnum.Before)!;
-        const aspects = convertAspectClassMapToAspectList(appCtx, aspectClassMap);
+    if (beforeAdviceAspects.length > 0) {
         aspectUtils.append(AdviceEnum.Before, (args: any[]) => {
-            const ctx = createAspectCtx(AdviceEnum.Before, args);
-            aspects.forEach(aspect => {
-                aspect.execute(ctx);
+            const joinPoint = createAspectCtx(AdviceEnum.Before, args);
+            beforeAdviceAspects.forEach(aspect => {
+                aspect.execute(joinPoint);
             });
         });
     }
-    if (adviceAspectMap.has(AdviceEnum.After)) {
-        const aspectClassMap = adviceAspectMap.get(AdviceEnum.After)!;
-        const aspects = convertAspectClassMapToAspectList(appCtx, aspectClassMap);
+    if (afterAdviceAspects.length > 0) {
         aspectUtils.append(AdviceEnum.After, (args: any[]) => {
             const joinPoint = createAspectCtx(AdviceEnum.After, args);
-            aspects.forEach(aspect => {
+            afterAdviceAspects.forEach(aspect => {
                 aspect.execute(joinPoint);
             });
         });
     }
-    if (adviceAspectMap.has(AdviceEnum.TryCatch)) {
-        const aspectClassMap = adviceAspectMap.get(AdviceEnum.TryCatch)!;
-        const aspects = convertAspectClassMapToAspectList(appCtx, aspectClassMap);
+    if (tryCatchAdviceAspects.length > 0) {
         aspectUtils.append(AdviceEnum.TryCatch, (error, args) => {
             const joinPoint = createAspectCtx(AdviceEnum.TryCatch, args, null, error);
-            aspects.forEach(aspect => {
+            tryCatchAdviceAspects.forEach(aspect => {
                 aspect.execute(joinPoint);
             });
         });
     }
 
-    if (adviceAspectMap.has(AdviceEnum.TryFinally)) {
-        const aspectClassMap = adviceAspectMap.get(AdviceEnum.TryFinally)!;
-        const aspects = convertAspectClassMapToAspectList(appCtx, aspectClassMap);
+    if (tryFinallyAdviceAspects.length > 0) {
         aspectUtils.append(AdviceEnum.TryFinally, (args: any[]) => {
             const joinPoint = createAspectCtx(AdviceEnum.TryFinally, args);
-            aspects.forEach(aspect => {
+            tryFinallyAdviceAspects.forEach(aspect => {
                 aspect.execute(joinPoint);
             });
         });
     }
 
-    if (adviceAspectMap.has(AdviceEnum.AfterReturn)) {
-        const aspectClassMap = adviceAspectMap.get(AdviceEnum.AfterReturn)!;
-        const aspects = convertAspectClassMapToAspectList(appCtx, aspectClassMap);
+    if (afterReturnAdviceAspects.length > 0) {
         aspectUtils.append(AdviceEnum.AfterReturn, (returnValue, args) => {
-            aspects.reduce((prevReturnValue, aspect) => {
+            afterReturnAdviceAspects.reduce((prevReturnValue, aspect) => {
                 const joinPoint = createAspectCtx(AdviceEnum.AfterReturn, args, returnValue);
                 return aspect.execute(joinPoint);
             }, returnValue);
         });
     }
 
-    if (adviceAspectMap.has(AdviceEnum.Around)) {
-        const aspectClassMap = adviceAspectMap.get(AdviceEnum.Around)!;
-        const aspects = convertAspectClassMapToAspectList(appCtx, aspectClassMap);
-        aspects.forEach(aspect => {
+    if (aroundAdviceAspects.length > 0) {
+        aroundAdviceAspects.forEach(aspect => {
             aspectUtils.append(AdviceEnum.Around, (originFn, args) => {
                 const joinPoint = createAspectCtx(AdviceEnum.Around, args, null) as ProceedingJoinPoint;
                 joinPoint.proceed = (jpArgs = args) => {
@@ -100,30 +95,4 @@ export function createAspect<T>(
     }
 
     return aspectUtils.extract();
-}
-
-function convertAspectClassMapToAspectList(
-    appCtx: ApplicationContext,
-    aspectClassMap: Map<Newable<unknown>, Set<string | symbol>>
-) {
-    const aspects: Aspect[] = [];
-    aspectClassMap.forEach((methods, clazz) => {
-        methods.forEach(method => {
-            aspects.push(new ComponentAspect(appCtx, clazz, method));
-        });
-    });
-    return aspects;
-}
-
-class ComponentAspect implements Aspect {
-    private aspectInstance!: any;
-    constructor(appCtx: ApplicationContext, clazz: Newable<unknown>, private readonly methodName: string | symbol) {
-        defineLazyProperty(this, 'aspectInstance', () => {
-            return appCtx.getInstance(clazz);
-        });
-    }
-    execute(ctx: JoinPoint): any {
-        const func = this.aspectInstance[this.methodName];
-        return func.call(this.aspectInstance, ctx);
-    }
 }
