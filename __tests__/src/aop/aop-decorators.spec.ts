@@ -5,6 +5,8 @@ import { ApplicationContext } from '../../../src';
 import { After } from '../../../src/aop/decorators/After';
 import { Thrown } from '../../../src/aop/decorators/Thrown';
 import { Finally } from '../../../src/aop/decorators/Finally';
+import { Around } from '../../../src/aop/decorators/Around';
+import { ProceedingJoinPoint } from '../../../examples_dist/bind/aop/Aspect';
 
 describe('AOP decorators', () => {
     describe('@Before', () => {
@@ -146,6 +148,90 @@ describe('AOP decorators', () => {
             const test2 = app.getInstance(Test2);
             expect(() => test2.testMethod()).toThrowError();
             expect(afterTest2).toBeCalled();
+        });
+    });
+    describe('@Around', () => {
+        it('should execute the method which annotated with @Around annotation', () => {
+            const testMethod = jest.fn();
+            const testAspectMethod = jest.fn();
+            class Test {
+                testMethod() {
+                    testMethod();
+                }
+            }
+
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars,@typescript-eslint/ban-ts-comment
+            // @ts-ignore
+            class TestAspect {
+                @Around(Pointcut.of(Test, 'testMethod'))
+                around(joinPoint: ProceedingJoinPoint) {
+                    testAspectMethod();
+                    joinPoint.proceed();
+                }
+            }
+            const app = new ApplicationContext();
+            const test = app.getInstance(Test);
+            test.testMethod();
+            expect(testMethod).toBeCalled();
+            expect(testAspectMethod).toBeCalled();
+        });
+        it('should not execute the testMethod if not calling the proceed function', () => {
+            const testMethod = jest.fn();
+            const testAspectMethod = jest.fn();
+            class Test {
+                testMethod() {
+                    testMethod();
+                }
+            }
+
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars,@typescript-eslint/ban-ts-comment
+            // @ts-ignore
+            class TestAspect {
+                @Around(Pointcut.of(Test, 'testMethod'))
+                around(joinPoint: ProceedingJoinPoint) {
+                    testAspectMethod();
+                }
+            }
+            const app = new ApplicationContext();
+            const test = app.getInstance(Test);
+            test.testMethod();
+            expect(testMethod).not.toBeCalled();
+            expect(testAspectMethod).toBeCalled();
+        });
+        it('should the aspect method annotated with @Before and @After be called when the proceed method is not called', () => {
+            const testMethod = jest.fn();
+            const testAspectMethod = jest.fn();
+            const testAspectBeforeMethod = jest.fn();
+            const testAspectAfterMethod = jest.fn();
+            class Test {
+                testMethod() {
+                    testMethod();
+                }
+            }
+
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars,@typescript-eslint/ban-ts-comment
+            // @ts-ignore
+            class TestAspect {
+                @Before(Pointcut.of(Test, 'testMethod'))
+                before() {
+                    testAspectBeforeMethod();
+                }
+                @After(Pointcut.of(Test, 'testMethod'))
+                after() {
+                    testAspectAfterMethod();
+                }
+                @Around(Pointcut.of(Test, 'testMethod'))
+                around(joinPoint: ProceedingJoinPoint) {
+                    testAspectMethod();
+                }
+            }
+            const app = new ApplicationContext();
+            const test = app.getInstance(Test);
+            test.testMethod();
+            expect(testMethod).not.toBeCalled();
+            expect(testAspectMethod).toBeCalled();
+            expect(testAspectBeforeMethod).toBeCalled();
+            expect(testAspectAfterMethod).toBeCalled();
         });
     });
 });
