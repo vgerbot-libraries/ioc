@@ -3,7 +3,7 @@ import { Aspect, JoinPoint } from './Aspect';
 import { ApplicationContext } from '../foundation/ApplicationContext';
 import { Newable } from '../types/Newable';
 import { defineLazyProperty } from '../utils/defineLazyProperty';
-import { Inject } from '../annotation/Inject';
+import { Inject } from '../decorators/Inject';
 
 export abstract class ComponentMethodAspect implements Aspect {
     public static create(clazz: Newable<unknown>, methodName: string | symbol): Newable<Aspect> {

@@ -1,11 +1,11 @@
-export { Bind } from './annotation/Bind';
-export { Scope } from './annotation/Scope';
-export { Inject } from './annotation/Inject';
-export { Factory } from './annotation/Factory';
-export { PostInject } from './annotation/PostInject';
-export { PreInject } from './annotation/PreInject';
-export { PreDestroy } from './annotation/PreDestroy';
-export { Value } from './annotation/Value';
+export { Bind } from './decorators/Bind';
+export { Scope } from './decorators/Scope';
+export { Inject } from './decorators/Inject';
+export { Factory } from './decorators/Factory';
+export { PostInject } from './decorators/PostInject';
+export { PreInject } from './decorators/PreInject';
+export { PreDestroy } from './decorators/PreDestroy';
+export { Value } from './decorators/Value';
 
 export { InstanceScope } from './foundation/InstanceScope';
 export { ApplicationContext } from './foundation/ApplicationContext';

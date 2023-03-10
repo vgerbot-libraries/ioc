@@ -1,4 +1,4 @@
-import { ApplicationContext, Bind, Inject } from '../../src';
+import { ApplicationContext, Bind, Inject } from '../../../src';
 
 describe('@Bind', () => {
     it('should set alias for a component', () => {
