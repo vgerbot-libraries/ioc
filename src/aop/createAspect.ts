@@ -13,21 +13,14 @@ export function createAspect<T>(
     methodFunc: Function,
     metadata: UseAspectMetadataReader
 ) {
-    const createAspectCtx = (
-        advice: Advice,
-        args: any[],
-        returnValue: any = null,
-        error: any = null,
-        aspectParams: any = null
-    ): JoinPoint => {
+    const createAspectCtx = (advice: Advice, args: any[], returnValue: any = null, error: any = null): JoinPoint => {
         return {
             target,
             methodName,
-            functionParams: args,
+            arguments: args,
             returnValue,
             error,
-            advice,
-            aspectParams
+            advice
         };
     };
     const aspectUtils = new AspectUtils(methodFunc as (...args: any[]) => any);

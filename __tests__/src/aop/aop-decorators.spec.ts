@@ -23,7 +23,7 @@ describe('AOP decorators', () => {
             class BeforeAspect {
                 @Before(Pointcut.of(Test, 'testMethod'))
                 testAspectMethod(joinPoint: JoinPoint) {
-                    testAspectMethod(joinPoint.functionParams[0]);
+                    testAspectMethod(joinPoint.arguments[0]);
                 }
             }
             const app = new ApplicationContext();
@@ -51,7 +51,7 @@ describe('AOP decorators', () => {
             class BeforeAspect {
                 @After(Pointcut.of(Test, 'testMethod'))
                 testAspectMethod(joinPoint: JoinPoint) {
-                    testAspectMethod(joinPoint.functionParams[0]);
+                    testAspectMethod(joinPoint.arguments[0]);
                 }
             }
             const app = new ApplicationContext();

@@ -7,11 +7,10 @@ export interface Aspect {
 export interface JoinPoint {
     target: any;
     methodName: string | symbol;
-    functionParams: any[];
+    arguments: any[];
     returnValue: any;
     error: any;
     advice: Advice;
-    aspectParams?: any;
 }
 
 export interface ProceedingJoinPoint extends JoinPoint {
