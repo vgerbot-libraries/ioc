@@ -59,24 +59,50 @@ export class AspectUtils {
             beforeHooks.forEach(hook => {
                 hook.call(this, args);
             });
-            let returnValue: any;
-            try {
-                returnValue = fn.apply(this, args);
-            } catch (error) {
-                if (thrownHooks.length > 0) {
-                    thrownHooks.forEach(hook => hook.call(this, error, args));
-                } else {
-                    throw error;
+            const invoke = (onError: (reason: any) => void, onFinally: () => void, onAfter: (returnValue: any) => any) => {
+                let returnValue: any;
+                let isPromise = false;
+                try {
+                    returnValue = fn.apply(this, args);
+                    if (returnValue instanceof Promise) {
+                        isPromise = true;
+                        returnValue = returnValue.catch(onError).finally(onFinally);
+                    }
+                } catch (error) {
+                    onError(error);
+                } finally {
+                    if (!isPromise) {
+                        onFinally();
+                    }
                 }
-            } finally {
-                finallyHooks.forEach(hook => hook.call(this, args));
-            }
-            afterHooks.forEach(hook => {
-                hook.call(this, args);
-            });
-            return afterReturnHooks.reduce((retVal, hook) => {
-                return hook.call(this, retVal, args);
-            }, returnValue);
+                if (isPromise) {
+                    return returnValue.then((value: any) => {
+                        return onAfter(value);
+                    });
+                } else {
+                    return onAfter(returnValue);
+                }
+            };
+            return invoke(
+                error => {
+                    if (thrownHooks.length > 0) {
+                        thrownHooks.forEach(hook => hook.call(this, error, args));
+                    } else {
+                        throw error;
+                    }
+                },
+                () => {
+                    finallyHooks.forEach(hook => hook.call(this, args));
+                },
+                value => {
+                    afterHooks.forEach(hook => {
+                        hook.call(this, args);
+                    });
+                    return afterReturnHooks.reduce((retVal, hook) => {
+                        return hook.call(this, retVal, args);
+                    }, value);
+                }
+            );
         };
     }
 }
