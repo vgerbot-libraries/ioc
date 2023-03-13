@@ -4,6 +4,9 @@ import { Advice } from './Advice';
 export interface Aspect {
     execute(ctx: JoinPoint): any;
 }
+export interface ProceedingAspect {
+    execute(ctx: ProceedingJoinPoint): any;
+}
 export interface JoinPoint {
     target: any;
     methodName: string | symbol;
