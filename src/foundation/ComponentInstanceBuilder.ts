@@ -14,8 +14,12 @@ export class ComponentInstanceBuilder<T> {
     private preInjectMethods: Array<string | symbol> = [];
     private postInjectMethods: Array<string | symbol> = [];
     private instAwareProcessorClasses: Set<Newable<PartialInstAwareProcessor>> = new Set();
+    private lazyMode: boolean = true;
     constructor(private readonly componentClass: Newable<T>, private readonly container: ApplicationContext) {
         //
+    }
+    appendLazyMode(lazyMode: boolean) {
+        this.lazyMode = lazyMode;
     }
     appendInstAwareProcessorClasses(
         instAwareProcessorClasses: Set<Newable<PartialInstAwareProcessor>> | Array<Newable<PartialInstAwareProcessor>>
@@ -70,7 +74,7 @@ export class ComponentInstanceBuilder<T> {
             this.invokeLifecycleMethods(instance, this.preInjectMethods);
             for (const key in properties) {
                 const getter = properties[key](instance);
-                defineLazyProperty(instance, key, getter);
+                this.defineProperty(instance, key, getter);
             }
             this.invokeLifecycleMethods(instance, this.postInjectMethods);
             return instance;
@@ -93,7 +97,7 @@ export class ComponentInstanceBuilder<T> {
             this.invokeLifecycleMethods(instance, this.preInjectMethods);
             for (const key in properties) {
                 const getter = properties[key](instance);
-                defineLazyProperty(instance, key, getter);
+                this.defineProperty(instance, key, getter);
             }
             instAwareProcessors.forEach(processor => {
                 if (processor.afterInstantiation) {
@@ -105,6 +109,15 @@ export class ComponentInstanceBuilder<T> {
             });
             this.invokeLifecycleMethods(instance, this.postInjectMethods);
             return instance;
+        }
+    }
+    private defineProperty<T, V>(instance: T, key: string | symbol, getter: () => V) {
+        if (this.lazyMode) {
+            defineLazyProperty(instance, key, getter);
+        } else {
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            // @ts-ignore
+            instance[key] = getter();
         }
     }
     private createPropertiesGetterBuilder() {

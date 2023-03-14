@@ -37,9 +37,11 @@ export class ApplicationContext {
     private evaluatorClasses = new Map<string, Newable<Evaluator>>();
     private eventEmitter = new EventEmitter();
     private readonly defaultScope: InstanceScope;
+    private readonly lazyMode: boolean;
     private readonly instAwareProcessors: Set<Newable<PartialInstAwareProcessor>> = new Set();
-    public constructor(private options: ApplicationContextOptions = {}) {
-        this.defaultScope = this.options.defaultScope || InstanceScope.SINGLETON;
+    public constructor(options: ApplicationContextOptions = {}) {
+        this.defaultScope = options.defaultScope || InstanceScope.SINGLETON;
+        this.lazyMode = options.lazyMode === undefined ? true : options.lazyMode;
         this.registerInstanceScopeResolution(InstanceScope.SINGLETON, SingletonInstanceResolution);
         this.registerInstanceScopeResolution(InstanceScope.GLOBAL_SHARED_SINGLETON, GlobalSharedInstanceResolution);
         this.registerInstanceScopeResolution(InstanceScope.TRANSIENT, TransientInstanceResolution);
@@ -83,6 +85,7 @@ export class ApplicationContext {
         if (resolution.shouldGenerate(getInstanceOptions)) {
             const builder = new ComponentInstanceBuilder(componentClass, this);
             builder.appendClassMetadata(reader);
+            builder.appendLazyMode(this.lazyMode);
             const instAwareProcessorMetadata = MetadataFactory.getMetadata(componentClass, InstAwareProcessorMetadata).reader();
             const globalInstAwareProcessors = instAwareProcessorMetadata.getInstAwareProcessorClasses();
             builder.appendInstAwareProcessorClasses(globalInstAwareProcessors);
