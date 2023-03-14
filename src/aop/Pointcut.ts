@@ -12,6 +12,11 @@ export class Pointcut {
     static of<T>(cls: Newable<T>, ...methodNames: MemberIdentifier[]) {
         const entries = new Map<Newable<unknown>, Set<MemberIdentifier>>();
         const methods = new Set<MemberIdentifier>(methodNames as MemberIdentifier[]);
+        if (arguments.length === 1) {
+            getAllMethodMemberNames(cls).forEach(methodName => {
+                methods.add(methodName);
+            });
+        }
         entries.set(cls, methods);
         return new Pointcut(entries);
     }
