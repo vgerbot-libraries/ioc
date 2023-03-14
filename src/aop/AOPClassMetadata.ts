@@ -1,10 +1,10 @@
 import { Metadata, MetadataReader } from '../types/Metadata';
 import { Newable } from '../types/Newable';
 import { Aspect } from './Aspect';
-import { createDefaultValueMap } from '../common/DefaultValueMap';
+import { createDefaultValueMap, DefaultValueMap } from '../common/DefaultValueMap';
 import { Advice } from './Advice';
 
-export type UseAspectMap = Map<string | symbol, Map<Advice, Array<Newable<Aspect>>>>;
+export type UseAspectMap = DefaultValueMap<string | symbol, DefaultValueMap<Advice, Array<Newable<Aspect>>>>;
 
 export interface UseAspectMetadataReader extends MetadataReader {
     getAspects(): UseAspectMap;
@@ -20,8 +20,8 @@ export class AOPClassMetadata implements Metadata<UseAspectMetadataReader, Newab
     }
 
     append(methodName: string | symbol, advice: Advice, aspects: Array<Newable<Aspect>>) {
-        const adviceAspectMap = this.aspectMap.get(methodName)!;
-        const exitingAspectArray = adviceAspectMap.get(advice)!;
+        const adviceAspectMap = this.aspectMap.get(methodName);
+        const exitingAspectArray = adviceAspectMap.get(advice);
         exitingAspectArray.push(...aspects);
     }
 
@@ -31,7 +31,7 @@ export class AOPClassMetadata implements Metadata<UseAspectMetadataReader, Newab
                 return this.aspectMap;
             },
             getAspectsOf: (methodName: string | symbol, advice: Advice) => {
-                return this.aspectMap.get(methodName)!.get(advice)!;
+                return this.aspectMap.get(methodName).get(advice)!;
             }
         };
     }
