@@ -1,7 +1,7 @@
 import { Metadata, MetadataReader } from '../types/Metadata';
 import { Newable } from '../types/Newable';
 import { Aspect } from './Aspect';
-import { DefaultValueMap } from '../common/DefaultValueMap';
+import { createDefaultValueMap } from '../common/DefaultValueMap';
 import { Advice } from './Advice';
 
 export type UseAspectMap = Map<string | symbol, Map<Advice, Array<Newable<Aspect>>>>;
@@ -14,7 +14,7 @@ export class AOPClassMetadata implements Metadata<UseAspectMetadataReader, Newab
     static getReflectKey() {
         return 'aop:use-aspect-metadata';
     }
-    private aspectMap: UseAspectMap = new DefaultValueMap(() => new DefaultValueMap(() => []));
+    private aspectMap: UseAspectMap = createDefaultValueMap(() => createDefaultValueMap(() => []));
     init(): void {
         // IGNORE
     }
