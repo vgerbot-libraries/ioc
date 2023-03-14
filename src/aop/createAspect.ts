@@ -68,7 +68,7 @@ export function createAspect<T>(
 
     if (afterReturnAdviceAspects.length > 0) {
         aspectUtils.append(Advice.AfterReturn, (returnValue, args) => {
-            afterReturnAdviceAspects.reduce((prevReturnValue, aspect) => {
+            return afterReturnAdviceAspects.reduce((prevReturnValue, aspect) => {
                 const joinPoint = createAspectCtx(Advice.AfterReturn, args, returnValue);
                 return aspect.execute(joinPoint);
             }, returnValue);
