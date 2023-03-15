@@ -37,6 +37,18 @@ export class ClassMetadata<T> implements Metadata<ClassMetadataReader<T>, Newabl
                 this.recordPropertyType(key, injections[key]);
             }
         }
+        if (typeof constr.metadata === 'function') {
+            const metadata = constr.metadata();
+            if (metadata.scope) {
+                this.setScope(metadata.scope);
+            }
+            const injections = metadata.inject;
+            if (injections) {
+                for (const key in injections) {
+                    this.recordPropertyType(key, injections[key]);
+                }
+            }
+        }
     }
     setScope(scope: InstanceScope | string) {
         this.scope = scope;
