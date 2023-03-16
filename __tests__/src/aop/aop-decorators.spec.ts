@@ -1,12 +1,11 @@
 import { Before } from '../../../src/aop/decorators/Before';
 import { Pointcut } from '../../../src/aop/Pointcut';
-import { JoinPoint } from '../../../src/aop/Aspect';
+import { JoinPoint, ProceedingJoinPoint } from '../../../src/aop/Aspect';
 import { ApplicationContext } from '../../../src';
 import { After } from '../../../src/aop/decorators/After';
 import { Thrown } from '../../../src/aop/decorators/Thrown';
 import { Finally } from '../../../src/aop/decorators/Finally';
 import { Around } from '../../../src/aop/decorators/Around';
-import { ProceedingJoinPoint } from '../../../examples_dist/bind/aop/Aspect';
 
 describe('AOP decorators', () => {
     describe('@Before', () => {
