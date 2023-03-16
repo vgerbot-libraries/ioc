@@ -79,7 +79,7 @@ export class ComponentInstanceBuilder<T> {
             this.invokeLifecycleMethods(instance, this.postInjectMethods);
             return instance;
         } else {
-            let instance: Instance<T> | undefined;
+            let instance!: Instance<T>;
             const instAwareProcessorClasses = Array.from(this.instAwareProcessorClasses);
             const instAwareProcessors = instAwareProcessorClasses.map(it =>
                 this.container.getInstance<PartialInstAwareProcessor, void>(it)
@@ -101,7 +101,7 @@ export class ComponentInstanceBuilder<T> {
             }
             instAwareProcessors.forEach(processor => {
                 if (processor.afterInstantiation) {
-                    const result = processor.afterInstantiation(instance!);
+                    const result = processor.afterInstantiation(instance);
                     if (!!result) {
                         instance = result as Instance<T>;
                     }

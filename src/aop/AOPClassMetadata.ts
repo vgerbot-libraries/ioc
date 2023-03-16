@@ -31,7 +31,7 @@ export class AOPClassMetadata implements Metadata<UseAspectMetadataReader, Newab
                 return this.aspectMap;
             },
             getAspectsOf: (methodName: string | symbol, advice: Advice) => {
-                return this.aspectMap.get(methodName).get(advice)!;
+                return this.aspectMap.get(methodName).get(advice);
             }
         };
     }

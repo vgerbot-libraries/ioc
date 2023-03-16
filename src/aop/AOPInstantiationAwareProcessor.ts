@@ -29,7 +29,10 @@ export abstract class AOPInstantiationAwareProcessor implements PartialInstAware
             get: (target, prop) => {
                 const originValue = (target as Record<string | symbol, unknown>)[prop];
                 if (prop in target && typeof originValue === 'function') {
-                    const aspectMap = aspectStoreMap.get(instance)!;
+                    const aspectMap = aspectStoreMap.get(instance);
+                    if (!aspectMap) {
+                        return originValue;
+                    }
                     if (aspectMap.has(prop)) {
                         return aspectMap.get(prop);
                     }
