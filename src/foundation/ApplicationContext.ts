@@ -25,8 +25,10 @@ import { EnvironmentEvaluator } from '../evaluator/EnvironmentEvaluator';
 import { ArgvEvaluator } from '../evaluator/ArgvEvaluator';
 import { isNodeJs } from '../common/isNodeJs';
 import { PartialInstAwareProcessor } from '../types/InstantiationAwareProcessor';
-import { InstAwareProcessorMetadata } from '../metadata/InstAwareProcessorMetadata';
 import { AOPInstantiationAwareProcessor } from '../aop/AOPInstantiationAwareProcessor';
+import { InstantiationAwareProcessorManager } from './InstantiationAwareProcessorManager';
+import { LifecycleManager } from './LifecycleManager';
+import { Instance } from '../types/Instance';
 
 const PRE_DESTROY_EVENT_KEY = 'container:event:pre-destroy';
 
@@ -38,7 +40,7 @@ export class ApplicationContext {
     private eventEmitter = new EventEmitter();
     private readonly defaultScope: InstanceScope;
     private readonly lazyMode: boolean;
-    private readonly instAwareProcessors: Set<Newable<PartialInstAwareProcessor>> = new Set();
+    private readonly instAwareProcessorManager: InstantiationAwareProcessorManager;
     public constructor(options: ApplicationContextOptions = {}) {
         this.defaultScope = options.defaultScope || InstanceScope.SINGLETON;
         this.lazyMode = options.lazyMode === undefined ? true : options.lazyMode;
@@ -50,6 +52,7 @@ export class ApplicationContext {
             this.registerEvaluator(ExpressionType.ENV, EnvironmentEvaluator);
             this.registerEvaluator(ExpressionType.ARGV, ArgvEvaluator);
         }
+        this.instAwareProcessorManager = new InstantiationAwareProcessorManager(this);
         this.registerInstAwareProcessor(AOPInstantiationAwareProcessor.create(this));
     }
     getInstance<T, O>(symbol: Identifier<T>, owner?: O): T {
@@ -61,9 +64,21 @@ export class ApplicationContext {
             if (factoryDef) {
                 const { factory, injections } = factoryDef;
                 const fn = factory(this, owner);
-                return this.invoke(fn, {
+                let result = this.invoke(fn, {
                     injections
                 }) as T;
+                const constr = result?.constructor;
+                if (typeof constr === 'function') {
+                    const componentClass = constr as Newable<T>;
+                    const resolver = new LifecycleManager<T>(componentClass, this);
+                    const isInstAwareProcessor = this.instAwareProcessorManager.isInstAwareProcessorClass(componentClass);
+                    resolver.invokePreInjectMethod(result as Instance<T>);
+                    if (!isInstAwareProcessor) {
+                        result = this.instAwareProcessorManager.afterInstantiation(result as Instance<T>);
+                    }
+                    resolver.invokePostInjectMethod(result as Instance<T>);
+                }
+                return result;
             } else {
                 const classMetadata = GlobalMetadata.getInstance().reader().getClassMetadata<T>(symbol);
                 if (!classMetadata) {
@@ -83,13 +98,7 @@ export class ApplicationContext {
             ownerPropertyKey: undefined
         };
         if (resolution.shouldGenerate(getInstanceOptions)) {
-            const builder = new ComponentInstanceBuilder(componentClass, this);
-            builder.appendClassMetadata(reader);
-            builder.appendLazyMode(this.lazyMode);
-            const instAwareProcessorMetadata = MetadataFactory.getMetadata(componentClass, InstAwareProcessorMetadata).reader();
-            const globalInstAwareProcessors = instAwareProcessorMetadata.getInstAwareProcessorClasses();
-            builder.appendInstAwareProcessorClasses(globalInstAwareProcessors);
-            builder.appendInstAwareProcessorClasses(this.instAwareProcessors);
+            const builder = this.createComponentInstanceBuilder(componentClass);
             const instance = builder.build();
             const saveInstanceOptions = {
                 ...getInstanceOptions,
@@ -101,6 +110,13 @@ export class ApplicationContext {
             return resolution.getInstance(getInstanceOptions) as T;
         }
     }
+
+    private createComponentInstanceBuilder<T>(componentClass: Newable<T>) {
+        const builder = new ComponentInstanceBuilder(componentClass, this, this.instAwareProcessorManager);
+        builder.appendLazyMode(this.lazyMode);
+        return builder;
+    }
+
     getFactory(key: FactoryIdentifier) {
         const factory = GlobalMetadata.getInstance().reader().getComponentFactory(key);
         if (!factory) {
@@ -170,7 +186,7 @@ export class ApplicationContext {
         this.evaluatorClasses.set(name, evaluatorClass);
     }
     registerInstAwareProcessor(clazz: Newable<PartialInstAwareProcessor>) {
-        this.instAwareProcessors.add(clazz);
+        this.instAwareProcessorManager.appendInstAwareProcessorClass(clazz);
     }
     onPreDestroy(listener: EventListener) {
         return this.eventEmitter.on(PRE_DESTROY_EVENT_KEY, listener);

@@ -1,4 +1,6 @@
 import { ApplicationContext, InstanceScope, PostInject, PreDestroy, PreInject, Scope } from '../../src';
+import { PartialInstAwareProcessor } from '../../src/types/InstantiationAwareProcessor';
+import { Newable } from '../../src/types/Newable';
 
 function generateId() {
     return (~~(Math.random() * 10000000)).toString(16);
@@ -49,7 +51,14 @@ function runSingletonScopeExample() {
             console.log(`SingletonService#${this.id}.preDestroy`);
         }
     }
-
+    app.registerInstAwareProcessor(
+        class implements PartialInstAwareProcessor {
+            beforeInstantiation<T>(constructor: Newable<T>, args: unknown[]): T | undefined {
+                console.log('before create instance');
+                return new constructor(...args);
+            }
+        }
+    );
     const singletonInstance1 = app.getInstance(SingletonService);
     const singletonInstance2 = app.getInstance(SingletonService);
     console.log(singletonInstance1, singletonInstance2);
