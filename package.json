@@ -77,7 +77,7 @@
     "homepage": "https://github.com/vgerbot-libraries/ioc#readme",
     "dependencies": {
         "reflect-metadata": "^0.1.13",
-        "@vgerbot/lazy": "^1.0.3"
+        "@vgerbot/lazy": "^1.0.6"
     },
     "optionalDependencies": {
         "minimist": "^1.2.8"
