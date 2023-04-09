@@ -12,7 +12,7 @@
     "scripts": {
         "test": "cross-env NODE_ENV=test jest",
         "debug": "cross-env NODE_ENV=test DEBUG=true node --inspect-brk ./node_modules/.bin/jest",
-        "postinstall": "husky install",
+        "prepare": "husky install",
         "release": "standard-version",
         "commit": "commit",
         "lint": " eslint --no-error-on-unmatched-pattern {src,build,__tests__}/**/*.{ts,tsx}",
