@@ -2,10 +2,7 @@ import 'reflect-metadata';
 import { MetadataFactory } from '../metadata/MetadataFactory';
 import { ClassMetadata } from '../metadata/ClassMetadata';
 
-export function Mark(
-    key: string | symbol,
-    value: unknown = true
-): ClassDecorator | MethodDecorator | PropertyDecorator | ParameterDecorator {
+export function Mark(key: string | symbol, value: unknown = true): Function {
     return function (
         ...args:
             | Parameters<ClassDecorator>
@@ -21,7 +18,7 @@ export function Mark(
             // property decorator
             const [prototype, propertyKey] = args;
             const metadata = MetadataFactory.getMetadata(prototype.constructor, ClassMetadata);
-            metadata.marker().property(propertyKey).mark(key, value);
+            metadata.marker().member(propertyKey).mark(key, value);
         } else if (args.length === 3 && typeof args[2] === 'number') {
             // parameter decorator
             const [prototype, propertyKey, index] = args;
@@ -31,7 +28,7 @@ export function Mark(
             // method decorator
             const [prototype, propertyKey] = args;
             const metadata = MetadataFactory.getMetadata(prototype.constructor, ClassMetadata);
-            metadata.marker().property(propertyKey).mark(key, value);
+            metadata.marker().member(propertyKey).mark(key, value);
         }
     };
 }

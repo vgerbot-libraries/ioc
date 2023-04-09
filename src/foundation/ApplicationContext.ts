@@ -7,7 +7,7 @@ import { AnyFunction } from '../types/AnyFunction';
 import { hasArgs, hasInjections, InvokeFunctionOptions } from './InvokeFunctionOptions';
 import { GlobalMetadata } from '../metadata/GlobalMetadata';
 import { FactoryIdentifier } from '../types/FactoryIdentifier';
-import { ClassMetadata } from '../metadata/ClassMetadata';
+import { ClassMetadata, ClassMetadataReader } from '../metadata/ClassMetadata';
 import { ComponentInstanceBuilder } from './ComponentInstanceBuilder';
 import { FunctionMetadata } from '../metadata/FunctionMetadata';
 import { ApplicationContextOptions } from '../types/ApplicationContextOptions';
@@ -89,7 +89,7 @@ export class ApplicationContext {
             }
         }
         const componentClass = symbol;
-        const reader = MetadataFactory.getMetadata(componentClass, ClassMetadata).reader();
+        const reader = ClassMetadata.getInstance(componentClass).reader();
         const scope = reader.getScope();
         const resolution = (this.resolutions.get(scope) || this.resolutions.get(this.defaultScope)) as InstanceResolution;
         const getInstanceOptions = {
@@ -190,5 +190,8 @@ export class ApplicationContext {
     }
     onPreDestroy(listener: EventListener) {
         return this.eventEmitter.on(PRE_DESTROY_EVENT_KEY, listener);
+    }
+    getClassMetadata<T>(ctor: Newable<T>) {
+        return ClassMetadata.getInstance(ctor).reader() as ClassMetadataReader<T>;
     }
 }

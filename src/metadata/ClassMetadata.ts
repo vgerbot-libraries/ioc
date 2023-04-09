@@ -6,6 +6,8 @@ import { Identifier } from '../types/Identifier';
 import { Lifecycle } from '../foundation/Lifecycle';
 import { Newable } from '../types/Newable';
 import { createDefaultValueMap } from '../common/DefaultValueMap';
+import { MetadataFactory } from './MetadataFactory';
+import { MemberKey } from '../types/MemberKey';
 
 const CLASS_METADATA_KEY = 'ioc:class-metadata';
 
@@ -14,34 +16,34 @@ export interface MarkInfo {
 }
 
 export class MarkInfoContainer {
-    private readonly map: Map<string | symbol, MarkInfo> = createDefaultValueMap(() => ({} as MarkInfo));
-    getMarkInfo(method: string | symbol): MarkInfo {
+    private readonly map: Map<MemberKey, MarkInfo> = createDefaultValueMap(() => ({} as MarkInfo));
+    getMarkInfo(method: MemberKey): MarkInfo {
         return this.map.get(method)!;
     }
-    mark(method: string | symbol, key: string | symbol, value: unknown) {
+    mark(method: MemberKey, key: MemberKey, value: unknown) {
         const markInfo = this.map.get(method)!;
         markInfo[key] = value;
     }
 }
 
 export class ParameterMarkInfoContainer {
-    private readonly map: Map<string | symbol, Record<number, MarkInfo>> = createDefaultValueMap(() => {
+    private readonly map: Map<MemberKey, Record<number, MarkInfo>> = createDefaultValueMap(() => {
         return {};
     });
-    getMarkInfo(method: string | symbol): Record<number, MarkInfo> {
+    getMarkInfo(method: MemberKey): Record<number, MarkInfo> {
         return this.map.get(method)!;
     }
-    mark(method: string | symbol, index: number, key: string | symbol, value: unknown) {
+    mark(method: MemberKey, index: number, key: MemberKey, value: unknown) {
         const paramsMarkInfo = this.map.get(method)!;
-        const markInfo = paramsMarkInfo[index];
+        const markInfo = paramsMarkInfo[index] || {};
         markInfo[key] = value;
+        paramsMarkInfo[index] = markInfo;
     }
 }
 
 export interface ClassMarkInfo {
     ctor: MarkInfo;
-    methods: MarkInfoContainer;
-    properties: MarkInfoContainer;
+    members: MarkInfoContainer;
     params: ParameterMarkInfoContainer;
 }
 
@@ -52,9 +54,8 @@ export interface ClassMetadataReader<T> extends MetadataReader {
     getMethods(lifecycle: Lifecycle): Array<string | symbol>;
     getPropertyTypeMap(): Map<string | symbol, Identifier>;
     getCtorMarkInfo(): MarkInfo;
-    getMethodMarkInfo(methodKey: string | symbol): MarkInfo;
-    getParameterMarkInfo(methodKey: string | symbol): Record<number, MarkInfo>;
-    getPropertyMarkInfo(propertyKey: string | symbol): MarkInfo;
+    getMembersMarkInfo(methodKey: keyof T): MarkInfo;
+    getParameterMarkInfo(methodKey: keyof T): Record<number, MarkInfo>;
 }
 
 export class ClassMetadata<T> implements Metadata<ClassMetadataReader<T>, Newable<T>> {
@@ -68,10 +69,13 @@ export class ClassMetadata<T> implements Metadata<ClassMetadataReader<T>, Newabl
     private clazz!: Newable<T>;
     private readonly marks: ClassMarkInfo = {
         ctor: {},
-        methods: new MarkInfoContainer(),
-        properties: new MarkInfoContainer(),
+        members: new MarkInfoContainer(),
         params: new ParameterMarkInfoContainer()
     };
+
+    static getInstance<T>(ctor: Newable<T>) {
+        return MetadataFactory.getMetadata(ctor, ClassMetadata);
+    }
 
     init(target: Newable<T>) {
         this.clazz = target;
@@ -104,17 +108,10 @@ export class ClassMetadata<T> implements Metadata<ClassMetadataReader<T>, Newabl
             ctor: (key: string | symbol, value: unknown) => {
                 this.marks.ctor[key] = value;
             },
-            method: (propertyKey: string | symbol) => {
+            member: (propertyKey: string | symbol | number) => {
                 return {
                     mark: (key: string | symbol, value: unknown) => {
-                        this.marks.methods.mark(propertyKey, key, value);
-                    }
-                };
-            },
-            property: (propertyKey: string | symbol) => {
-                return {
-                    mark: (key: string | symbol, value: unknown) => {
-                        this.marks.properties.mark(propertyKey, key, value);
+                        this.marks.members.mark(propertyKey, key, value);
                     }
                 };
             },
@@ -166,14 +163,11 @@ export class ClassMetadata<T> implements Metadata<ClassMetadataReader<T>, Newabl
             getCtorMarkInfo: (): MarkInfo => {
                 return { ...this.marks.ctor };
             },
-            getMethodMarkInfo: (key: string | symbol): MarkInfo => {
-                return this.marks.methods.getMarkInfo(key);
+            getMembersMarkInfo: (key: keyof T): MarkInfo => {
+                return this.marks.members.getMarkInfo(key);
             },
-            getParameterMarkInfo: (methodKey: string | symbol): Record<number, MarkInfo> => {
+            getParameterMarkInfo: (methodKey: keyof T): Record<number, MarkInfo> => {
                 return this.marks.params.getMarkInfo(methodKey);
-            },
-            getPropertyMarkInfo: (propertyKey: string | symbol): MarkInfo => {
-                return this.marks.properties.getMarkInfo(propertyKey);
             }
         };
     }
