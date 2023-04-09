@@ -16,25 +16,25 @@ export interface MarkInfo {
 }
 
 export class MarkInfoContainer {
-    private readonly map: Map<MemberKey, MarkInfo> = createDefaultValueMap(() => ({} as MarkInfo));
+    private readonly map = createDefaultValueMap<MemberKey, MarkInfo>(() => ({} as MarkInfo));
     getMarkInfo(method: MemberKey): MarkInfo {
-        return this.map.get(method)!;
+        return this.map.get(method);
     }
     mark(method: MemberKey, key: MemberKey, value: unknown) {
-        const markInfo = this.map.get(method)!;
+        const markInfo = this.map.get(method);
         markInfo[key] = value;
     }
 }
 
 export class ParameterMarkInfoContainer {
-    private readonly map: Map<MemberKey, Record<number, MarkInfo>> = createDefaultValueMap(() => {
+    private readonly map = createDefaultValueMap<MemberKey, Record<number, MarkInfo>>(() => {
         return {};
     });
     getMarkInfo(method: MemberKey): Record<number, MarkInfo> {
-        return this.map.get(method)!;
+        return this.map.get(method);
     }
     mark(method: MemberKey, index: number, key: MemberKey, value: unknown) {
-        const paramsMarkInfo = this.map.get(method)!;
+        const paramsMarkInfo = this.map.get(method);
         const markInfo = paramsMarkInfo[index] || {};
         markInfo[key] = value;
         paramsMarkInfo[index] = markInfo;
