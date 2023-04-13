@@ -11,7 +11,7 @@ describe('Lifecycle', () => {
                 }
             }
             class Service {
-                @Inject(Service2)
+                @Inject()
                 service2!: Service2;
 
                 @PreInject()
@@ -38,7 +38,7 @@ describe('Lifecycle', () => {
                 }
             }
             class Service {
-                @Inject(Service2)
+                @Inject()
                 service2!: Service2;
 
                 @PostInject()
@@ -82,7 +82,7 @@ describe('Lifecycle', () => {
                 }
             }
             class Service1 {
-                @Inject(Service0)
+                @Inject()
                 private service0!: Service0;
                 @PostInject()
                 init() {

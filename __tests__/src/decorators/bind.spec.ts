@@ -6,7 +6,7 @@ describe('@Bind', () => {
         @Bind(SERVICE_ALIAS_IDENTIFIER)
         class ServiceA {}
         class ServiceB {
-            @Inject(ServiceA)
+            @Inject()
             public serviceA0!: ServiceA;
             @Inject(SERVICE_ALIAS_IDENTIFIER)
             public serviceA1!: ServiceA;
