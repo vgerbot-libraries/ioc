@@ -1,6 +1,6 @@
 import { Advice } from '../Advice';
 import { Aspect, ProceedingAspect } from '../Aspect';
-import { MetadataFactory } from '../../metadata/MetadataFactory';
+import { MetadataInstanceManager } from '../../metadata/MetadataInstanceManager';
 import { AOPClassMetadata } from '../AOPClassMetadata';
 import { Newable } from '../../types/Newable';
 
@@ -9,7 +9,7 @@ function UseAspects(advice: Advice, aspects: Array<Newable<Aspect>>): MethodDeco
 function UseAspects(advice: Advice, aspects: Array<Newable<Aspect>>): MethodDecorator {
     return function (target, propertyKey) {
         const clazz = target.constructor;
-        const metadata = MetadataFactory.getMetadata(clazz, AOPClassMetadata);
+        const metadata = MetadataInstanceManager.getMetadata(clazz, AOPClassMetadata);
         metadata.append(propertyKey, advice, aspects);
     };
 }

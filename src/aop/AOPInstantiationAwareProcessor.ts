@@ -1,5 +1,5 @@
 import { PartialInstAwareProcessor } from '../types/InstantiationAwareProcessor';
-import { MetadataFactory } from '../metadata/MetadataFactory';
+import { MetadataInstanceManager } from '../metadata/MetadataInstanceManager';
 import type { ApplicationContext } from '../foundation/ApplicationContext';
 import { createAspect } from './createAspect';
 import { AOPClassMetadata } from './AOPClassMetadata';
@@ -15,7 +15,7 @@ export abstract class AOPInstantiationAwareProcessor implements PartialInstAware
     afterInstantiation<T extends object>(instance: T): T {
         const clazz = instance.constructor;
 
-        const useAspectMetadata = MetadataFactory.getMetadata(clazz, AOPClassMetadata);
+        const useAspectMetadata = MetadataInstanceManager.getMetadata(clazz, AOPClassMetadata);
         const useAspectMetadataReader = useAspectMetadata.reader();
         const useAspectsMap = useAspectMetadataReader.getAspects();
         if (useAspectsMap.size === 0) {

@@ -1,5 +1,5 @@
 import 'reflect-metadata';
-import { MetadataFactory } from '../metadata/MetadataFactory';
+import { MetadataInstanceManager } from '../metadata/MetadataInstanceManager';
 import { ClassMetadata } from '../metadata/ClassMetadata';
 
 export function Mark(key: string | symbol, value: unknown = true): Function {
@@ -12,22 +12,22 @@ export function Mark(key: string | symbol, value: unknown = true): Function {
     ) {
         if (args.length === 1) {
             // class decorator
-            const metadata = MetadataFactory.getMetadata(args[0], ClassMetadata);
+            const metadata = MetadataInstanceManager.getMetadata(args[0], ClassMetadata);
             metadata.marker().ctor(key, value);
         } else if (args.length === 2) {
             // property decorator
             const [prototype, propertyKey] = args;
-            const metadata = MetadataFactory.getMetadata(prototype.constructor, ClassMetadata);
+            const metadata = MetadataInstanceManager.getMetadata(prototype.constructor, ClassMetadata);
             metadata.marker().member(propertyKey).mark(key, value);
         } else if (args.length === 3 && typeof args[2] === 'number') {
             // parameter decorator
             const [prototype, propertyKey, index] = args;
-            const metadata = MetadataFactory.getMetadata(prototype.constructor, ClassMetadata);
+            const metadata = MetadataInstanceManager.getMetadata(prototype.constructor, ClassMetadata);
             metadata.marker().parameter(propertyKey, index).mark(key, value);
         } else {
             // method decorator
             const [prototype, propertyKey] = args;
-            const metadata = MetadataFactory.getMetadata(prototype.constructor, ClassMetadata);
+            const metadata = MetadataInstanceManager.getMetadata(prototype.constructor, ClassMetadata);
             metadata.marker().member(propertyKey).mark(key, value);
         }
     };

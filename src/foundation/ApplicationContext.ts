@@ -12,7 +12,7 @@ import { ComponentInstanceBuilder } from './ComponentInstanceBuilder';
 import { FunctionMetadata } from '../metadata/FunctionMetadata';
 import { ApplicationContextOptions } from '../types/ApplicationContextOptions';
 import { Newable } from '../types/Newable';
-import { MetadataFactory } from '../metadata/MetadataFactory';
+import { MetadataInstanceManager } from '../metadata/MetadataInstanceManager';
 import { ServiceFactoryDef } from './ServiceFactoryDef';
 import { SingletonInstanceResolution } from '../resolution/SingletonInstanceResolution';
 import { GlobalSharedInstanceResolution } from '../resolution/GlobalSharedInstanceResolution';
@@ -141,7 +141,7 @@ export class ApplicationContext {
             const args = options.injections ? options.injections.map(it => this.getInstance(it)) : [];
             return args.length > 0 ? fn(...args) : fn();
         }
-        const metadata = MetadataFactory.getMetadata(fn, FunctionMetadata).reader();
+        const metadata = MetadataInstanceManager.getMetadata(fn, FunctionMetadata).reader();
         const parameterIdentifiers = metadata.getParameters();
         const args = parameterIdentifiers.map(identifier => {
             return this.getInstance(identifier);
@@ -181,7 +181,7 @@ export class ApplicationContext {
         this.resolutions.set(scope, new resolutionConstructor(...(constructorArgs || [])));
     }
     registerEvaluator(name: string, evaluatorClass: Newable<Evaluator>) {
-        const metadata = MetadataFactory.getMetadata(evaluatorClass, ClassMetadata);
+        const metadata = MetadataInstanceManager.getMetadata(evaluatorClass, ClassMetadata);
         metadata.setScope(InstanceScope.SINGLETON);
         this.evaluatorClasses.set(name, evaluatorClass);
     }

@@ -6,7 +6,7 @@ import { Identifier } from '../types/Identifier';
 import { Lifecycle } from '../foundation/Lifecycle';
 import { Newable } from '../types/Newable';
 import { createDefaultValueMap } from '../common/DefaultValueMap';
-import { MetadataFactory } from './MetadataFactory';
+import { MetadataInstanceManager } from './MetadataInstanceManager';
 import { MemberKey } from '../types/MemberKey';
 
 const CLASS_METADATA_KEY = 'ioc:class-metadata';
@@ -74,7 +74,7 @@ export class ClassMetadata<T> implements Metadata<ClassMetadataReader<T>, Newabl
     };
 
     static getInstance<T>(ctor: Newable<T>) {
-        return MetadataFactory.getMetadata(ctor, ClassMetadata);
+        return MetadataInstanceManager.getMetadata(ctor, ClassMetadata);
     }
 
     init(target: Newable<T>) {

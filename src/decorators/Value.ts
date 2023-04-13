@@ -1,6 +1,6 @@
 import { ClassMetadata } from '../metadata/ClassMetadata';
 import { GlobalMetadata } from '../metadata/GlobalMetadata';
-import { MetadataFactory } from '../metadata/MetadataFactory';
+import { MetadataInstanceManager } from '../metadata/MetadataInstanceManager';
 import { ExpressionType } from '../types/EvaluateOptions';
 import { isNodeJs } from '../common/isNodeJs';
 
@@ -13,7 +13,7 @@ export function Value<A = unknown>(expression: string, type: ExpressionType | st
             }
     }
     return (target: Object, propertyKey: string | symbol) => {
-        const metadata = MetadataFactory.getMetadata(target.constructor, ClassMetadata);
+        const metadata = MetadataInstanceManager.getMetadata(target.constructor, ClassMetadata);
         const value_symbol = Symbol('');
         metadata.recordPropertyType(propertyKey, value_symbol);
         GlobalMetadata.getInstance().recordFactory(value_symbol, (container, owner) => {

@@ -1,6 +1,6 @@
 import { Newable } from '../types/Newable';
 import { ClassMetadata, ClassMetadataReader } from '../metadata/ClassMetadata';
-import { MetadataFactory } from '../metadata/MetadataFactory';
+import { MetadataInstanceManager } from '../metadata/MetadataInstanceManager';
 import { Lifecycle } from './Lifecycle';
 import { Instance } from '../types/Instance';
 import { ApplicationContext } from './ApplicationContext';
@@ -8,7 +8,7 @@ import { ApplicationContext } from './ApplicationContext';
 export class LifecycleManager<T = unknown> {
     private classMetadataReader: ClassMetadataReader<T>;
     constructor(private readonly componentClass: Newable<T>, private readonly container: ApplicationContext) {
-        this.classMetadataReader = MetadataFactory.getMetadata(this.componentClass, ClassMetadata).reader();
+        this.classMetadataReader = MetadataInstanceManager.getMetadata(this.componentClass, ClassMetadata).reader();
     }
     invokePreInjectMethod(instance: Instance<T>) {
         const methods = this.classMetadataReader.getMethods(Lifecycle.PRE_INJECT);

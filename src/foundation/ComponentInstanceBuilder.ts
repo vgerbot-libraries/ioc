@@ -5,7 +5,7 @@ import { Instance } from '../types/Instance';
 import { ServiceFactoryDef } from './ServiceFactoryDef';
 import { GlobalMetadata } from '../metadata/GlobalMetadata';
 import { lazyProp } from '@vgerbot/lazy';
-import { MetadataFactory } from '../metadata/MetadataFactory';
+import { MetadataInstanceManager } from '../metadata/MetadataInstanceManager';
 import { InstantiationAwareProcessorManager } from './InstantiationAwareProcessorManager';
 import { LifecycleManager } from './LifecycleManager';
 
@@ -20,7 +20,7 @@ export class ComponentInstanceBuilder<T> {
         private readonly instAwareProcessorManager: InstantiationAwareProcessorManager
     ) {
         this.lifecycleResolver = new LifecycleManager<T>(componentClass, container);
-        const reader = MetadataFactory.getMetadata(componentClass, ClassMetadata).reader();
+        const reader = MetadataInstanceManager.getMetadata(componentClass, ClassMetadata).reader();
         this.appendClassMetadata(reader);
     }
     appendLazyMode(lazyMode: boolean) {
