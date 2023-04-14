@@ -19,7 +19,7 @@ describe('ServiceFactory', () => {
         expect(service.str).toStrictEqual(VALUE);
     });
     // eslint-disable-next-line prettier/prettier
-    it.only('should be able to inject value created by other service\'s member functions', () => {
+    it('should be able to inject value created by other service\'s member functions', () => {
         const context = new ApplicationContext();
         const FACTORY_IDENTIFIER = '';
         const VALUE = Symbol('value');
