@@ -2,16 +2,16 @@
 import { Aspect, JoinPoint } from './Aspect';
 import { ApplicationContext } from '../foundation/ApplicationContext';
 import { Newable } from '../types/Newable';
-import { defineLazyProperty } from '../utils/defineLazyProperty';
 import { Inject } from '../decorators/Inject';
+import { lazyProp } from '@vgerbot/lazy';
 
 export abstract class ComponentMethodAspect implements Aspect {
     public static create(clazz: Newable<unknown>, methodName: string | symbol): Newable<Aspect> {
         return class ComponentMethodAspectImpl extends ComponentMethodAspect {
             constructor() {
                 super();
-                defineLazyProperty(this, 'aspectInstance', () => {
-                    return this.appCtx.getInstance(clazz);
+                lazyProp(this, 'aspectInstance', {
+                    evaluate: () => this.appCtx.getInstance(clazz)
                 });
             }
             execute(ctx: JoinPoint): any {
