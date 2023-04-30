@@ -1,7 +1,7 @@
 {
     "name": "@vgerbot/ioc",
-    "version": "1.0.0",
-    "description": "",
+    "version": "1.0.0-alpha.0",
+    "description": "A lightweight inversion of control container for Javascript powered by TypeScript",
     "main": "dist/index.cjs.js",
     "module": "dist/index.esm.js",
     "browser": "dist/index.umd.js",
@@ -31,8 +31,14 @@
         "type": "git",
         "url": "git+https://github.com/vgerbot-libraries/ioc.git"
     },
-    "keywords": [],
-    "author": "",
+    "keywords": ["ioc"],
+    "author": "JianXin Yang <vgerbot@gmail.com>",
+    "files": [
+        "dist"
+    ],
+    "publishConfig": {
+        "access": "public"
+    },
     "license": "ISC",
     "devDependencies": {
         "@commitlint/cli": "^17.4.3",
