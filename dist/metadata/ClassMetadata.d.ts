@@ -11,6 +11,7 @@ export declare class MarkInfoContainer {
     private readonly map;
     getMarkInfo(method: MemberKey): MarkInfo;
     mark(method: MemberKey, key: MemberKey, value: unknown): void;
+    getMembers(): Set<MemberKey>;
 }
 export declare class ParameterMarkInfoContainer {
     private readonly map;
@@ -29,6 +30,7 @@ export interface ClassMetadataReader<T> extends MetadataReader {
     getMethods(lifecycle: Lifecycle): Array<string | symbol>;
     getPropertyTypeMap(): Map<string | symbol, Identifier>;
     getCtorMarkInfo(): MarkInfo;
+    getAllMarkedMembers(): Set<MemberKey>;
     getMembersMarkInfo(methodKey: keyof T): MarkInfo;
     getParameterMarkInfo(methodKey: keyof T): Record<number, MarkInfo>;
 }

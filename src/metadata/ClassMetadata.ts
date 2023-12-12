@@ -24,6 +24,9 @@ export class MarkInfoContainer {
         const markInfo = this.map.get(method);
         markInfo[key] = value;
     }
+    getMembers() {
+        return new Set(this.map.keys());
+    }
 }
 
 export class ParameterMarkInfoContainer {
@@ -54,6 +57,7 @@ export interface ClassMetadataReader<T> extends MetadataReader {
     getMethods(lifecycle: Lifecycle): Array<string | symbol>;
     getPropertyTypeMap(): Map<string | symbol, Identifier>;
     getCtorMarkInfo(): MarkInfo;
+    getAllMarkedMembers(): Set<MemberKey>;
     getMembersMarkInfo(methodKey: keyof T): MarkInfo;
     getParameterMarkInfo(methodKey: keyof T): Record<number, MarkInfo>;
 }
@@ -162,6 +166,9 @@ export class ClassMetadata<T> implements Metadata<ClassMetadataReader<T>, Newabl
             getPropertyTypeMap: () => new Map(this.propertyTypesMap),
             getCtorMarkInfo: (): MarkInfo => {
                 return { ...this.marks.ctor };
+            },
+            getAllMarkedMembers: () => {
+                return this.marks.members.getMembers();
             },
             getMembersMarkInfo: (key: keyof T): MarkInfo => {
                 return this.marks.members.getMarkInfo(key);
