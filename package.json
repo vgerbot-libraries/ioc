@@ -1,6 +1,6 @@
 {
     "name": "@vgerbot/ioc",
-    "version": "1.0.0-alpha.1",
+    "version": "1.0.0-alpha.2",
     "description": "A lightweight inversion of control container for Javascript powered by TypeScript",
     "main": "dist/index.cjs.js",
     "module": "dist/index.esm.js",
