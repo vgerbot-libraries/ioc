@@ -8,6 +8,7 @@ import { Newable } from '../types/Newable';
 import { createDefaultValueMap } from '../common/DefaultValueMap';
 import { MetadataInstanceManager } from './MetadataInstanceManager';
 import { MemberKey } from '../types/MemberKey';
+import { KeyOf } from '../types/KeyOf';
 
 const CLASS_METADATA_KEY = 'ioc:class-metadata';
 
@@ -58,8 +59,8 @@ export interface ClassMetadataReader<T> extends MetadataReader {
     getPropertyTypeMap(): Map<string | symbol, Identifier>;
     getCtorMarkInfo(): MarkInfo;
     getAllMarkedMembers(): Set<MemberKey>;
-    getMembersMarkInfo(methodKey: keyof T): MarkInfo;
-    getParameterMarkInfo(methodKey: keyof T): Record<number, MarkInfo>;
+    getMembersMarkInfo(methodKey: KeyOf<T>): MarkInfo;
+    getParameterMarkInfo(methodKey: KeyOf<T>): Record<number, MarkInfo>;
 }
 
 export class ClassMetadata<T> implements Metadata<ClassMetadataReader<T>, Newable<T>> {
@@ -170,11 +171,11 @@ export class ClassMetadata<T> implements Metadata<ClassMetadataReader<T>, Newabl
             getAllMarkedMembers: () => {
                 return this.marks.members.getMembers();
             },
-            getMembersMarkInfo: (key: keyof T): MarkInfo => {
-                return this.marks.members.getMarkInfo(key);
+            getMembersMarkInfo: (key: KeyOf<T>): MarkInfo => {
+                return this.marks.members.getMarkInfo(key as MemberKey);
             },
-            getParameterMarkInfo: (methodKey: keyof T): Record<number, MarkInfo> => {
-                return this.marks.params.getMarkInfo(methodKey);
+            getParameterMarkInfo: (methodKey: KeyOf<T>): Record<number, MarkInfo> => {
+                return this.marks.params.getMarkInfo(methodKey as MemberKey);
             }
         };
     }

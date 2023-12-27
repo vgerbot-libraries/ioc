@@ -4,6 +4,7 @@ import { Identifier } from '../types/Identifier';
 import { Lifecycle } from '../foundation/Lifecycle';
 import { Newable } from '../types/Newable';
 import { MemberKey } from '../types/MemberKey';
+import { KeyOf } from '../types/KeyOf';
 export interface MarkInfo {
     [key: string | symbol]: unknown;
 }
@@ -31,8 +32,8 @@ export interface ClassMetadataReader<T> extends MetadataReader {
     getPropertyTypeMap(): Map<string | symbol, Identifier>;
     getCtorMarkInfo(): MarkInfo;
     getAllMarkedMembers(): Set<MemberKey>;
-    getMembersMarkInfo(methodKey: keyof T): MarkInfo;
-    getParameterMarkInfo(methodKey: keyof T): Record<number, MarkInfo>;
+    getMembersMarkInfo(methodKey: KeyOf<T>): MarkInfo;
+    getParameterMarkInfo(methodKey: KeyOf<T>): Record<number, MarkInfo>;
 }
 export declare class ClassMetadata<T> implements Metadata<ClassMetadataReader<T>, Newable<T>> {
     static getReflectKey(): string;

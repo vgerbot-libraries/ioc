@@ -1,16 +1,17 @@
 import { Identifier } from './Identifier';
+import { KeyOf } from './KeyOf';
 
 export interface SaveInstanceOptions<T, O> {
     identifier: Identifier<T>;
     instance: T;
     owner?: O;
-    ownerPropertyKey?: keyof O;
+    ownerPropertyKey?: KeyOf<T>;
 }
 
 export interface GetInstanceOptions<T, O> {
     identifier: Identifier<T>;
     owner?: O;
-    ownerPropertyKey?: keyof O;
+    ownerPropertyKey?: KeyOf<T>;
 }
 
 export interface InstanceResolution {
