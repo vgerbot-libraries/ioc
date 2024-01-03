@@ -34,7 +34,17 @@ export declare class ApplicationContext {
     bindInstance<T>(identifier: string | symbol, instance: T): void;
     registerInstanceScopeResolution<T extends Newable<InstanceResolution>>(scope: InstanceScope | string, resolutionConstructor: T, constructorArgs?: ConstructorParameters<T>): void;
     registerEvaluator(name: string, evaluatorClass: Newable<Evaluator>): void;
+    /**
+     * @description Registers an InstantiationAwareProcessor class to customize
+     *      the instantiation process at various stages within the IoC
+     * @deprecated Replaced with {@link registerBeforeInstantiationProcessor} and {@link registerAfterInstantiationProcessor}
+     * @param {Newable<PartialInstAwareProcessor>} clazz
+     * @see InstantiationAwareProcessor
+     * @since 1.0.0
+     */
     registerInstAwareProcessor(clazz: Newable<PartialInstAwareProcessor>): void;
+    registerBeforeInstantiationProcessor(processor: <T>(constructor: Newable<T>, args: unknown[]) => T | undefined | void): void;
+    registerAfterInstantiationProcessor(processor: <T extends object>(instance: T) => T): void;
     onPreDestroy(listener: EventListener): () => void;
     getClassMetadata<T>(ctor: Newable<T>): ClassMetadataReader<T>;
 }

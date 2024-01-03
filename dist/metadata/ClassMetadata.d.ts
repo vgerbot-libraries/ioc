@@ -44,6 +44,7 @@ export declare class ClassMetadata<T> implements Metadata<ClassMetadataReader<T>
     private clazz;
     private readonly marks;
     static getInstance<T>(ctor: Newable<T>): ClassMetadata<any>;
+    static getReader<T>(ctor: Newable<T>): ClassMetadataReader<any>;
     init(target: Newable<T>): void;
     marker(): {
         ctor: (key: string | symbol, value: unknown) => void;

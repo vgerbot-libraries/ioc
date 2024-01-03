@@ -14,6 +14,11 @@ export interface GlobalMetadataReader {
 export declare class GlobalMetadata implements Metadata<GlobalMetadataReader, void> {
     private static readonly INSTANCE;
     static getInstance(): GlobalMetadata;
+    static getReader(): {
+        getComponentFactory: <T>(key: FactoryIdentifier) => ServiceFactoryDef<T> | undefined;
+        getClassMetadata: <T_1>(aliasName: string | symbol) => ClassMetadata<T_1> | undefined;
+        getInstAwareProcessorClasses: () => Newable<PartialInstAwareProcessor>[];
+    };
     private classAliasMetadataMap;
     private componentFactories;
     private readonly processorClasses;
