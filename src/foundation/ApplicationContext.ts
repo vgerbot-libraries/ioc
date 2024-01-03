@@ -185,8 +185,31 @@ export class ApplicationContext {
         metadata.setScope(InstanceScope.SINGLETON);
         this.evaluatorClasses.set(name, evaluatorClass);
     }
+    /**
+     * @deprecated
+     * @param clazz Newable<PartialInstAwareProcessor>
+     * @since 1.0.0
+     */
     registerInstAwareProcessor(clazz: Newable<PartialInstAwareProcessor>) {
         this.instAwareProcessorManager.appendInstAwareProcessorClass(clazz);
+    }
+    registerBeforeInstantiationProcessor(processor: <T>(constructor: Newable<T>, args: unknown[]) => T | undefined | void) {
+        this.instAwareProcessorManager.appendInstAwareProcessorClass(
+            class InnerProcessor implements PartialInstAwareProcessor {
+                beforeInstantiation<T>(constructor: Newable<T>, args: unknown[]): void | T | undefined {
+                    return processor(constructor, args);
+                }
+            }
+        );
+    }
+    registerAfterInstantiationProcessor(processor: <T extends object>(instance: T) => T) {
+        this.instAwareProcessorManager.appendInstAwareProcessorClass(
+            class InnerProcessor implements PartialInstAwareProcessor {
+                afterInstantiation<T extends object>(instance: T): T {
+                    return processor(instance);
+                }
+            }
+        );
     }
     onPreDestroy(listener: EventListener) {
         return this.eventEmitter.on(PRE_DESTROY_EVENT_KEY, listener);
