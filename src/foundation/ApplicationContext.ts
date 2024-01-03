@@ -186,8 +186,11 @@ export class ApplicationContext {
         this.evaluatorClasses.set(name, evaluatorClass);
     }
     /**
-     * @deprecated
-     * @param clazz Newable<PartialInstAwareProcessor>
+     * @description Registers an InstantiationAwareProcessor class to customize
+     *      the instantiation process at various stages within the IoC
+     * @deprecated Replaced with {@link registerBeforeInstantiationProcessor} and {@link registerAfterInstantiationProcessor}
+     * @param {Newable<PartialInstAwareProcessor>} clazz
+     * @see InstantiationAwareProcessor
      * @since 1.0.0
      */
     registerInstAwareProcessor(clazz: Newable<PartialInstAwareProcessor>) {
@@ -215,6 +218,6 @@ export class ApplicationContext {
         return this.eventEmitter.on(PRE_DESTROY_EVENT_KEY, listener);
     }
     getClassMetadata<T>(ctor: Newable<T>) {
-        return ClassMetadata.getInstance(ctor).reader() as ClassMetadataReader<T>;
+        return ClassMetadata.getReader(ctor) as ClassMetadataReader<T>;
     }
 }

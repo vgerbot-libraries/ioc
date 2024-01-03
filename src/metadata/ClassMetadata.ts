@@ -81,6 +81,9 @@ export class ClassMetadata<T> implements Metadata<ClassMetadataReader<T>, Newabl
     static getInstance<T>(ctor: Newable<T>) {
         return MetadataInstanceManager.getMetadata(ctor, ClassMetadata);
     }
+    static getReader<T>(ctor: Newable<T>) {
+        return this.getInstance(ctor).reader();
+    }
 
     init(target: Newable<T>) {
         this.clazz = target;

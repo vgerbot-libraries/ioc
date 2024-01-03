@@ -33,7 +33,7 @@ export class ComponentInstanceBuilder<T> {
                 return this.container.getInstance(it);
             });
         };
-        const globalMetadataReader = GlobalMetadata.getInstance().reader();
+        const globalMetadataReader = GlobalMetadata.getReader();
         const properties = classMetadataReader.getPropertyTypeMap();
         for (const [propertyName, propertyType] of properties) {
             if (typeof propertyType === 'function') {

@@ -9,7 +9,7 @@ export class InstantiationAwareProcessorManager {
     private instAwareProcessorClasses: Set<Newable<PartialInstAwareProcessor>> = new Set();
     @lazyMember<InstantiationAwareProcessorManager, keyof InstantiationAwareProcessorManager, PartialInstAwareProcessor[]>({
         evaluate: instance => {
-            const globalInstAwareProcessorClasses = GlobalMetadata.getInstance().reader().getInstAwareProcessorClasses();
+            const globalInstAwareProcessorClasses = GlobalMetadata.getReader().getInstAwareProcessorClasses();
             const instAwareProcessorClasses = globalInstAwareProcessorClasses.concat(
                 Array.from(instance.instAwareProcessorClasses)
             );
@@ -18,7 +18,7 @@ export class InstantiationAwareProcessorManager {
         resetBy: [
             instance => instance.instAwareProcessorClasses.size,
             () => {
-                const globalInstAwareProcessorClasses = GlobalMetadata.getInstance().reader().getInstAwareProcessorClasses();
+                const globalInstAwareProcessorClasses = GlobalMetadata.getReader().getInstAwareProcessorClasses();
                 return globalInstAwareProcessorClasses.length;
             }
         ]

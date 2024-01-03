@@ -17,6 +17,9 @@ export class GlobalMetadata implements Metadata<GlobalMetadataReader, void> {
     static getInstance() {
         return GlobalMetadata.INSTANCE;
     }
+    static getReader() {
+        return this.getInstance().reader();
+    }
     private classAliasMetadataMap = new Map<string | symbol, ClassMetadata<unknown>>();
     private componentFactories = new Map<FactoryIdentifier, ServiceFactoryDef<unknown>>();
     private readonly processorClasses: Set<Newable<PartialInstAwareProcessor>> = new Set();
