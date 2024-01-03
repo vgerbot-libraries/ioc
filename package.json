@@ -1,12 +1,12 @@
 {
     "name": "@vgerbot/ioc",
-    "version": "1.0.0-alpha.4",
+    "version": "1.0.1",
     "description": "A lightweight inversion of control container for Javascript powered by TypeScript",
     "main": "dist/index.cjs.js",
     "module": "dist/index.esm.js",
     "browser": "dist/index.umd.js",
     "distDir": "dist/",
-    "library": "boilerplate",
+    "library": "IoC",
     "types": "dist/index.d.ts",
     "typings": "dist/index.d.ts",
     "scripts": {
