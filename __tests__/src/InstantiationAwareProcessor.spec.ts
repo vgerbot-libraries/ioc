@@ -185,4 +185,34 @@ describe('InstantiationAwareProcessor', () => {
             expect(potassiumPhosphate).toBe('Two pounds of potassium phosphate');
         });
     });
+    describe('registerBeforeInstantiationProcessor', () => {
+        it('should the processor be called before creating an instance', () => {
+            class Service {
+                hello() {
+                    console.log('hello');
+                }
+            }
+            const app = new ApplicationContext();
+            const fn = jest.fn();
+            app.registerBeforeInstantiationProcessor(fn);
+            app.getInstance(Service);
+            expect(fn).toBeCalled();
+            app.getInstance(Service);
+            expect(fn).toBeCalledTimes(1);
+        });
+    });
+    describe('registerAfterInstantiationProcessor', () => {
+        it('should the processor be called after creating an instance', () => {
+            class Service {
+                hello() {
+                    console.log('hello');
+                }
+            }
+            const app = new ApplicationContext();
+            const fn = jest.fn();
+            app.registerBeforeInstantiationProcessor(fn);
+            const instance = app.getInstance(Service);
+            expect(fn).toBeCalledWith(instance);
+        });
+    });
 });
