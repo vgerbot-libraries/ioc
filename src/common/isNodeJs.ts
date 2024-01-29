@@ -1,7 +1,6 @@
 export const isNodeJs = (() => {
     try {
-        eval('require("os").arch();');
-        return true;
+        return process.versions.node !== null;
     } catch (e) {
         return false;
     }
