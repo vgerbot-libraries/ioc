@@ -4,7 +4,7 @@ import { FactoryIdentifier } from '../types/FactoryIdentifier';
 import { Instance } from '../types/Instance';
 import { isNotDefined } from '../common/isNotDefined';
 
-export function Factory(produceIdentifier?: FactoryIdentifier): MethodDecorator {
+export function Factory(produceIdentifier?: FactoryIdentifier, isSingle: boolean = true): MethodDecorator {
     return (target: Object, propertyKey: string | symbol) => {
         const metadata = GlobalMetadata.getInstance();
         const clazz = target.constructor as Newable<Instance<unknown>>;
@@ -31,7 +31,8 @@ export function Factory(produceIdentifier?: FactoryIdentifier): MethodDecorator 
                     return () => func;
                 }
             },
-            injections
+            injections,
+            isSingle
         );
     };
 }

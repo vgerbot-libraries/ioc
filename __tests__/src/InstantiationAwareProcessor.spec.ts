@@ -178,7 +178,7 @@ describe('InstantiationAwareProcessor', () => {
                 }
             );
 
-            const urea = app.getInstance('urea');
+            const urea = app.getInstance<string, void>('urea');
             const potassiumPhosphate = app.getInstance('potassium phosphate');
 
             expect(urea).toBe('Two pounds of urea');
@@ -196,7 +196,7 @@ describe('InstantiationAwareProcessor', () => {
             const fn = jest.fn();
             app.registerBeforeInstantiationProcessor(fn);
             app.getInstance(Service);
-            expect(fn).toBeCalled();
+            expect(fn).toBeCalledWith(Service, []);
             app.getInstance(Service);
             expect(fn).toBeCalledTimes(1);
         });
@@ -210,7 +210,7 @@ describe('InstantiationAwareProcessor', () => {
             }
             const app = new ApplicationContext();
             const fn = jest.fn();
-            app.registerBeforeInstantiationProcessor(fn);
+            app.registerAfterInstantiationProcessor(fn);
             const instance = app.getInstance(Service);
             expect(fn).toBeCalledWith(instance);
         });

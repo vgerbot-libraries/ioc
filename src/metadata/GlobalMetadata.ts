@@ -6,6 +6,7 @@ import { ClassMetadata } from './ClassMetadata';
 import { ServiceFactoryDef } from '../foundation/ServiceFactoryDef';
 import { Newable } from '../types/Newable';
 import { PartialInstAwareProcessor } from '../types/InstantiationAwareProcessor';
+import { FactoryRecorder } from '../common/FactoryRecorder';
 
 export interface GlobalMetadataReader {
     getComponentFactory<T>(key: FactoryIdentifier): ServiceFactoryDef<T> | undefined;
@@ -21,10 +22,15 @@ export class GlobalMetadata implements Metadata<GlobalMetadataReader, void> {
         return this.getInstance().reader();
     }
     private classAliasMetadataMap = new Map<string | symbol, ClassMetadata<unknown>>();
-    private componentFactories = new Map<FactoryIdentifier, ServiceFactoryDef<unknown>>();
+    private componentFactories = new FactoryRecorder();
     private readonly processorClasses: Set<Newable<PartialInstAwareProcessor>> = new Set();
-    recordFactory<T>(symbol: FactoryIdentifier, factory: ServiceFactory<T, unknown>, injections?: Identifier[]) {
-        this.componentFactories.set(symbol, new ServiceFactoryDef(factory, injections));
+    recordFactory<T>(
+        symbol: FactoryIdentifier,
+        factory: ServiceFactory<T, unknown>,
+        injections: Identifier[] = [],
+        isSingle: boolean = true
+    ) {
+        this.componentFactories.append(symbol, factory, injections, isSingle);
     }
     recordClassAlias<T>(aliasName: string | symbol, metadata: ClassMetadata<T>) {
         this.classAliasMetadataMap.set(aliasName, metadata);
@@ -38,7 +44,7 @@ export class GlobalMetadata implements Metadata<GlobalMetadataReader, void> {
     reader() {
         return {
             getComponentFactory: <T>(key: FactoryIdentifier): ServiceFactoryDef<T> | undefined => {
-                return this.componentFactories.get(key) as ServiceFactoryDef<T> | undefined;
+                return this.componentFactories.get(key);
             },
             getClassMetadata: <T>(aliasName: string | symbol): ClassMetadata<T> | undefined => {
                 return this.classAliasMetadataMap.get(aliasName) as ClassMetadata<T> | undefined;

@@ -4,7 +4,7 @@ type InvokeFunctionArgs = {
     args?: unknown[];
 };
 type InvokeFunctionInjections = {
-    injections?: Identifier[];
+    injections: Identifier[];
 };
 
 type InvokeFunctionBasicOptions<T> = {
@@ -13,7 +13,7 @@ type InvokeFunctionBasicOptions<T> = {
 
 export type InvokeFunctionOptions<T> =
     | (InvokeFunctionBasicOptions<T> & InvokeFunctionArgs)
-    | (InvokeFunctionBasicOptions<T> & InvokeFunctionInjections);
+    | (InvokeFunctionBasicOptions<T> & Partial<InvokeFunctionInjections>);
 
 export function hasArgs<T>(options: InvokeFunctionOptions<T>): options is InvokeFunctionBasicOptions<T> & InvokeFunctionArgs {
     return 'args' in options;

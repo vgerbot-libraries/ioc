@@ -20,6 +20,9 @@ export class JSONDataEvaluator implements Evaluator {
     recordData(namespace: string, data: JSONData) {
         this.namespaceDataMap.set(namespace, data);
     }
+    getJSONData(namespace: string) {
+        return this.namespaceDataMap.get(namespace);
+    }
 }
 
 function runExpression(expression: string, rootContext: Object) {

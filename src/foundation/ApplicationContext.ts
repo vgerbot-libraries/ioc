@@ -13,7 +13,6 @@ import { FunctionMetadata } from '../metadata/FunctionMetadata';
 import { ApplicationContextOptions } from '../types/ApplicationContextOptions';
 import { Newable } from '../types/Newable';
 import { MetadataInstanceManager } from '../metadata/MetadataInstanceManager';
-import { ServiceFactoryDef } from './ServiceFactoryDef';
 import { SingletonInstanceResolution } from '../resolution/SingletonInstanceResolution';
 import { GlobalSharedInstanceResolution } from '../resolution/GlobalSharedInstanceResolution';
 import { TransientInstanceResolution } from '../resolution/TransientInstanceResolution';
@@ -29,13 +28,14 @@ import { AOPInstantiationAwareProcessor } from '../aop/AOPInstantiationAwareProc
 import { InstantiationAwareProcessorManager } from './InstantiationAwareProcessorManager';
 import { LifecycleManager } from './LifecycleManager';
 import { Instance } from '../types/Instance';
+import { FactoryRecorder } from '../common/FactoryRecorder';
 
 const PRE_DESTROY_EVENT_KEY = 'container:event:pre-destroy';
 
 export class ApplicationContext {
     private resolutions = new Map<InstanceScope | string, InstanceResolution>();
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    private factories = new Map<FactoryIdentifier, ServiceFactoryDef<any>>();
+    private factories = new FactoryRecorder();
     private evaluatorClasses = new Map<string, Newable<Evaluator>>();
     private eventEmitter = new EventEmitter();
     private readonly defaultScope: InstanceScope;
@@ -55,18 +55,17 @@ export class ApplicationContext {
         this.instAwareProcessorManager = new InstantiationAwareProcessorManager(this);
         this.registerInstAwareProcessor(AOPInstantiationAwareProcessor.create(this));
     }
-    getInstance<T, O>(symbol: Identifier<T>, owner?: O): T {
+    getInstance<T, O>(symbol: Newable<T>, owner?: O): T;
+    getInstance<T, O>(symbol: Identifier<T>, owner?: O): T | T[];
+    getInstance<T, O>(symbol: Identifier<T>, owner?: O): T | T[] {
         if (symbol === ApplicationContext) {
             return this as unknown as T;
         }
         if (typeof symbol === 'string' || typeof symbol === 'symbol') {
             const factoryDef = this.getFactory(symbol);
             if (factoryDef) {
-                const { factory, injections } = factoryDef;
-                const fn = factory(this, owner);
-                let result = this.invoke(fn, {
-                    injections
-                }) as T;
+                const producer = factoryDef.produce(this, owner);
+                let result = producer() as T | T[];
                 const constr = result?.constructor;
                 if (typeof constr === 'function') {
                     const componentClass = constr as Newable<T>;
@@ -82,7 +81,7 @@ export class ApplicationContext {
             } else {
                 const classMetadata = GlobalMetadata.getInstance().reader().getClassMetadata<T>(symbol);
                 if (!classMetadata) {
-                    throw new Error('');
+                    throw new Error(`Class alias not found: ${symbol.toString()}`);
                 } else {
                     symbol = classMetadata.reader().getClass();
                 }
@@ -124,8 +123,13 @@ export class ApplicationContext {
         }
         return factory;
     }
-    bindFactory<T>(symbol: FactoryIdentifier, factory: ServiceFactory<T, unknown>, injections?: Identifier[]) {
-        this.factories.set(symbol, new ServiceFactoryDef(factory, injections));
+    bindFactory<T>(
+        symbol: FactoryIdentifier,
+        factory: ServiceFactory<T, unknown>,
+        injections?: Identifier[],
+        isSingle?: boolean
+    ) {
+        this.factories.append(symbol, factory, injections, isSingle);
     }
     invoke<R, Ctx>(func: AnyFunction<R, Ctx>, options: InvokeFunctionOptions<Ctx> = {}): R {
         let fn: AnyFunction<R>;
@@ -137,16 +141,28 @@ export class ApplicationContext {
         if (hasArgs(options)) {
             return options.args ? fn(...options.args) : fn();
         }
+        let argsIndentifiers: Identifier[] = [];
         if (hasInjections(options)) {
-            const args = options.injections ? options.injections.map(it => this.getInstance(it)) : [];
-            return args.length > 0 ? fn(...args) : fn();
+            argsIndentifiers = options.injections;
+        } else {
+            const metadata = MetadataInstanceManager.getMetadata(fn, FunctionMetadata).reader();
+            argsIndentifiers = metadata.getParameters();
         }
-        const metadata = MetadataInstanceManager.getMetadata(fn, FunctionMetadata).reader();
-        const parameterIdentifiers = metadata.getParameters();
-        const args = parameterIdentifiers.map(identifier => {
-            return this.getInstance(identifier);
+        const args = argsIndentifiers.map((identifier, index) => {
+            const instance = this.getInstance(identifier);
+            if (Array.isArray(instance)) {
+                const isArrayType = (identifier as unknown) === Array;
+                if (isArrayType) {
+                    return instance;
+                }
+                if (instance.length > 1) {
+                    throw new Error(`Multiple matching injectables found for parameter at ${index}.`);
+                }
+                return instance[0];
+            }
+            return instance;
         });
-        return fn(...args);
+        return args.length > 0 ? fn(...args) : fn();
     }
     destroy() {
         this.eventEmitter.emit(PRE_DESTROY_EVENT_KEY);
@@ -165,6 +181,10 @@ export class ApplicationContext {
     recordJSONData(namespace: string, data: JSONData) {
         const evaluator = this.getInstance(JSONDataEvaluator);
         evaluator.recordData(namespace, data);
+    }
+    getJSONData(namespace: string) {
+        const evaluator = this.getInstance(JSONDataEvaluator);
+        return evaluator.getJSONData(namespace);
     }
     bindInstance<T>(identifier: string | symbol, instance: T) {
         const resolution = this.resolutions.get(InstanceScope.SINGLETON);

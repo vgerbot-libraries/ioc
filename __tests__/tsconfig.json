@@ -1,17 +1,11 @@
 {
     "extends": "../tsconfig.json",
     "compilerOptions": {
-        "paths": {
-            "@src": ["/src"]
-        },
         "types": [
-            "reflect-metadata",
             "jest",
             "node"
         ],
-        "declaration": false,
-        "sourceMap": true,
-        "inlineSourceMap": true
+        "declaration": false
     },
     "include": [
         "./"
