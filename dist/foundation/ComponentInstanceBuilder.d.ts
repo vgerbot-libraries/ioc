@@ -10,6 +10,7 @@ export declare class ComponentInstanceBuilder<T> {
     private propertyFactories;
     private lazyMode;
     private lifecycleResolver;
+    private classMetadataReader;
     constructor(componentClass: Newable<T>, container: ApplicationContext, instAwareProcessorManager: InstantiationAwareProcessorManager);
     appendLazyMode(lazyMode: boolean): void;
     private appendClassMetadata;

@@ -22,7 +22,7 @@ export declare class GlobalMetadata implements Metadata<GlobalMetadataReader, vo
     private classAliasMetadataMap;
     private componentFactories;
     private readonly processorClasses;
-    recordFactory<T>(symbol: FactoryIdentifier, factory: ServiceFactory<T, unknown>, injections?: Identifier[]): void;
+    recordFactory<T>(symbol: FactoryIdentifier, factory: ServiceFactory<T, unknown>, injections?: Identifier[], isSingle?: boolean): void;
     recordClassAlias<T>(aliasName: string | symbol, metadata: ClassMetadata<T>): void;
     recordProcessorClass(clazz: Newable<PartialInstAwareProcessor>): void;
     init(): void;
