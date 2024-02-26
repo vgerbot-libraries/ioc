@@ -23,4 +23,11 @@ export class TransientInstanceResolution implements InstanceResolution {
         });
         this.instances.clear();
     }
+    destroyThat<T>(instance: T): void {
+        if (!this.instances.has(instance)) {
+            return;
+        }
+        invokePreDestroy(instance);
+        this.instances.delete(instance);
+    }
 }

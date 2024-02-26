@@ -48,4 +48,5 @@ export declare class ApplicationContext {
     registerAfterInstantiationProcessor(processor: <T extends object>(instance: T) => T): void;
     onPreDestroy(listener: EventListener): () => void;
     getClassMetadata<T>(ctor: Newable<T>): ClassMetadataReader<T>;
+    destroyTransientInstance<T>(instance: T): void;
 }

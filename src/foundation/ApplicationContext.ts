@@ -240,4 +240,8 @@ export class ApplicationContext {
     getClassMetadata<T>(ctor: Newable<T>) {
         return ClassMetadata.getReader(ctor) as ClassMetadataReader<T>;
     }
+    destroyTransientInstance<T>(instance: T) {
+        const resolution = this.resolutions.get(InstanceScope.TRANSIENT);
+        resolution?.destroyThat && resolution.destroyThat(instance);
+    }
 }

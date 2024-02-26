@@ -22,4 +22,6 @@ export interface InstanceResolution {
     getInstance<T, Owner>(options: GetInstanceOptions<T, Owner>): T | undefined;
 
     destroy(): void;
+
+    destroyThat?<T>(instance: T): void;
 }

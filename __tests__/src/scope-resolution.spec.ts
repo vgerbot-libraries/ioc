@@ -1,4 +1,4 @@
-import { ApplicationContext, InstanceResolution, InstanceScope, Scope } from '../../src';
+import { ApplicationContext, InstanceResolution, InstanceScope, PreDestroy, Scope } from '../../src';
 import { GetInstanceOptions } from '../../src/types/InstanceResolution';
 
 describe('InstanceScope', () => {
@@ -33,6 +33,33 @@ describe('InstanceScope', () => {
             const service2 = context.getInstance(Service);
 
             expect(service1 === service2).toBeFalsy();
+        });
+        it('should transient instance be destroyed correctly', () => {
+            const context = new ApplicationContext();
+            const fn = jest.fn();
+            @Scope(InstanceScope.TRANSIENT)
+            class TransientService {
+                @PreDestroy()
+                onDestroy() {
+                    fn.call(this);
+                }
+            }
+            const instance = context.getInstance(TransientService);
+            context.destroyTransientInstance(instance);
+            expect(fn).toBeCalledWith(instance);
+        });
+        it('should singleton instance not be destroyed by destroyTransientInstance', () => {
+            const context = new ApplicationContext();
+            const fn = jest.fn();
+            class SingletonService {
+                @PreDestroy()
+                onDestroy() {
+                    fn.call(this);
+                }
+            }
+            const instance = context.getInstance(SingletonService);
+            context.destroyTransientInstance(instance);
+            expect(fn).not.toBeCalled();
         });
     });
     describe('Custom instance scope', () => {

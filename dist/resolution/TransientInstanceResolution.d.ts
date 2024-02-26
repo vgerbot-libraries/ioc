@@ -5,4 +5,5 @@ export declare class TransientInstanceResolution implements InstanceResolution {
     getInstance<T>(): T | undefined;
     saveInstance<T, O>(options: SaveInstanceOptions<T, O>): void;
     destroy(): void;
+    destroyThat<T>(instance: T): void;
 }

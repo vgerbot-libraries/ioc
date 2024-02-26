@@ -16,4 +16,5 @@ export interface InstanceResolution {
     saveInstance<T, Owner>(options: SaveInstanceOptions<T, Owner>): void;
     getInstance<T, Owner>(options: GetInstanceOptions<T, Owner>): T | undefined;
     destroy(): void;
+    destroyThat?<T>(instance: T): void;
 }
