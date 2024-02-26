@@ -4,14 +4,14 @@ import { Advice } from './Advice';
 import { Newable } from '../types/Newable';
 import { Aspect, JoinPoint, ProceedingJoinPoint } from './Aspect';
 import { AspectUtils } from './AspectUtils';
-import { UseAspectMetadataReader } from './AOPClassMetadata';
+import { AspectInfo } from './AspectMetadta';
 
 export function createAspect<T>(
     appCtx: ApplicationContext,
     target: T,
     methodName: string | symbol,
     methodFunc: Function,
-    metadata: UseAspectMetadataReader
+    aspects: AspectInfo[]
 ) {
     const createAspectCtx = (advice: Advice, args: any[], returnValue: any = null, error: any = null): JoinPoint => {
         return {
@@ -24,13 +24,16 @@ export function createAspect<T>(
         };
     };
     const aspectUtils = new AspectUtils(methodFunc as (...args: any[]) => any);
-    const ClassToInstance = (AspectClass: Newable<Aspect>) => appCtx.getInstance(AspectClass);
-    const beforeAdviceAspects = metadata.getAspectsOf(methodName, Advice.Before).map(ClassToInstance);
-    const afterAdviceAspects = metadata.getAspectsOf(methodName, Advice.After).map(ClassToInstance);
-    const tryCatchAdviceAspects = metadata.getAspectsOf(methodName, Advice.Thrown).map(ClassToInstance);
-    const tryFinallyAdviceAspects = metadata.getAspectsOf(methodName, Advice.Finally).map(ClassToInstance);
-    const afterReturnAdviceAspects = metadata.getAspectsOf(methodName, Advice.AfterReturn).map(ClassToInstance);
-    const aroundAdviceAspects = metadata.getAspectsOf(methodName, Advice.Around).map(ClassToInstance);
+    const ClassToInstance = (aspectInfo: AspectInfo) => appCtx.getInstance(aspectInfo.aspectClass) as Aspect;
+    const targetConstructor = (target as object).constructor as Newable<T>;
+    const allMatchAspects = aspects.filter(it => it.pointcut.test(targetConstructor, methodName));
+
+    const beforeAdviceAspects = allMatchAspects.filter(it => it.advice === Advice.Before).map(ClassToInstance);
+    const afterAdviceAspects = allMatchAspects.filter(it => it.advice === Advice.After).map(ClassToInstance);
+    const tryCatchAdviceAspects = allMatchAspects.filter(it => it.advice === Advice.Thrown).map(ClassToInstance);
+    const tryFinallyAdviceAspects = allMatchAspects.filter(it => it.advice === Advice.Finally).map(ClassToInstance);
+    const afterReturnAdviceAspects = allMatchAspects.filter(it => it.advice === Advice.AfterReturn).map(ClassToInstance);
+    const aroundAdviceAspects = allMatchAspects.filter(it => it.advice === Advice.Around).map(ClassToInstance);
 
     if (beforeAdviceAspects.length > 0) {
         aspectUtils.append(Advice.Before, (args: any[]) => {

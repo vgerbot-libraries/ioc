@@ -1,9 +1,9 @@
 import { PartialInstAwareProcessor } from '../types/InstantiationAwareProcessor';
-import { MetadataInstanceManager } from '../metadata/MetadataInstanceManager';
 import type { ApplicationContext } from '../foundation/ApplicationContext';
 import { createAspect } from './createAspect';
-import { AOPClassMetadata } from './AOPClassMetadata';
 import { Newable } from '../types/Newable';
+import { AspectMetadata } from './AspectMetadta';
+import { Identifier } from '../types/Identifier';
 
 export abstract class AOPInstantiationAwareProcessor implements PartialInstAwareProcessor {
     static create(appCtx: ApplicationContext): Newable<AOPInstantiationAwareProcessor> {
@@ -15,20 +15,21 @@ export abstract class AOPInstantiationAwareProcessor implements PartialInstAware
     afterInstantiation<T extends object>(instance: T): T {
         const clazz = instance.constructor;
 
-        const useAspectMetadata = MetadataInstanceManager.getMetadata(clazz, AOPClassMetadata);
-        const useAspectMetadataReader = useAspectMetadata.reader();
-        const useAspectsMap = useAspectMetadataReader.getAspects();
-        if (useAspectsMap.size === 0) {
-            return instance;
-        }
+        const aspectMetadata = AspectMetadata.getInstance().reader();
+        // const useAspectMetadata = MetadataInstanceManager.getMetadata(clazz, AOPClassMetadata);
+        // const useAspectMetadataReader = useAspectMetadata.reader();
+        // const useAspectsMap = useAspectMetadataReader.getAspects();
+        // if (useAspectsMap.size === 0) {
+        //     return instance;
+        // }
 
         const aspectStoreMap = new WeakMap<object, Map<string | symbol, Function>>();
         aspectStoreMap.set(instance, new Map<string | symbol, Function>());
 
         const proxyResult = new Proxy(instance, {
-            get: (target, prop) => {
-                const originValue = (target as Record<string | symbol, unknown>)[prop];
-                if (prop in target && typeof originValue === 'function') {
+            get: (target, prop, receiver) => {
+                const originValue = Reflect.get(target, prop, receiver);
+                if (Reflect.has(target, prop) && typeof originValue === 'function') {
                     const aspectMap = aspectStoreMap.get(instance);
                     if (!aspectMap) {
                         return originValue;
@@ -36,7 +37,8 @@ export abstract class AOPInstantiationAwareProcessor implements PartialInstAware
                     if (aspectMap.has(prop)) {
                         return aspectMap.get(prop);
                     }
-                    const aspectFn = createAspect(this.appCtx, target, prop, originValue, useAspectMetadataReader);
+                    const aspectsOfMethod = aspectMetadata.getAspects(clazz as Identifier, prop);
+                    const aspectFn = createAspect(this.appCtx, target, prop, originValue, aspectsOfMethod);
                     aspectMap.set(prop, aspectFn);
                     return aspectFn;
                 }
