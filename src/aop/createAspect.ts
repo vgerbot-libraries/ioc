@@ -20,7 +20,8 @@ export function createAspect<T>(
             arguments: args,
             returnValue,
             error,
-            advice
+            advice,
+            ctx: appCtx
         };
     };
     const aspectUtils = new AspectUtils(methodFunc as (...args: any[]) => any);

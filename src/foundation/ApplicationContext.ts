@@ -41,6 +41,7 @@ export class ApplicationContext {
     private readonly defaultScope: InstanceScope;
     private readonly lazyMode: boolean;
     private readonly instAwareProcessorManager: InstantiationAwareProcessorManager;
+    private isDestroyed = false;
     public constructor(options: ApplicationContextOptions = {}) {
         this.defaultScope = options.defaultScope || InstanceScope.SINGLETON;
         this.lazyMode = options.lazyMode === undefined ? true : options.lazyMode;
@@ -165,6 +166,10 @@ export class ApplicationContext {
         return args.length > 0 ? fn(...args) : fn();
     }
     destroy() {
+        if (this.isDestroyed) {
+            return;
+        }
+        this.isDestroyed = true;
         this.eventEmitter.emit(PRE_DESTROY_EVENT_KEY);
         this.resolutions.forEach(it => {
             it.destroy();

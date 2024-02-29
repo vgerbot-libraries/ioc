@@ -1,3 +1,4 @@
+import { ApplicationContext } from '../foundation';
 import { Advice } from './Advice';
 export interface Aspect {
     execute(ctx: JoinPoint): any;
@@ -12,6 +13,7 @@ export interface JoinPoint {
     returnValue: any;
     error: any;
     advice: Advice;
+    ctx: ApplicationContext;
 }
 export interface ProceedingJoinPoint extends JoinPoint {
     proceed(args?: any[]): any;

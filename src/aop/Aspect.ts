@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { ApplicationContext } from '../foundation';
 import { Advice } from './Advice';
 
 export interface Aspect {
@@ -14,6 +15,7 @@ export interface JoinPoint {
     returnValue: any;
     error: any;
     advice: Advice;
+    ctx: ApplicationContext;
 }
 
 export interface ProceedingJoinPoint extends JoinPoint {

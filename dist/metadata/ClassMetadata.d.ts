@@ -61,5 +61,7 @@ export declare class ClassMetadata<T> implements Metadata<ClassMetadataReader<T>
     addLifecycleMethod(methodName: string | symbol, lifecycle: Lifecycle): void;
     private getLifecycles;
     getMethods(lifecycle: Lifecycle): Array<string | symbol>;
+    private getSuperClass;
+    private getSuperClassMetadata;
     reader(): ClassMetadataReader<T>;
 }

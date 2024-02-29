@@ -21,6 +21,7 @@ export declare class ApplicationContext {
     private readonly defaultScope;
     private readonly lazyMode;
     private readonly instAwareProcessorManager;
+    private isDestroyed;
     constructor(options?: ApplicationContextOptions);
     getInstance<T, O>(symbol: Newable<T>, owner?: O): T;
     getInstance<T, O>(symbol: Identifier<T>, owner?: O): T | T[];

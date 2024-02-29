@@ -13,6 +13,9 @@ export abstract class AOPInstantiationAwareProcessor implements PartialInstAware
     }
     protected abstract readonly appCtx: ApplicationContext;
     afterInstantiation<T extends object>(instance: T): T {
+        if (!instance || typeof instance !== 'object') {
+            return instance;
+        }
         const clazz = instance.constructor;
 
         const aspectMetadata = AspectMetadata.getInstance().reader();

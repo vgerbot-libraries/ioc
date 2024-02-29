@@ -155,7 +155,26 @@ export class ClassMetadata<T> implements Metadata<ClassMetadataReader<T>, Newabl
             return lifecycles.has(lifecycle);
         });
     }
+    private getSuperClass() {
+        const superClassPrototype = Object.getPrototypeOf(this.clazz);
+        if (!superClassPrototype) {
+            return null;
+        }
+        const superClass = superClassPrototype.constructor as Newable<unknown>;
+        if (superClass === this.clazz) {
+            return null;
+        }
+        return superClass;
+    }
+    private getSuperClassMetadata(): ClassMetadata<unknown> | null {
+        const superClass = this.getSuperClass();
+        if (!superClass) {
+            return null;
+        }
+        return ClassMetadata.getInstance(superClass);
+    }
     reader(): ClassMetadataReader<T> {
+        const superReader = this.getSuperClassMetadata()?.reader();
         return {
             getClass: () => this.clazz,
             getScope: () => {
@@ -165,14 +184,20 @@ export class ClassMetadata<T> implements Metadata<ClassMetadataReader<T>, Newabl
                 return this.constructorParameterTypes.slice(0);
             },
             getMethods: (lifecycle: Lifecycle) => {
-                return this.getMethods(lifecycle);
+                const superMethods = superReader?.getMethods(lifecycle) || [];
+                const thisMethods = this.getMethods(lifecycle);
+                return Array.from(new Set(superMethods.concat(thisMethods)));
             },
             getPropertyTypeMap: () => new Map(this.propertyTypesMap),
             getCtorMarkInfo: (): MarkInfo => {
                 return { ...this.marks.ctor };
             },
             getAllMarkedMembers: () => {
-                return this.marks.members.getMembers();
+                const superMethods = superReader?.getAllMarkedMembers();
+                const thisMembers = this.marks.members.getMembers();
+                const result = superMethods ? new Set(superMethods) : new Set<MemberKey>();
+                thisMembers.forEach(it => result.add(it));
+                return result;
             },
             getMembersMarkInfo: (key: KeyOf<T>): MarkInfo => {
                 return this.marks.members.getMarkInfo(key as MemberKey);
