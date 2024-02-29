@@ -31,7 +31,9 @@
         "type": "git",
         "url": "git+https://github.com/vgerbot-libraries/ioc.git"
     },
-    "keywords": ["ioc"],
+    "keywords": [
+        "ioc"
+    ],
     "author": "JianXin Yang <vgerbot@gmail.com>",
     "files": [
         "dist"
@@ -71,6 +73,7 @@
         "rollup-plugin-serve": "^2.0.2",
         "rollup-plugin-typescript2": "^0.34.1",
         "sucrase": "^3.29.0",
+        "ts-jest": "^29.1.2",
         "ts-node": "^10.9.1",
         "tslib": "^2.5.0",
         "typedoc": "^0.23.25",
@@ -82,8 +85,8 @@
     },
     "homepage": "https://github.com/vgerbot-libraries/ioc#readme",
     "dependencies": {
-        "reflect-metadata": "^0.1.13",
-        "@vgerbot/lazy": "^1.0.6"
+        "@vgerbot/lazy": "^1.0.6",
+        "reflect-metadata": "^0.1.13"
     },
     "optionalDependencies": {
         "minimist": "^1.2.8"

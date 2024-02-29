@@ -1,13 +1,11 @@
-import path from 'path';
-
+/** @type {import('ts-jest').JestConfigWithTsJest} */
 export default {
     verbose: true,
     transform: {
         '\\.tsx?$': [
-            'rollup-jest',
+            'ts-jest',
             {
-                useCache: false,
-                configFile: path.resolve(__dirname, '../rollup.config.test.js')
+                tsconfig: './__tests__/tsconfig.json'
             }
         ]
     },
