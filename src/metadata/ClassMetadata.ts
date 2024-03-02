@@ -188,7 +188,18 @@ export class ClassMetadata<T> implements Metadata<ClassMetadataReader<T>, Newabl
                 const thisMethods = this.getMethods(lifecycle);
                 return Array.from(new Set(superMethods.concat(thisMethods)));
             },
-            getPropertyTypeMap: () => new Map(this.propertyTypesMap),
+            getPropertyTypeMap: () => {
+                const superPropertyTypeMap = superReader?.getPropertyTypeMap();
+                const thisPropertyTypesMap = this.propertyTypesMap;
+                if (!superPropertyTypeMap) {
+                    return new Map(thisPropertyTypesMap);
+                }
+                const result = new Map(superPropertyTypeMap);
+                thisPropertyTypesMap.forEach((value, key) => {
+                    result.set(key, value);
+                });
+                return result;
+            },
             getCtorMarkInfo: (): MarkInfo => {
                 return { ...this.marks.ctor };
             },
