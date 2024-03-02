@@ -26,7 +26,8 @@ const rollupConfig: RollupOptions = {
             sourceMap: true
         }),
         typescript({})
-    ]
+    ],
+    external: /node_modules/
 };
 
 export default rollupConfig;
