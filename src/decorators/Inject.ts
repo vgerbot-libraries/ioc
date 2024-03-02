@@ -13,7 +13,6 @@ export function Inject<T>(constr?: Identifier<T>) {
                 constr = Reflect.getMetadata('design:paramtypes', target, propertyKey)[parameterIndex];
             }
             if (isNotDefined(constr)) {
-                console.log(target, propertyKey);
                 throw new Error('Type not recognized, injection cannot be performed');
             }
             const classMetadata = MetadataInstanceManager.getMetadata(targetConstr, ClassMetadata);
@@ -24,7 +23,6 @@ export function Inject<T>(constr?: Identifier<T>) {
                 constr = Reflect.getMetadata('design:type', target, propertyKey);
             }
             if (isNotDefined(constr)) {
-                console.log(target, propertyKey);
                 throw new Error('Type not recognized, injection cannot be performed');
             }
             const metadata = MetadataInstanceManager.getMetadata(target.constructor, ClassMetadata);
