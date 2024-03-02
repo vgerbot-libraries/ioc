@@ -39,8 +39,11 @@ function createOutputConfig(file: string, format: string, cfg: OutputOptions = {
             format,
             sourcemap: 'inline',
             name: pkg.library,
-            exports: 'named'
-        },
+            exports: 'named',
+            globals: {
+                '@vgerbot/lazy': 'lazy'
+            }
+        } as OutputOptions,
         cfg || {}
     );
 }
