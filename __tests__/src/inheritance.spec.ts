@@ -1,4 +1,4 @@
-import { ApplicationContext, PreDestroy } from '../../src';
+import { ApplicationContext, Inject, PreDestroy } from '../../src';
 
 describe('Inheritance', () => {
     it('should invoke methods marked with @PreDestroy() in parent class upon context destruction', () => {
@@ -41,5 +41,19 @@ describe('Inheritance', () => {
         ctx.destroy();
 
         expect(fn).toHaveBeenNthCalledWith(1, 'ChildService');
+    });
+    it('Should Successfully Inject Properties Defined in Parent Class', () => {
+        class Service {}
+
+        class Parent {
+            @Inject()
+            service!: Service;
+        }
+        class Child extends Parent {}
+
+        const ctx = new ApplicationContext();
+        const child = ctx.getInstance(Child);
+        const service = ctx.getInstance(Service);
+        expect(child.service).toStrictEqual(service);
     });
 });
