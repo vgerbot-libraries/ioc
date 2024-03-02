@@ -41,7 +41,7 @@ describe('InstanceScope', () => {
             class TransientService {
                 @PreDestroy()
                 onDestroy() {
-                    fn.call(this);
+                    fn(this);
                 }
             }
             const instance = context.getInstance(TransientService);
@@ -54,7 +54,7 @@ describe('InstanceScope', () => {
             class SingletonService {
                 @PreDestroy()
                 onDestroy() {
-                    fn.call(this);
+                    fn(this);
                 }
             }
             const instance = context.getInstance(SingletonService);

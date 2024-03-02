@@ -39,7 +39,7 @@ describe('InstantiationAwareProcessor', () => {
                 }
             );
             const service = app.getInstance(Service);
-            expect(service).toBe(service0);
+            expect(service).toStrictEqual(service0);
         });
         it('should execute until the instance is returned if there are multiple beforeInstantiation', () => {
             const fn0 = jest.fn();

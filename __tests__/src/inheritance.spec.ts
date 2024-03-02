@@ -6,7 +6,7 @@ describe('Inheritance', () => {
         class BaseService {
             @PreDestroy()
             onDestroy() {
-                fn();
+                fn(this);
             }
         }
         class ServiceA extends BaseService {}
