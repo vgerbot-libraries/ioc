@@ -32,6 +32,10 @@ export abstract class AOPInstantiationAwareProcessor implements PartialInstAware
         const proxyResult = new Proxy(instance, {
             get: (target, prop, receiver) => {
                 const originValue = Reflect.get(target, prop, receiver);
+                switch (prop) {
+                    case 'constructor':
+                        return originValue;
+                }
                 if (Reflect.has(target, prop) && typeof originValue === 'function') {
                     const aspectMap = aspectStoreMap.get(instance);
                     if (!aspectMap) {
