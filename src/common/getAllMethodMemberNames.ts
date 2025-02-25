@@ -17,12 +17,12 @@ function getMethodDescriptors(prototype: object): Record<string, PropertyDescrip
 export function getAllMethodMemberNames<T>(cls: Newable<T>) {
     const descriptors = getMethodDescriptors(cls.prototype);
     delete descriptors['constructor'];
-    const methodNames = new Set<string>();
-    for (const key in descriptors) {
+    const methodNames = new Set<string | symbol>();
+    Reflect.ownKeys(descriptors).forEach(key => {
         const member = cls.prototype[key];
         if (typeof member === 'function') {
             methodNames.add(key);
         }
-    }
+    });
     return methodNames;
 }

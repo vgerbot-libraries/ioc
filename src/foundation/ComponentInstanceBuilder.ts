@@ -15,10 +15,10 @@ import { ServiceFactory } from '../types/ServiceFactory';
 
 export class ComponentInstanceBuilder<T> {
     private getConstructorArgs: () => unknown[] = () => [];
-    private propertyFactories = new FactoryRecorder();
+    private readonly propertyFactories = new FactoryRecorder();
     private lazyMode: boolean = true;
-    private lifecycleResolver: LifecycleManager<T>;
-    private classMetadataReader: ClassMetadataReader<T>;
+    private readonly lifecycleResolver: LifecycleManager<T>;
+    private readonly classMetadataReader: ClassMetadataReader<T>;
     constructor(
         private readonly componentClass: Newable<T>,
         private readonly container: ApplicationContext,
@@ -61,7 +61,6 @@ export class ComponentInstanceBuilder<T> {
             const propertyFactoryDef = globalMetadataReader.getComponentFactory(propertyType);
             if (propertyFactoryDef) {
                 this.propertyFactories.set(propertyName, propertyFactoryDef);
-                continue;
             }
         }
     }
@@ -72,10 +71,7 @@ export class ComponentInstanceBuilder<T> {
         if (isCreatingInstAwareProcessor) {
             const instance = new this.componentClass(...args) as Instance<T>;
             this.lifecycleResolver.invokePreInjectMethod(instance);
-            for (const key in properties) {
-                const getter = properties[key](instance);
-                this.defineProperty(instance, key, getter);
-            }
+            defineProperties.call(this, instance);
             this.lifecycleResolver.invokePostInjectMethod(instance);
             return instance;
         } else {
@@ -84,13 +80,17 @@ export class ComponentInstanceBuilder<T> {
                 instance = new this.componentClass(...args) as Instance<T>;
             }
             this.lifecycleResolver.invokePreInjectMethod(instance);
-            for (const key in properties) {
-                const getter = properties[key](instance);
-                this.defineProperty(instance, key, getter);
-            }
+            defineProperties.call(this, instance);
             instance = this.instAwareProcessorManager.afterInstantiation(instance);
             this.lifecycleResolver.invokePostInjectMethod(instance);
             return instance;
+        }
+
+        function defineProperties(this: ComponentInstanceBuilder<T>, instance: Instance<T> | undefined) {
+            properties.forEach((value, key) => {
+                const getter = value(instance as T);
+                this.defineProperty(instance, typeof key === 'number' ? key + '' : key, getter);
+            });
         }
     }
     private defineProperty<T, V>(instance: T, key: string | symbol, getter: () => V) {
@@ -103,7 +103,7 @@ export class ComponentInstanceBuilder<T> {
         }
     }
     private createPropertiesGetterBuilder() {
-        const result = {} as Record<keyof T, (instance: T) => () => unknown | unknown[]>;
+        const result = new Map<keyof T, (instance: T) => () => unknown | unknown[]>();
         const propertyTypeMap = this.classMetadataReader.getPropertyTypeMap();
         for (const [key, factoryDef] of this.propertyFactories.iterator()) {
             const isArray = (propertyTypeMap.get(key) as unknown) === Array;
@@ -119,16 +119,16 @@ export class ComponentInstanceBuilder<T> {
                     ServiceFactory<unknown, unknown>,
                     Identifier[]
                 ];
-                result[key as keyof T] = <T>(instance: T) => {
+                result.set(key as keyof T, <T>(instance: T) => {
                     const producer = factory(this.container, instance);
                     return () => {
                         return this.container.invoke(producer, {
                             injections
                         });
                     };
-                };
+                });
             } else {
-                result[key as keyof T] = <T>(instance: T) => {
+                result.set(key as keyof T, <T>(instance: T) => {
                     const producerAndInjections = Array.from(factoryDef.factories).map(
                         ([factory, injections]) =>
                             [factory(this.container, instance), injections] as [AnyFunction<unknown>, Identifier[]]
@@ -141,7 +141,7 @@ export class ComponentInstanceBuilder<T> {
                             });
                         });
                     };
-                };
+                });
             }
         }
         return result;

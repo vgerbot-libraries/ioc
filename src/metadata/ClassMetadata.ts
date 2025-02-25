@@ -93,9 +93,9 @@ export class ClassMetadata<T> implements Metadata<ClassMetadataReader<T>, Newabl
         }
         if (typeof constr.inject === 'function') {
             const injections = constr.inject();
-            for (const key in injections) {
+            Reflect.ownKeys(injections).forEach(key => {
                 this.recordPropertyType(key, injections[key]);
-            }
+            });
         }
         if (typeof constr.metadata === 'function') {
             const metadata = constr.metadata();
@@ -104,9 +104,9 @@ export class ClassMetadata<T> implements Metadata<ClassMetadataReader<T>, Newabl
             }
             const injections = metadata.inject;
             if (injections) {
-                for (const key in injections) {
+                Reflect.ownKeys(injections).forEach(key => {
                     this.recordPropertyType(key, injections[key]);
-                }
+                });
             }
         }
     }
