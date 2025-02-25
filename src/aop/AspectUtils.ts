@@ -9,13 +9,13 @@ type AfterReturnHook = (returnValue: any, args: any[]) => any;
 type AroundHook = (this: any, originfn: (...args: any[]) => void, args: any[]) => void;
 
 export class AspectUtils {
-    private beforeHooks: Array<BeforeHook> = [];
-    private afterHooks: Array<AfterHook> = [];
-    private thrownHooks: Array<ThrownHook> = [];
-    private finallyHooks: Array<FinallyHook> = [];
-    private afterReturnHooks: Array<AfterReturnHook> = [];
-    private aroundHooks: Array<AroundHook> = [];
-    constructor(private fn: (...args: any[]) => any) {}
+    private readonly beforeHooks: Array<BeforeHook> = [];
+    private readonly afterHooks: Array<AfterHook> = [];
+    private readonly thrownHooks: Array<ThrownHook> = [];
+    private readonly finallyHooks: Array<FinallyHook> = [];
+    private readonly afterReturnHooks: Array<AfterReturnHook> = [];
+    private readonly aroundHooks: Array<AroundHook> = [];
+    constructor(private readonly fn: (...args: any[]) => any) {}
     append(advice: Advice.Before, hook: BeforeHook): void;
     append(advice: Advice.After, hook: AfterHook): void;
     append(advice: Advice.Thrown, hook: ThrownHook): void;
@@ -50,11 +50,11 @@ export class AspectUtils {
     }
     extract() {
         const { aroundHooks, beforeHooks, afterHooks, afterReturnHooks, finallyHooks, thrownHooks } = this;
-        const fn = aroundHooks.reduceRight((prev, next) => {
-            return function (...args) {
+        const fn: typeof this.fn = aroundHooks.reduceRight((prev, next) => {
+            return function (this: any, ...args: any[]) {
                 return next.call(this, prev, args);
             };
-        }, this.fn) as typeof this.fn;
+        }, this.fn);
         return function (this: any, ...args: any[]) {
             beforeHooks.forEach(hook => {
                 hook.call(this, args);
