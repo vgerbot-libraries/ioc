@@ -118,9 +118,7 @@ export class ApplicationContext {
             this.attachPreDestroyHook(instance);
             return instance;
         } else {
-            const instance = resolution.getInstance(getInstanceOptions) as T;
-            this.attachPreDestroyHook(instance);
-            return instance;
+            return resolution.getInstance(getInstanceOptions) as T;
         }
     }
     private attachPreDestroyHook<T>(instances: T | T[]) {
