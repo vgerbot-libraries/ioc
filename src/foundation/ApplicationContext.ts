@@ -29,22 +29,25 @@ import { InstantiationAwareProcessorManager } from './InstantiationAwareProcesso
 import { LifecycleManager } from './LifecycleManager';
 import { Instance } from '../types/Instance';
 import { FactoryRecorder } from '../common/FactoryRecorder';
+import { Lifecycle } from './Lifecycle';
 
 const PRE_DESTROY_EVENT_KEY = 'container:event:pre-destroy';
+const PRE_DESTROY_THAT_EVENT_KEY = 'container:event:pre-destroy-that';
+const INSTANCE_PRE_DESTROY_METHOD = Symbol('solidium:instance-pre-destroy');
 
 export class ApplicationContext {
-    private resolutions = new Map<InstanceScope | string, InstanceResolution>();
+    private readonly resolutions = new Map<InstanceScope | string, InstanceResolution>();
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    private factories = new FactoryRecorder();
-    private evaluatorClasses = new Map<string, Newable<Evaluator>>();
-    private eventEmitter = new EventEmitter();
+    private readonly factories = new FactoryRecorder();
+    private readonly evaluatorClasses = new Map<string, Newable<Evaluator>>();
+    private readonly eventEmitter = new EventEmitter();
     private readonly defaultScope: InstanceScope;
     private readonly lazyMode: boolean;
     private readonly instAwareProcessorManager: InstantiationAwareProcessorManager;
     private isDestroyed = false;
     public constructor(options: ApplicationContextOptions = {}) {
         this.defaultScope = options.defaultScope || InstanceScope.SINGLETON;
-        this.lazyMode = options.lazyMode === undefined ? true : options.lazyMode;
+        this.lazyMode = options.lazyMode ?? true;
         this.registerInstanceScopeResolution(InstanceScope.SINGLETON, SingletonInstanceResolution);
         this.registerInstanceScopeResolution(InstanceScope.GLOBAL_SHARED_SINGLETON, GlobalSharedInstanceResolution);
         this.registerInstanceScopeResolution(InstanceScope.TRANSIENT, TransientInstanceResolution);
@@ -59,36 +62,43 @@ export class ApplicationContext {
     getInstance<T, O>(symbol: Newable<T>, owner?: O): T;
     getInstance<T, O>(symbol: Identifier<T>, owner?: O): T | T[];
     getInstance<T, O>(symbol: Identifier<T>, owner?: O): T | T[] {
-        if (symbol === ApplicationContext) {
-            return this as unknown as T;
-        }
         if (typeof symbol === 'string' || typeof symbol === 'symbol') {
-            const factoryDef = this.getFactory(symbol);
-            if (factoryDef) {
-                const producer = factoryDef.produce(this, owner);
-                let result = producer() as T | T[];
-                const constr = result?.constructor;
-                if (typeof constr === 'function') {
-                    const componentClass = constr as Newable<T>;
-                    const resolver = new LifecycleManager<T>(componentClass, this);
-                    const isInstAwareProcessor = this.instAwareProcessorManager.isInstAwareProcessorClass(componentClass);
-                    resolver.invokePreInjectMethod(result as Instance<T>);
-                    if (!isInstAwareProcessor) {
-                        result = this.instAwareProcessorManager.afterInstantiation(result as Instance<T>);
-                    }
-                    resolver.invokePostInjectMethod(result as Instance<T>);
+            return this.getInstanceBySymbol(symbol, owner);
+        }
+        return this.getInstanceByClass(symbol, owner);
+    }
+    private getInstanceBySymbol<T, O>(symbol: string | symbol, owner?: O): T | T[] {
+        const factoryDef = this.getFactory(symbol);
+        if (factoryDef) {
+            const producer = factoryDef.produce(this, owner);
+            let result = producer() as T | T[];
+            this.attachPreDestroyHook(result);
+            const constr = result?.constructor;
+            if (typeof constr === 'function') {
+                const componentClass = constr as Newable<T>;
+                const resolver = new LifecycleManager<T>(componentClass, this);
+                const isInstAwareProcessor = this.instAwareProcessorManager.isInstAwareProcessorClass(componentClass);
+                resolver.invokePreInjectMethod(result as Instance<T>);
+                if (!isInstAwareProcessor) {
+                    result = this.instAwareProcessorManager.afterInstantiation(result as Instance<T>);
                 }
-                return result;
+                resolver.invokePostInjectMethod(result as Instance<T>);
+            }
+            return result;
+        } else {
+            const classMetadata = GlobalMetadata.getInstance().reader().getClassMetadata<T>(symbol);
+            if (!classMetadata) {
+                throw new Error(`Class alias not found: ${symbol.toString()}`);
             } else {
-                const classMetadata = GlobalMetadata.getInstance().reader().getClassMetadata<T>(symbol);
-                if (!classMetadata) {
-                    throw new Error(`Class alias not found: ${symbol.toString()}`);
-                } else {
-                    symbol = classMetadata.reader().getClass();
-                }
+                const clazz = classMetadata.reader().getClass();
+                return this.getInstanceByClass(clazz, owner);
             }
         }
-        const componentClass = symbol;
+    }
+    private getInstanceByClass<T, O>(componentClass: Newable<T>, owner?: O): T | T[] {
+        if (componentClass === ApplicationContext) {
+            return this as unknown as T;
+        }
         const reader = ClassMetadata.getInstance(componentClass).reader();
         const scope = reader.getScope();
         const resolution = (this.resolutions.get(scope) || this.resolutions.get(this.defaultScope)) as InstanceResolution;
@@ -105,12 +115,33 @@ export class ApplicationContext {
                 instance
             };
             resolution.saveInstance(saveInstanceOptions);
+            this.attachPreDestroyHook(instance);
             return instance;
         } else {
-            return resolution.getInstance(getInstanceOptions) as T;
+            const instance = resolution.getInstance(getInstanceOptions) as T;
+            this.attachPreDestroyHook(instance);
+            return instance;
         }
     }
+    private attachPreDestroyHook<T>(instances: T | T[]) {
+        const instancesArray = Array.isArray(instances) ? instances : [instances];
+        instancesArray.forEach(it => {
+            const instance = it as Instance<T>;
+            if (Reflect.has(instance, INSTANCE_PRE_DESTROY_METHOD)) {
+                return;
+            }
+            const clazz = instance.constructor;
+            if (!clazz) {
+                return;
+            }
+            const metadata = MetadataInstanceManager.getMetadata(instance.constructor, ClassMetadata);
 
+            metadata.addLifecycleMethod(INSTANCE_PRE_DESTROY_METHOD, Lifecycle.PRE_DESTROY);
+            Reflect.set(instance, INSTANCE_PRE_DESTROY_METHOD, () => {
+                this.eventEmitter.emit(PRE_DESTROY_EVENT_KEY, instance);
+            });
+        });
+    }
     private createComponentInstanceBuilder<T>(componentClass: Newable<T>) {
         const builder = new ComponentInstanceBuilder(componentClass, this, this.instAwareProcessorManager);
         builder.appendLazyMode(this.lazyMode);
@@ -203,7 +234,7 @@ export class ApplicationContext {
         resolutionConstructor: T,
         constructorArgs?: ConstructorParameters<T>
     ) {
-        this.resolutions.set(scope, new resolutionConstructor(...(constructorArgs || [])));
+        this.resolutions.set(scope, new resolutionConstructor(...(constructorArgs ?? [])));
     }
     registerEvaluator(name: string, evaluatorClass: Newable<Evaluator>) {
         const metadata = MetadataInstanceManager.getMetadata(evaluatorClass, ClassMetadata);
@@ -241,6 +272,9 @@ export class ApplicationContext {
     }
     onPreDestroy(listener: EventListener) {
         return this.eventEmitter.on(PRE_DESTROY_EVENT_KEY, listener);
+    }
+    onPreDestroyThat(listener: (instance: object) => void) {
+        return this.eventEmitter.on(PRE_DESTROY_THAT_EVENT_KEY, listener);
     }
     getClassMetadata<T>(ctor: Newable<T>) {
         return ClassMetadata.getReader(ctor) as ClassMetadataReader<T>;
