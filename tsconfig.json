@@ -2,6 +2,7 @@
     "compilerOptions": {
         "module": "esnext",
         "moduleResolution": "node",
+        "composite": true,
         "target": "es5",
         "lib": ["esnext", "dom"],
         "strict": true,
