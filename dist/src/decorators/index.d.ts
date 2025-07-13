@@ -14,3 +14,4 @@ export * from './PreDestroy';
 export * from './PreInject';
 export * from './Scope';
 export * from './Value';
+export * from './Alias';

@@ -7,8 +7,8 @@
     "browser": "dist/index.umd.js",
     "distDir": "dist/",
     "library": "IoC",
-    "types": "dist/index.d.ts",
-    "typings": "dist/index.d.ts",
+    "types": "dist/src/index.d.ts",
+    "typings": "dist/src/index.d.ts",
     "scripts": {
         "test": "cross-env NODE_ENV=test jest",
         "debug": "cross-env NODE_ENV=test DEBUG=true node --inspect-brk ./node_modules/.bin/jest",
