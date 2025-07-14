@@ -15,8 +15,8 @@ describe('Inheritance', () => {
         const serviceA = ctx.getInstance(ServiceA);
         ctx.destroy();
         expect(fn).toBeCalledTimes(2);
-        expect(fn).toHaveBeenNthCalledWith(1, baseService);
-        expect(fn).toHaveBeenNthCalledWith(2, serviceA);
+        expect(fn).toHaveBeenCalledWith(serviceA);
+        expect(fn).toHaveBeenCalledWith(baseService);
     });
     it('should invoke overridden methods in subclasses marked @PreDestroy()', () => {
         const fn = jest.fn();

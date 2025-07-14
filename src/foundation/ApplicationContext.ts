@@ -125,6 +125,9 @@ export class ApplicationContext {
         const instancesArray = Array.isArray(instances) ? instances : [instances];
         instancesArray.forEach(it => {
             const instance = it as Instance<T>;
+            if (typeof instance !== 'object' || instance === null) {
+                return;
+            }
             if (Reflect.has(instance, INSTANCE_PRE_DESTROY_METHOD)) {
                 return;
             }
