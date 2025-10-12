@@ -1,2 +1,2 @@
 import { FactoryIdentifier } from '../types/FactoryIdentifier';
-export declare function createFactoryWrapper(produceIdentifier: FactoryIdentifier, produce: unknown, owner?: unknown): unknown;
+export declare function createFactoryWrapper<T>(produceIdentifier: FactoryIdentifier, produce: unknown, owner: T): T;
