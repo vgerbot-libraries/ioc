@@ -38,6 +38,7 @@ export declare class ApplicationContext {
     getJSONData(namespace: string): JSONData | undefined;
     bindInstance<T>(identifier: string | symbol, instance: T): void;
     registerInstanceScopeResolution<T extends Newable<InstanceResolution>>(scope: InstanceScope | string, resolutionConstructor: T, constructorArgs?: ConstructorParameters<T>): void;
+    getScropeResolutionInstance(scope: InstanceScope | string): InstanceResolution | undefined;
     registerEvaluator(name: string, evaluatorClass: Newable<Evaluator>): void;
     /**
      * @description Registers an InstantiationAwareProcessor class to customize

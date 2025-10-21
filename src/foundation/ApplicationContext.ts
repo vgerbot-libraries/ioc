@@ -71,6 +71,19 @@ export class ApplicationContext {
         const factoryDef = this.getFactory(symbol);
         if (factoryDef) {
             const producer = factoryDef.produce(this, owner);
+            const singletonScopeResolution = this.getScropeResolutionInstance(InstanceScope.SINGLETON)!;
+            if (
+                factoryDef.isSingle &&
+                !singletonScopeResolution.shouldGenerate({
+                    identifier: symbol,
+                    owner
+                })
+            ) {
+                return singletonScopeResolution.getInstance({
+                    identifier: symbol,
+                    owner
+                }) as T;
+            }
             let result = producer() as T | T[];
             this.attachPreDestroyHook(result);
             const constr = result?.constructor;
@@ -83,6 +96,12 @@ export class ApplicationContext {
                     result = this.instAwareProcessorManager.afterInstantiation(result as Instance<T>);
                 }
                 resolver.invokePostInjectMethod(result as Instance<T>);
+            }
+            if (factoryDef.isSingle) {
+                singletonScopeResolution.saveInstance({
+                    identifier: symbol,
+                    instance: result
+                });
             }
             return result;
         } else {
@@ -236,6 +255,9 @@ export class ApplicationContext {
         constructorArgs?: ConstructorParameters<T>
     ) {
         this.resolutions.set(scope, new resolutionConstructor(...(constructorArgs ?? [])));
+    }
+    getScropeResolutionInstance(scope: InstanceScope | string) {
+        return this.resolutions.get(scope) ?? this.resolutions.get(this.defaultScope);
     }
     registerEvaluator(name: string, evaluatorClass: Newable<Evaluator>) {
         const metadata = MetadataInstanceManager.getMetadata(evaluatorClass, ClassMetadata);
