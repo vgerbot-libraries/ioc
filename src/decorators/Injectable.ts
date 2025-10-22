@@ -1,9 +1,12 @@
-import { GlobalMetadata } from '../metadata';
+import { InstanceScope } from '../foundation';
+import { ClassMetadata, GlobalMetadata } from '../metadata';
+import { MetadataInstanceManager } from '../metadata/MetadataInstanceManager';
 import { Newable } from '../types';
 import { Instance } from '../types/Instance';
 
 export interface InjectableOptions {
     produce: string | symbol | Array<string | symbol>;
+    scope?: InstanceScope;
 }
 
 /**
@@ -17,6 +20,8 @@ export function Injectable(options?: InjectableOptions): ClassDecorator {
         }
         const metadata = GlobalMetadata.getInstance();
         const produces = Array.isArray(options.produce) ? options.produce : [options.produce];
+        const classMetadata = MetadataInstanceManager.getMetadata(target as unknown as Newable<unknown>, ClassMetadata);
+
         produces.forEach(produce => {
             metadata.recordFactory(
                 produce,
@@ -27,7 +32,7 @@ export function Injectable(options?: InjectableOptions): ClassDecorator {
                     };
                 },
                 [],
-                false
+                classMetadata.reader().getScope() ?? options.scope ?? InstanceScope.SINGLETON
             );
         });
         return target;

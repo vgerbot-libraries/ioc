@@ -1,7 +1,8 @@
+import { InstanceScope } from '../foundation/InstanceScope';
 import { ServiceFactoryDef } from '../foundation/ServiceFactoryDef';
 import { FactoryIdentifier } from '../types/FactoryIdentifier';
 import { Identifier } from '../types/Identifier';
-import { ServiceFactory } from '../types/ServiceFactory';
+import type { ServiceFactory } from '../types/ServiceFactory';
 
 export class FactoryRecorder {
     private factories = new Map<FactoryIdentifier, ServiceFactoryDef<unknown>>();
@@ -10,13 +11,13 @@ export class FactoryRecorder {
         identifier: FactoryIdentifier,
         factory: ServiceFactory<T, unknown>,
         injections: Identifier[] = [],
-        isSingle: boolean = true
+        scope: InstanceScope | string = InstanceScope.SINGLETON
     ) {
         let def = this.factories.get(identifier);
         if (def) {
             def.append(factory, injections);
         } else {
-            def = new ServiceFactoryDef(identifier, isSingle);
+            def = new ServiceFactoryDef(identifier, scope);
             def.append(factory, injections);
         }
         this.factories.set(identifier, def);

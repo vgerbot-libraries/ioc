@@ -6,6 +6,7 @@ import { ClassMetadata } from './ClassMetadata';
 import { ServiceFactoryDef } from '../foundation/ServiceFactoryDef';
 import { Newable } from '../types/Newable';
 import { PartialInstAwareProcessor } from '../types/InstantiationAwareProcessor';
+import { InstanceScope } from '../foundation/InstanceScope';
 export interface GlobalMetadataReader {
     getComponentFactory<T>(key: FactoryIdentifier): ServiceFactoryDef<T> | undefined;
     getClassMetadata<T>(aliasName: string | symbol): ClassMetadata<T> | undefined;
@@ -22,7 +23,7 @@ export declare class GlobalMetadata implements Metadata<GlobalMetadataReader, vo
     private classAliasMetadataMap;
     private componentFactories;
     private readonly processorClasses;
-    recordFactory<T>(symbol: FactoryIdentifier, factory: ServiceFactory<T, unknown>, injections?: Identifier[], isSingle?: boolean): void;
+    recordFactory<T>(symbol: FactoryIdentifier, factory: ServiceFactory<T, unknown>, injections?: Identifier[], scope?: InstanceScope | string): void;
     recordClassAlias<T>(aliasName: string | symbol, metadata: ClassMetadata<T>): void;
     recordProcessorClass(clazz: Newable<PartialInstAwareProcessor>): void;
     init(): void;

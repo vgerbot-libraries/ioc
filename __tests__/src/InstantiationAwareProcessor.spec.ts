@@ -1,5 +1,6 @@
 import { ApplicationContext, Factory } from '../../src';
 import { PartialInstAwareProcessor } from '../../src';
+import { getProxyTarget } from '../../src/common/ProxyTargetRecorder';
 import { Newable } from '../../src/types/Newable';
 
 describe('InstantiationAwareProcessor', () => {
@@ -39,7 +40,7 @@ describe('InstantiationAwareProcessor', () => {
                 }
             );
             const service = app.getInstance(Service);
-            expect(service).toBe(service0);
+            expect(getProxyTarget(service)).toBe(service0);
         });
         it('should execute until the instance is returned if there are multiple beforeInstantiation', () => {
             const fn0 = jest.fn();

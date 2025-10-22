@@ -3,8 +3,9 @@ import { Newable } from '../types/Newable';
 import { FactoryIdentifier } from '../types/FactoryIdentifier';
 import { Instance } from '../types/Instance';
 import { isNotDefined } from '../common/isNotDefined';
+import { InstanceScope } from '../foundation';
 
-export function Factory(produceIdentifier?: FactoryIdentifier, isSingle: boolean = true): MethodDecorator {
+export function Factory(produceIdentifier?: FactoryIdentifier, scope: InstanceScope = InstanceScope.SINGLETON): MethodDecorator {
     return (target: Object, propertyKey: string | symbol) => {
         const metadata = GlobalMetadata.getInstance();
         const clazz = target.constructor as Newable<Instance<unknown>>;
@@ -32,7 +33,7 @@ export function Factory(produceIdentifier?: FactoryIdentifier, isSingle: boolean
                 }
             },
             injections,
-            isSingle
+            scope
         );
     };
 }

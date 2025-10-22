@@ -7,6 +7,7 @@ import { ServiceFactoryDef } from '../foundation/ServiceFactoryDef';
 import { Newable } from '../types/Newable';
 import { PartialInstAwareProcessor } from '../types/InstantiationAwareProcessor';
 import { FactoryRecorder } from '../common/FactoryRecorder';
+import { InstanceScope } from '../foundation/InstanceScope';
 
 export interface GlobalMetadataReader {
     getComponentFactory<T>(key: FactoryIdentifier): ServiceFactoryDef<T> | undefined;
@@ -28,9 +29,9 @@ export class GlobalMetadata implements Metadata<GlobalMetadataReader, void> {
         symbol: FactoryIdentifier,
         factory: ServiceFactory<T, unknown>,
         injections: Identifier[] = [],
-        isSingle: boolean = true
+        scope: InstanceScope | string = InstanceScope.SINGLETON
     ) {
-        this.componentFactories.append(symbol, factory, injections, isSingle);
+        this.componentFactories.append(symbol, factory, injections, scope);
     }
     recordClassAlias<T>(aliasName: string | symbol, metadata: ClassMetadata<T>) {
         this.classAliasMetadataMap.set(aliasName, metadata);

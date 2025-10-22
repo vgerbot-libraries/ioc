@@ -26,7 +26,7 @@ export interface ClassMarkInfo {
 }
 export interface ClassMetadataReader<T> extends MetadataReader {
     getClass(): Newable<T>;
-    getScope(): InstanceScope | string;
+    getScope(): InstanceScope | string | undefined;
     getConstructorParameterTypes(): Array<Identifier>;
     getMethods(lifecycle: Lifecycle): Array<string | symbol>;
     getPropertyTypeMap(): Map<string | symbol, Identifier>;
@@ -37,7 +37,7 @@ export interface ClassMetadataReader<T> extends MetadataReader {
 }
 export declare class ClassMetadata<T> implements Metadata<ClassMetadataReader<T>, Newable<T>> {
     static getReflectKey(): string;
-    private scope;
+    private scope?;
     private constructorParameterTypes;
     private readonly lifecycleMethodsMap;
     private readonly propertyTypesMap;

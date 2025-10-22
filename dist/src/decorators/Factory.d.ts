@@ -1,2 +1,3 @@
 import { FactoryIdentifier } from '../types/FactoryIdentifier';
-export declare function Factory(produceIdentifier?: FactoryIdentifier, isSingle?: boolean): MethodDecorator;
+import { InstanceScope } from '../foundation';
+export declare function Factory(produceIdentifier?: FactoryIdentifier, scope?: InstanceScope): MethodDecorator;

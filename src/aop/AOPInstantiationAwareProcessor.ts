@@ -4,6 +4,7 @@ import { createAspect } from './createAspect';
 import { Newable } from '../types/Newable';
 import { AspectMetadata } from './AspectMetadta';
 import { Identifier } from '../types/Identifier';
+import { recordProxyTarget } from '../common/ProxyTargetRecorder';
 
 export abstract class AOPInstantiationAwareProcessor implements PartialInstAwareProcessor {
     static create(appCtx: ApplicationContext): Newable<AOPInstantiationAwareProcessor> {
@@ -52,6 +53,11 @@ export abstract class AOPInstantiationAwareProcessor implements PartialInstAware
                 return originValue;
             }
         });
+
+        if (process.env.NODE_ENV === 'test') {
+            recordProxyTarget(proxyResult, instance);
+        }
+
         return proxyResult;
     }
 }

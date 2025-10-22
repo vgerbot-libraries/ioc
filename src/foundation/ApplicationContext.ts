@@ -71,39 +71,41 @@ export class ApplicationContext {
         const factoryDef = this.getFactory(symbol);
         if (factoryDef) {
             const producer = factoryDef.produce(this, owner);
-            const singletonScopeResolution = this.getScropeResolutionInstance(InstanceScope.SINGLETON)!;
+
+            const resolution = this.getScropeResolutionInstance(factoryDef.scope)!;
             if (
-                factoryDef.isSingle &&
-                !singletonScopeResolution.shouldGenerate({
+                !resolution.shouldGenerate({
                     identifier: symbol,
                     owner
                 })
             ) {
-                return singletonScopeResolution.getInstance({
+                return resolution.getInstance({
                     identifier: symbol,
                     owner
                 }) as T;
             }
-            let result = producer() as T | T[];
-            this.attachPreDestroyHook(result);
-            const constr = result?.constructor;
-            if (typeof constr === 'function') {
-                const componentClass = constr as Newable<T>;
-                const resolver = new LifecycleManager<T>(componentClass, this);
-                const isInstAwareProcessor = this.instAwareProcessorManager.isInstAwareProcessorClass(componentClass);
-                resolver.invokePreInjectMethod(result as Instance<T>);
-                if (!isInstAwareProcessor) {
-                    result = this.instAwareProcessorManager.afterInstantiation(result as Instance<T>);
+            const instances = producer() as T[];
+
+            const results = instances.map(it => {
+                this.attachPreDestroyHook(it);
+                const constr = it?.constructor;
+                if (typeof constr === 'function') {
+                    const componentClass = constr as Newable<T>;
+                    const resolver = new LifecycleManager<T>(componentClass, this);
+                    const isInstAwareProcessor = this.instAwareProcessorManager.isInstAwareProcessorClass(componentClass);
+                    resolver.invokePreInjectMethod(it as Instance<T>);
+                    if (!isInstAwareProcessor) {
+                        it = this.instAwareProcessorManager.afterInstantiation(it as Instance<T>);
+                    }
+                    resolver.invokePostInjectMethod(it as Instance<T>);
                 }
-                resolver.invokePostInjectMethod(result as Instance<T>);
-            }
-            if (factoryDef.isSingle) {
-                singletonScopeResolution.saveInstance({
+                resolution.saveInstance({
                     identifier: symbol,
-                    instance: result
+                    instance: it
                 });
-            }
-            return result;
+                return it;
+            });
+            return results.length === 1 ? results[0] : results;
         } else {
             const classMetadata = GlobalMetadata.getInstance().reader().getClassMetadata<T>(symbol);
             if (!classMetadata) {
@@ -120,7 +122,8 @@ export class ApplicationContext {
         }
         const reader = ClassMetadata.getInstance(componentClass).reader();
         const scope = reader.getScope();
-        const resolution = (this.resolutions.get(scope) || this.resolutions.get(this.defaultScope)) as InstanceResolution;
+        const resolution = (this.resolutions.get(scope ?? this.defaultScope) ||
+            this.resolutions.get(this.defaultScope)) as InstanceResolution;
         const getInstanceOptions = {
             identifier: componentClass,
             owner,
@@ -179,9 +182,9 @@ export class ApplicationContext {
         symbol: FactoryIdentifier,
         factory: ServiceFactory<T, unknown>,
         injections?: Identifier[],
-        isSingle?: boolean
+        scope: InstanceScope = InstanceScope.SINGLETON
     ) {
-        this.factories.append(symbol, factory, injections, isSingle);
+        this.factories.append(symbol, factory, injections, scope);
     }
     invoke<R, Ctx>(func: AnyFunction<R, Ctx>, options: InvokeFunctionOptions<Ctx> = {}): R {
         let fn: AnyFunction<R>;

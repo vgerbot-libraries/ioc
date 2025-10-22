@@ -1,5 +1,6 @@
 import { Injectable } from '../../../src/decorators/Injectable';
 import { ApplicationContext } from '../../../src/foundation/ApplicationContext';
+import { getProxyTarget } from '../../../src/common/ProxyTargetRecorder';
 
 describe('@Injectable', () => {
     it('should inject a single instance', () => {
@@ -56,10 +57,11 @@ describe('@Injectable', () => {
         class ParserAndInteceptorImpl implements Interceptor, DataParser {}
 
         const context = new ApplicationContext();
-        const interceptors = context.getInstance(HTTP_INTERCEPTOR) as Interceptor[];
-        const parsers = context.getInstance(DATA_PARSER) as DataParser[];
 
-        expect(interceptors[0]).toBe(parsers[0]);
-        expect(interceptors[0]).toBeInstanceOf(ParserAndInteceptorImpl);
+        const interceptors = context.getInstance(HTTP_INTERCEPTOR) as Interceptor;
+        const parsers = context.getInstance(DATA_PARSER) as DataParser;
+
+        expect(getProxyTarget(interceptors)).toBe(getProxyTarget(parsers));
+        expect(getProxyTarget(interceptors)).toBeInstanceOf(ParserAndInteceptorImpl);
     });
 });

@@ -30,7 +30,7 @@ export declare class ApplicationContext {
     private attachPreDestroyHook;
     private createComponentInstanceBuilder;
     getFactory(key: FactoryIdentifier): import("./ServiceFactoryDef").ServiceFactoryDef<unknown> | undefined;
-    bindFactory<T>(symbol: FactoryIdentifier, factory: ServiceFactory<T, unknown>, injections?: Identifier[], isSingle?: boolean): void;
+    bindFactory<T>(symbol: FactoryIdentifier, factory: ServiceFactory<T, unknown>, injections?: Identifier[], scope?: InstanceScope): void;
     invoke<R, Ctx>(func: AnyFunction<R, Ctx>, options?: InvokeFunctionOptions<Ctx>): R;
     destroy(): void;
     evaluate<T, O, A>(expression: string, options: EvaluationOptions<O, string, A>): T | undefined;

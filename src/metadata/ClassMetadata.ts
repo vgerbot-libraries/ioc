@@ -53,7 +53,7 @@ export interface ClassMarkInfo {
 
 export interface ClassMetadataReader<T> extends MetadataReader {
     getClass(): Newable<T>;
-    getScope(): InstanceScope | string;
+    getScope(): InstanceScope | string | undefined;
     getConstructorParameterTypes(): Array<Identifier>;
     getMethods(lifecycle: Lifecycle): Array<string | symbol>;
     getPropertyTypeMap(): Map<string | symbol, Identifier>;
@@ -67,7 +67,7 @@ export class ClassMetadata<T> implements Metadata<ClassMetadataReader<T>, Newabl
     static getReflectKey() {
         return CLASS_METADATA_KEY;
     }
-    private scope: InstanceScope | string = InstanceScope.SINGLETON;
+    private scope?: InstanceScope | string;
     private constructorParameterTypes: Array<Identifier> = [];
     private readonly lifecycleMethodsMap: Record<string | symbol, Set<Lifecycle>> = {};
     private readonly propertyTypesMap = new Map<string | symbol, Identifier>();
