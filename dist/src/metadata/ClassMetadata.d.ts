@@ -1,10 +1,10 @@
 import { InstanceScope } from '../foundation/InstanceScope';
 import { Metadata, MetadataReader } from '../types/Metadata';
-import { Identifier } from '../types/Identifier';
 import { Lifecycle } from '../foundation/Lifecycle';
 import { Newable } from '../types/Newable';
 import { MemberKey } from '../types/MemberKey';
 import { KeyOf } from '../types/KeyOf';
+import { InjectionType } from '../foundation/InjectionType';
 export interface MarkInfo {
     [key: string | symbol]: unknown;
 }
@@ -27,9 +27,9 @@ export interface ClassMarkInfo {
 export interface ClassMetadataReader<T> extends MetadataReader {
     getClass(): Newable<T>;
     getScope(): InstanceScope | string | undefined;
-    getConstructorParameterTypes(): Array<Identifier>;
+    getConstructorParameterTypes(): Array<InjectionType>;
     getMethods(lifecycle: Lifecycle): Array<string | symbol>;
-    getPropertyTypeMap(): Map<string | symbol, Identifier>;
+    getPropertyTypeMap(): Map<string | symbol, InjectionType>;
     getCtorMarkInfo(): MarkInfo;
     getAllMarkedMembers(): Set<MemberKey>;
     getMembersMarkInfo(methodKey: KeyOf<T>): MarkInfo;
@@ -56,8 +56,8 @@ export declare class ClassMetadata<T> implements Metadata<ClassMetadataReader<T>
         };
     };
     setScope(scope: InstanceScope | string): void;
-    setConstructorParameterType(index: number, cls: Identifier): void;
-    recordPropertyType(propertyKey: string | symbol, type: Identifier): void;
+    setConstructorParameterType(index: number, type: InjectionType): void;
+    recordPropertyType(propertyKey: string | symbol, type: InjectionType): void;
     addLifecycleMethod(methodName: string | symbol, lifecycle: Lifecycle): void;
     private getLifecycles;
     getMethods(lifecycle: Lifecycle): Array<string | symbol>;

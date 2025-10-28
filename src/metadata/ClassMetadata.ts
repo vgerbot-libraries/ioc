@@ -2,13 +2,13 @@
 import { InstanceScope } from '../foundation/InstanceScope';
 import { JsServiceClass } from '../types/JsServiceClass';
 import { Metadata, MetadataReader } from '../types/Metadata';
-import { Identifier } from '../types/Identifier';
 import { Lifecycle } from '../foundation/Lifecycle';
 import { Newable } from '../types/Newable';
 import { createDefaultValueMap } from '../common/DefaultValueMap';
 import { MetadataInstanceManager } from './MetadataInstanceManager';
 import { MemberKey } from '../types/MemberKey';
 import { KeyOf } from '../types/KeyOf';
+import { InjectionType } from '../foundation/InjectionType';
 
 const CLASS_METADATA_KEY = 'ioc:class-metadata';
 
@@ -54,9 +54,9 @@ export interface ClassMarkInfo {
 export interface ClassMetadataReader<T> extends MetadataReader {
     getClass(): Newable<T>;
     getScope(): InstanceScope | string | undefined;
-    getConstructorParameterTypes(): Array<Identifier>;
+    getConstructorParameterTypes(): Array<InjectionType>;
     getMethods(lifecycle: Lifecycle): Array<string | symbol>;
-    getPropertyTypeMap(): Map<string | symbol, Identifier>;
+    getPropertyTypeMap(): Map<string | symbol, InjectionType>;
     getCtorMarkInfo(): MarkInfo;
     getAllMarkedMembers(): Set<MemberKey>;
     getMembersMarkInfo(methodKey: KeyOf<T>): MarkInfo;
@@ -68,9 +68,9 @@ export class ClassMetadata<T> implements Metadata<ClassMetadataReader<T>, Newabl
         return CLASS_METADATA_KEY;
     }
     private scope?: InstanceScope | string;
-    private constructorParameterTypes: Array<Identifier> = [];
+    private constructorParameterTypes: Array<InjectionType> = [];
     private readonly lifecycleMethodsMap: Record<string | symbol, Set<Lifecycle>> = {};
-    private readonly propertyTypesMap = new Map<string | symbol, Identifier>();
+    private readonly propertyTypesMap = new Map<string | symbol, InjectionType>();
     private clazz!: Newable<T>;
     private readonly marks: ClassMarkInfo = {
         ctor: {},
@@ -135,10 +135,10 @@ export class ClassMetadata<T> implements Metadata<ClassMetadataReader<T>, Newabl
     setScope(scope: InstanceScope | string) {
         this.scope = scope;
     }
-    setConstructorParameterType(index: number, cls: Identifier) {
-        this.constructorParameterTypes[index] = cls;
+    setConstructorParameterType(index: number, type: InjectionType) {
+        this.constructorParameterTypes[index] = type;
     }
-    recordPropertyType(propertyKey: string | symbol, type: Identifier) {
+    recordPropertyType(propertyKey: string | symbol, type: InjectionType) {
         this.propertyTypesMap.set(propertyKey, type);
     }
     addLifecycleMethod(methodName: string | symbol, lifecycle: Lifecycle) {

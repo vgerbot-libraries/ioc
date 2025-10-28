@@ -36,29 +36,30 @@ export class ComponentInstanceBuilder<T> {
         const types = classMetadataReader.getConstructorParameterTypes();
         this.getConstructorArgs = () => {
             return types.map(it => {
-                return this.container.getInstance(it);
+                return this.container.getInstance(it.isNewable ? it.clazz : it.identifier);
             });
         };
         const globalMetadataReader = GlobalMetadata.getReader();
         const propertyTypes = classMetadataReader.getPropertyTypeMap();
         for (const [propertyName, propertyType] of propertyTypes) {
-            if (typeof propertyType === 'function') {
+            if (propertyType.isNewable) {
                 this.propertyFactories.append(propertyName, (container, owner) => {
-                    return () => container.getInstance(propertyType, owner);
+                    return () => container.getInstance(propertyType.clazz, owner);
                 });
                 continue;
             }
-            const factoryDef = this.container.getFactory(propertyType);
+            const identifier = propertyType.identifier as Exclude<Identifier, Newable<unknown>>;
+            const factoryDef = this.container.getFactory(identifier);
             if (factoryDef) {
                 this.propertyFactories.set(propertyName, factoryDef);
                 continue;
             }
-            const propertyClassMetadata = globalMetadataReader.getClassMetadata(propertyType);
+            const propertyClassMetadata = globalMetadataReader.getClassMetadata(identifier);
             if (propertyClassMetadata) {
                 this.propertyFactories.set(propertyName, ServiceFactoryDef.createFromClassMetadata(propertyClassMetadata));
                 continue;
             }
-            const propertyFactoryDef = globalMetadataReader.getComponentFactory(propertyType);
+            const propertyFactoryDef = globalMetadataReader.getComponentFactory(identifier);
             if (propertyFactoryDef) {
                 this.propertyFactories.set(propertyName, propertyFactoryDef);
             }
@@ -106,7 +107,8 @@ export class ComponentInstanceBuilder<T> {
         const result = new Map<keyof T, (instance: T) => () => unknown | unknown[]>();
         const propertyTypeMap = this.classMetadataReader.getPropertyTypeMap();
         for (const [key, factoryDef] of this.propertyFactories.iterator()) {
-            const isArray = (propertyTypeMap.get(key) as unknown) === Array;
+            const injectionType = propertyTypeMap.get(key)!;
+            const isArray = !injectionType.isNewable && injectionType.clazz === (Array as unknown as Newable<unknown>);
             if (!isArray) {
                 if (factoryDef.factories.size > 1) {
                     throw new Error(
