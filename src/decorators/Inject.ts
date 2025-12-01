@@ -4,6 +4,7 @@ import { Identifier } from '../types/Identifier';
 import { MetadataInstanceManager } from '../metadata/MetadataInstanceManager';
 import { isNotDefined } from '../common/isNotDefined';
 import { InjectionType } from '../foundation/InjectionType';
+import { GlobalMetadata } from '../metadata';
 
 export function Inject<T>(identifier?: Identifier<T>) {
     return function <Target>(target: Target, propertyKey: string | symbol, parameterIndex?: number) {
@@ -28,11 +29,19 @@ export function Inject<T>(identifier?: Identifier<T>) {
             } else {
                 injectClass = Reflect.getMetadata('design:type', target, propertyKey);
             }
-            if (isNotDefined(injectClass)) {
-                throw new Error('Type not recognized, injection cannot be performed');
-            }
             const metadata = MetadataInstanceManager.getMetadata(target.constructor, ClassMetadata);
-            metadata.recordPropertyType(propertyKey, InjectionType.of(injectClass, identifier));
+            if (isNotDefined(injectClass)) {
+                if (identifier && typeof identifier !== 'function') {
+                    const factoryDef = GlobalMetadata.getInstance().reader().getComponentFactory(identifier);
+                    if (factoryDef) {
+                        metadata.recordPropertyType(propertyKey, InjectionType.ofIdentifier(identifier));
+                        return;
+                    }
+                }
+                throw new Error('Type not recognized, injection cannot be performed');
+            } else {
+                metadata.recordPropertyType(propertyKey, InjectionType.of(injectClass, identifier));
+            }
         }
     };
 }
