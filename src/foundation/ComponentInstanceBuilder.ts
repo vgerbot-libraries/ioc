@@ -112,7 +112,6 @@ export class ComponentInstanceBuilder<T> {
             if (!isArray) {
                 if (factoryDef.factories.size > 1) {
                     throw new Error(
-                        // eslint-disable-next-line max-len
                         `Multiple matching injectables found for property injection,\nbut property ${key.toString()} is not an array,
                         It is ambiguous to determine which object should be injected!`
                     );

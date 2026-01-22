@@ -15,7 +15,7 @@ describe('@Injectable', () => {
 
     it('should inject multiple instances', () => {
         const HTTP_INTERCEPTOR = Symbol('produce-http-inteceptor');
-        // eslint-disable-next-line @typescript-eslint/no-empty-interface
+
         interface Inteceptor {}
         @Injectable({
             produce: HTTP_INTERCEPTOR
@@ -46,9 +46,8 @@ describe('@Injectable', () => {
         const HTTP_INTERCEPTOR = Symbol('produce-http-interceptor');
         const DATA_PARSER = Symbol('produce-data-parser');
 
-        // eslint-disable-next-line @typescript-eslint/no-empty-interface
         interface DataParser {}
-        // eslint-disable-next-line @typescript-eslint/no-empty-interface
+
         interface Interceptor {}
 
         @Injectable({

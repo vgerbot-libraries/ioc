@@ -13,7 +13,7 @@ export function Value<A = unknown>(expression: string, type: ExpressionType | st
                 throw new Error(`The "${type}" evaluator only supports nodejs environment!`);
             }
     }
-    return (target: Object, propertyKey: string | symbol) => {
+    return (target: object, propertyKey: string | symbol) => {
         const metadata = MetadataInstanceManager.getMetadata(target.constructor, ClassMetadata);
         const value_symbol = Symbol('');
         metadata.recordPropertyType(propertyKey, InjectionType.ofIdentifier(value_symbol));

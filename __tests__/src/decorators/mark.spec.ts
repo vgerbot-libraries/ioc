@@ -34,7 +34,7 @@ describe('@Mark decorator', () => {
     });
     it('should mark a parameter with a custom value', () => {
         class MyClass {
-            method(@Mark('myKey', 'customValue') value: string) {
+            method(@Mark('myKey', 'customValue') _value: string) {
                 //
             }
         }

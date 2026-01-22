@@ -78,7 +78,10 @@ class PrecitePointcut extends Pointcut {
     }
 }
 class MarkedPointcut extends Pointcut {
-    constructor(private markedType: string | symbol, private markedValue: unknown = true) {
+    constructor(
+        private markedType: string | symbol,
+        private markedValue: unknown = true
+    ) {
         super();
     }
     test(jpIdentifier: Identifier, jpMember: string | symbol): boolean {
@@ -91,7 +94,10 @@ class MarkedPointcut extends Pointcut {
     }
 }
 class MemberMatchPointcut extends Pointcut {
-    constructor(private clazz: Newable<unknown>, private regex: RegExp) {
+    constructor(
+        private clazz: Newable<unknown>,
+        private regex: RegExp
+    ) {
         super();
     }
     test(jpIdentifier: Identifier, jpMember: string | symbol): boolean {

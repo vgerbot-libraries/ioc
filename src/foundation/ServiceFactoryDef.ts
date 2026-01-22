@@ -21,7 +21,10 @@ export class ServiceFactoryDef<T> {
      * @param identifier The unique identifier of this factories
      * @param isSingle Indicates whether the identifier defines only one factory.
      */
-    constructor(public readonly identifier: Identifier, public readonly scope: InstanceScope | string) {}
+    constructor(
+        public readonly identifier: Identifier,
+        public readonly scope: InstanceScope | string
+    ) {}
     append(factory: ServiceFactory<T, unknown>, injections: Identifier[] = []) {
         if (this.scope === InstanceScope.SINGLETON && this.factories.size === 1 && this.factories.has(factory)) {
             throw new Error(`${this.identifier.toString()} is A singleton! But multiple factories are defined!`);

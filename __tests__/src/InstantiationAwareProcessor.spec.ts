@@ -15,7 +15,7 @@ describe('InstantiationAwareProcessor', () => {
             const fn = jest.fn();
             app.registerInstAwareProcessor(
                 class implements PartialInstAwareProcessor {
-                    beforeInstantiation<T>(constructor: Newable<T>, args: unknown[]): T | undefined | void {
+                    beforeInstantiation<T>(constructor: Newable<T>, _args: unknown[]): T | undefined | void {
                         fn();
                     }
                 }
@@ -25,7 +25,6 @@ describe('InstantiationAwareProcessor', () => {
             expect(fn).toBeCalled();
         });
 
-        // eslint-disable-next-line max-len
         it('should the instance obtained by ApplicationContext be replaced by the instance returned by beforeInstantiation', () => {
             class Service {
                 // PASS
@@ -34,7 +33,7 @@ describe('InstantiationAwareProcessor', () => {
             const service0 = new Service();
             app.registerInstAwareProcessor(
                 class implements PartialInstAwareProcessor {
-                    beforeInstantiation<T>(constructor: Newable<T>, args: unknown[]): T | undefined | void {
+                    beforeInstantiation<T>(constructor: Newable<T>, _args: unknown[]): T | undefined | void {
                         return service0 as T;
                     }
                 }
@@ -51,14 +50,14 @@ describe('InstantiationAwareProcessor', () => {
 
             app.registerInstAwareProcessor(
                 class implements PartialInstAwareProcessor {
-                    beforeInstantiation<T>(constructor: Newable<T>, args: unknown[]): T | undefined | void {
+                    beforeInstantiation<T>(constructor: Newable<T>, _args: unknown[]): T | undefined | void {
                         fn0();
                     }
                 }
             );
             app.registerInstAwareProcessor(
                 class implements PartialInstAwareProcessor {
-                    beforeInstantiation<T>(constructor: Newable<T>, args: unknown[]): T | undefined | void {
+                    beforeInstantiation<T>(constructor: Newable<T>, _args: unknown[]): T | undefined | void {
                         fn1();
                         return new constructor(...args);
                     }
@@ -66,7 +65,7 @@ describe('InstantiationAwareProcessor', () => {
             );
             app.registerInstAwareProcessor(
                 class implements PartialInstAwareProcessor {
-                    beforeInstantiation<T>(constructor: Newable<T>, args: unknown[]): T | undefined | void {
+                    beforeInstantiation<T>(constructor: Newable<T>, _args: unknown[]): T | undefined | void {
                         fn2();
                     }
                 }
@@ -100,7 +99,6 @@ describe('InstantiationAwareProcessor', () => {
             expect(fn).toBeCalledWith(service);
         });
 
-        // eslint-disable-next-line max-len
         it('should the instance obtained by ApplicationContext be replaced by the instance returned by afterInstantiation', () => {
             class Service {
                 // PASS
@@ -154,7 +152,7 @@ describe('InstantiationAwareProcessor', () => {
         it('should replace instances generated from provider', () => {
             // eslint-disable-next-line @typescript-eslint/ban-ts-comment
             // @ts-ignore
-            // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
             class FertilizerProducer {
                 @Factory('urea')
                 produceUrea() {

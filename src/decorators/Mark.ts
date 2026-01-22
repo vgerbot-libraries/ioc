@@ -21,7 +21,7 @@ export function Mark(key: string | symbol, value: unknown = true): Function {
             metadata.marker().member(propertyKey).mark(key, value);
         } else if (args.length === 3 && typeof args[2] === 'number') {
             // parameter decorator
-            const [prototype, propertyKey, index] = args as [Object, string | symbol, number];
+            const [prototype, propertyKey, index] = args as [object, string | symbol, number];
             const metadata = MetadataInstanceManager.getMetadata(prototype.constructor, ClassMetadata);
             metadata.marker().parameter(propertyKey, index).mark(key, value);
         } else {

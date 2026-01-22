@@ -19,8 +19,9 @@ describe('AOP decorators', () => {
                 }
             }
 
-            // eslint-disable-next-line @typescript-eslint/no-unused-vars,@typescript-eslint/ban-ts-comment
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
             // @ts-ignore
+
             class BeforeAspect {
                 @Before(Pointcut.of(Test, 'testMethod'))
                 testAspectMethod(joinPoint: JoinPoint) {
@@ -47,7 +48,7 @@ describe('AOP decorators', () => {
                 }
             }
 
-            // eslint-disable-next-line @typescript-eslint/no-unused-vars,@typescript-eslint/ban-ts-comment
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
             // @ts-ignore
             class BeforeAspect {
                 @After(Pointcut.of(Test, 'testMethod'))
@@ -73,7 +74,7 @@ describe('AOP decorators', () => {
                 }
             }
 
-            // eslint-disable-next-line @typescript-eslint/no-unused-vars,@typescript-eslint/ban-ts-comment
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
             // @ts-ignore
             class BeforeAspect {
                 @Thrown(Pointcut.of(Test, 'testMethod'))
@@ -96,7 +97,7 @@ describe('AOP decorators', () => {
                 }
             }
 
-            // eslint-disable-next-line @typescript-eslint/no-unused-vars,@typescript-eslint/ban-ts-comment
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
             // @ts-ignore
             class BeforeAspect {
                 @Thrown(Pointcut.of(Test, 'testMethod'))
@@ -114,7 +115,6 @@ describe('AOP decorators', () => {
         });
     });
     describe('@Finally', () => {
-        // eslint-disable-next-line max-len
         it('should execute the decorated aspect method after the target pointcut method regardless of whether it throws an error', () => {
             class Test {
                 testMethod() {
@@ -128,8 +128,9 @@ describe('AOP decorators', () => {
             }
             const afterTest1 = jest.fn();
             const afterTest2 = jest.fn();
-            // eslint-disable-next-line @typescript-eslint/no-unused-vars,@typescript-eslint/ban-ts-comment
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
             // @ts-ignore
+
             class TestAspect {
                 @Finally(Pointcut.of(Test, 'testMethod'))
                 afterTest1() {
@@ -159,8 +160,9 @@ describe('AOP decorators', () => {
                 }
             }
 
-            // eslint-disable-next-line @typescript-eslint/no-unused-vars,@typescript-eslint/ban-ts-comment
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
             // @ts-ignore
+
             class TestAspect {
                 @Around(Pointcut.of(Test, 'testMethod'))
                 around(joinPoint: ProceedingJoinPoint) {
@@ -183,8 +185,9 @@ describe('AOP decorators', () => {
                 }
             }
 
-            // eslint-disable-next-line @typescript-eslint/no-unused-vars,@typescript-eslint/ban-ts-comment
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
             // @ts-ignore
+
             class TestAspect {
                 @Around(Pointcut.of(Test, 'testMethod'))
                 around(joinPoint: ProceedingJoinPoint) {
@@ -208,8 +211,9 @@ describe('AOP decorators', () => {
                 }
             }
 
-            // eslint-disable-next-line @typescript-eslint/no-unused-vars,@typescript-eslint/ban-ts-comment
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
             // @ts-ignore
+
             class TestAspect {
                 @Before(Pointcut.of(Test, 'testMethod'))
                 before() {

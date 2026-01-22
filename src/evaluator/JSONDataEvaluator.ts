@@ -15,7 +15,7 @@ export class JSONDataEvaluator implements Evaluator {
             throw new Error(`Incorrect expression: namespace not recorded: "${namespace}"`);
         }
         const data = this.namespaceDataMap.get(namespace) as JSONData;
-        return runExpression(exp, data as Object);
+        return runExpression(exp, data as object);
     }
     recordData(namespace: string, data: JSONData) {
         this.namespaceDataMap.set(namespace, data);
@@ -25,7 +25,7 @@ export class JSONDataEvaluator implements Evaluator {
     }
 }
 
-function runExpression(expression: string, rootContext: Object) {
+function runExpression(expression: string, rootContext: object) {
     const fn = compileExpression(expression);
     return fn(rootContext);
 }
@@ -44,7 +44,7 @@ function compileExpression(expression: string) {
     }
     expression = expression.trim();
     if (expression === '') {
-        return (root: Object) => root;
+        return (root: object) => root;
     }
 
     const rootVarName = varName('context');

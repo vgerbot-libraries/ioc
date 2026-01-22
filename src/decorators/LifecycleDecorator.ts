@@ -8,7 +8,7 @@ import { MetadataInstanceManager } from '../metadata/MetadataInstanceManager';
  * @annotation
  */
 export const LifecycleDecorator = (lifecycle: Lifecycle): MethodDecorator => {
-    return (target: Object, propertyKey: string | symbol) => {
+    return (target: object, propertyKey: string | symbol) => {
         const metadata = MetadataInstanceManager.getMetadata(target.constructor, ClassMetadata);
         metadata.addLifecycleMethod(propertyKey, lifecycle);
     };

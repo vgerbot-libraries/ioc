@@ -6,7 +6,7 @@ import { isNotDefined } from '../common/isNotDefined';
 import { InstanceScope } from '../foundation';
 
 export function Factory(produceIdentifier?: FactoryIdentifier, scope: InstanceScope = InstanceScope.SINGLETON): MethodDecorator {
-    return (target: Object, propertyKey: string | symbol) => {
+    return (target: object, propertyKey: string | symbol) => {
         const metadata = GlobalMetadata.getInstance();
         const clazz = target.constructor as Newable<Instance<unknown>>;
 

@@ -4,7 +4,7 @@ export interface Metadata<R extends MetadataReader, Target> {
     init(target: Target): void;
     reader(): R;
 }
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
+
 export interface MetadataReader {
     // EMPTY
 }

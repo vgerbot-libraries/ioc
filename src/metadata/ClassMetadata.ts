@@ -17,7 +17,7 @@ export interface MarkInfo {
 }
 
 export class MarkInfoContainer {
-    private readonly map = createDefaultValueMap<MemberKey, MarkInfo>(() => ({} as MarkInfo));
+    private readonly map = createDefaultValueMap<MemberKey, MarkInfo>(() => ({}) as MarkInfo);
     getMarkInfo(method: MemberKey): MarkInfo {
         return this.map.get(method);
     }

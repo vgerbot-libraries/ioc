@@ -37,7 +37,7 @@ const INSTANCE_PRE_DESTROY_METHOD = Symbol('solidium:instance-pre-destroy');
 
 export class ApplicationContext {
     private readonly resolutions = new Map<InstanceScope | string, InstanceResolution>();
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
     private readonly factories = new FactoryRecorder();
     private readonly evaluatorClasses = new Map<string, Newable<Evaluator>>();
     private readonly eventEmitter = new EventEmitter();

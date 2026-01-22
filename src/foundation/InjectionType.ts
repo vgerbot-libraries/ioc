@@ -11,7 +11,10 @@ export class InjectionType {
     static of(clazz: Newable<unknown>, identifier: Identifier = clazz) {
         return new InjectionType(clazz, identifier);
     }
-    private constructor(public readonly clazz: Newable<unknown>, public readonly identifier: Identifier = clazz) {}
+    private constructor(
+        public readonly clazz: Newable<unknown>,
+        public readonly identifier: Identifier = clazz
+    ) {}
 
     get isNewable() {
         return this.identifier === this.clazz;

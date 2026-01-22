@@ -18,7 +18,7 @@ describe('@UseAspect', () => {
             const testAspectMethod = jest.fn().mockImplementation(() => callOrder.push('testAspectMethod'));
 
             class TestAspect implements Aspect {
-                execute(ctx: JoinPoint) {
+                execute(_ctx: JoinPoint) {
                     testAspectMethod();
                 }
             }

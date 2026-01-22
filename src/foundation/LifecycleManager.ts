@@ -7,7 +7,10 @@ import { ApplicationContext } from './ApplicationContext';
 
 export class LifecycleManager<T = unknown> {
     private classMetadataReader: ClassMetadataReader<T>;
-    constructor(private readonly componentClass: Newable<T>, private readonly container: ApplicationContext) {
+    constructor(
+        private readonly componentClass: Newable<T>,
+        private readonly container: ApplicationContext
+    ) {
         this.classMetadataReader = MetadataInstanceManager.getMetadata(this.componentClass, ClassMetadata).reader();
     }
     invokePreInjectMethod(instance: Instance<T>) {

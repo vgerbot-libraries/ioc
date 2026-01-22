@@ -8,7 +8,7 @@ type AnyMetadataClass = MetadataClass<MetadataReader, unknown, AnyMetadata>;
 const metadataInstanceMap = createDefaultValueMap<AnyMetadataClass, Set<AnyMetadata>>(() => new Set());
 
 export class MetadataInstanceManager {
-    static getMetadata<R extends MetadataReader, T extends Object, M extends Metadata<R, T> = Metadata<R, T>>(
+    static getMetadata<R extends MetadataReader, T extends object, M extends Metadata<R, T> = Metadata<R, T>>(
         target: T,
         metadataClass: MetadataClass<R, T, M>
     ) {

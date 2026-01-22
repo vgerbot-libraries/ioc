@@ -11,7 +11,7 @@ describe('@InstAwareProcessor', () => {
         const recordProcessorClassSpy = jest.spyOn(GlobalMetadata.prototype, 'recordProcessorClass');
         @InstAwareProcessor()
         class TestClass implements PartialInstAwareProcessor {
-            afterInstantiation<T extends Object>(instance: T): T {
+            afterInstantiation<T extends object>(instance: T): T {
                 return instance;
             }
         }
