@@ -1,4 +1,4 @@
-import { AnyFunction } from '../types/AnyFunction';
+import type { AnyFunction } from '../types/AnyFunction';
 
 export type EventListener = AnyFunction;
 export class EventEmitter {
@@ -7,7 +7,7 @@ export class EventEmitter {
     on(type: string | symbol, listener: EventListener) {
         let listeners = this.events.get(type);
         if (listeners) {
-            if (listeners.indexOf(listener) == -1) {
+            if (listeners.indexOf(listener) === -1) {
                 listeners.push(listener);
             }
         } else {

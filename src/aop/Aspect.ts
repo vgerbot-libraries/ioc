@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { ApplicationContext } from '../foundation';
-import { Advice } from './Advice';
+import type { ApplicationContext } from '../foundation';
+import type { Advice } from './Advice';
 
 export interface Aspect {
     execute(ctx: JoinPoint): any;

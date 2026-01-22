@@ -19,13 +19,13 @@ describe('ServiceFactory', () => {
         expect(service.str).toStrictEqual(VALUE);
     });
     // eslint-disable-next-line prettier/prettier
-    it('should be able to inject value created by other service\'s member functions', () => {
+    it("should be able to inject value created by other service's member functions", () => {
         const context = new ApplicationContext();
         const FACTORY_IDENTIFIER = '';
         const VALUE = Symbol('value');
 
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore
+        // @ts-expect-error
 
         class ProviderService {
             @Factory(FACTORY_IDENTIFIER)

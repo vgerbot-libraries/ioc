@@ -1,9 +1,9 @@
-import { Newable } from '../types/Newable';
-import { ClassMetadata, ClassMetadataReader } from '../metadata/ClassMetadata';
+import { ClassMetadata, type ClassMetadataReader } from '../metadata/ClassMetadata';
 import { MetadataInstanceManager } from '../metadata/MetadataInstanceManager';
+import type { Instance } from '../types/Instance';
+import type { Newable } from '../types/Newable';
+import type { ApplicationContext } from './ApplicationContext';
 import { Lifecycle } from './Lifecycle';
-import { Instance } from '../types/Instance';
-import { ApplicationContext } from './ApplicationContext';
 
 export class LifecycleManager<T = unknown> {
     private classMetadataReader: ClassMetadataReader<T>;

@@ -1,8 +1,8 @@
-import { Metadata, MetadataReader } from '../types/Metadata';
-import { Newable } from '../types/Newable';
-import { Aspect } from './Aspect';
-import { createDefaultValueMap, DefaultValueMap } from '../common/DefaultValueMap';
-import { Advice } from './Advice';
+import { createDefaultValueMap, type DefaultValueMap } from '../common/DefaultValueMap';
+import type { Metadata, MetadataReader } from '../types/Metadata';
+import type { Newable } from '../types/Newable';
+import type { Advice } from './Advice';
+import type { Aspect } from './Aspect';
 
 export type UseAspectMap = DefaultValueMap<string | symbol, DefaultValueMap<Advice, Array<Newable<Aspect>>>>;
 

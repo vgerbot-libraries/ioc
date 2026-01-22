@@ -1,9 +1,9 @@
+import { isNodeJs } from '../common/isNodeJs';
+import { InjectionType } from '../foundation/InjectionType';
 import { ClassMetadata } from '../metadata/ClassMetadata';
 import { GlobalMetadata } from '../metadata/GlobalMetadata';
 import { MetadataInstanceManager } from '../metadata/MetadataInstanceManager';
 import { ExpressionType } from '../types/EvaluateOptions';
-import { isNodeJs } from '../common/isNodeJs';
-import { InjectionType } from '../foundation/InjectionType';
 
 export function Value<A = unknown>(expression: string, type: ExpressionType | string, externalArgs?: A): PropertyDecorator {
     switch (type) {

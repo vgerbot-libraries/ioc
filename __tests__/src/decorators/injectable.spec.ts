@@ -1,6 +1,6 @@
+import { getProxyTarget } from '../../../src/common/ProxyTargetRecorder';
 import { Injectable } from '../../../src/decorators/Injectable';
 import { ApplicationContext } from '../../../src/foundation/ApplicationContext';
-import { getProxyTarget } from '../../../src/common/ProxyTargetRecorder';
 
 describe('@Injectable', () => {
     it('should inject a single instance', () => {
@@ -16,7 +16,7 @@ describe('@Injectable', () => {
     it('should inject multiple instances', () => {
         const HTTP_INTERCEPTOR = Symbol('produce-http-inteceptor');
 
-        interface Inteceptor {}
+        type Inteceptor = {};
         @Injectable({
             produce: HTTP_INTERCEPTOR
         })
@@ -46,9 +46,9 @@ describe('@Injectable', () => {
         const HTTP_INTERCEPTOR = Symbol('produce-http-interceptor');
         const DATA_PARSER = Symbol('produce-data-parser');
 
-        interface DataParser {}
+        type DataParser = {};
 
-        interface Interceptor {}
+        type Interceptor = {};
 
         @Injectable({
             produce: [HTTP_INTERCEPTOR, DATA_PARSER]

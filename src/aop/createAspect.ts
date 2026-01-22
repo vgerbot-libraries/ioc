@@ -1,10 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import type { ApplicationContext } from '../foundation/ApplicationContext';
+import type { Newable } from '../types/Newable';
 import { Advice } from './Advice';
-import { Newable } from '../types/Newable';
-import { Aspect, JoinPoint, ProceedingJoinPoint } from './Aspect';
+import type { Aspect, JoinPoint, ProceedingJoinPoint } from './Aspect';
+import type { AspectInfo } from './AspectMetadta';
 import { AspectUtils } from './AspectUtils';
-import { AspectInfo } from './AspectMetadta';
 
 export function createAspect<T>(
     appCtx: ApplicationContext,
@@ -72,7 +72,7 @@ export function createAspect<T>(
 
     if (afterReturnAdviceAspects.length > 0) {
         aspectUtils.append(Advice.AfterReturn, (returnValue, args) => {
-            return afterReturnAdviceAspects.reduce((prevReturnValue, aspect) => {
+            return afterReturnAdviceAspects.reduce((_prevReturnValue, aspect) => {
                 const joinPoint = createAspectCtx(Advice.AfterReturn, args, returnValue);
                 return aspect.execute(joinPoint);
             }, returnValue);

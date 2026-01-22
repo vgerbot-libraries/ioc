@@ -1,4 +1,4 @@
-import { GetInstanceOptions, InstanceResolution, SaveInstanceOptions } from '../types/InstanceResolution';
+import type { GetInstanceOptions, InstanceResolution, SaveInstanceOptions } from '../types/InstanceResolution';
 import { SingletonInstanceResolution } from './SingletonInstanceResolution';
 
 const SINGLETON_INSTANCE_SINGLETON = new SingletonInstanceResolution();

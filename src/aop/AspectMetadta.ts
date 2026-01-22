@@ -1,9 +1,9 @@
-import { Newable } from '../types';
-import { Identifier } from '../types/Identifier';
-import { Metadata, MetadataReader } from '../types/Metadata';
-import { Advice } from './Advice';
+import type { Newable } from '../types';
+import type { Identifier } from '../types/Identifier';
+import type { Metadata, MetadataReader } from '../types/Metadata';
+import type { Advice } from './Advice';
 import { ComponentMethodAspect } from './ComponentMethodAspect';
-import { Pointcut } from './Pointcut';
+import type { Pointcut } from './Pointcut';
 
 export interface AspectInfo {
     aspectClass: Newable<unknown>;

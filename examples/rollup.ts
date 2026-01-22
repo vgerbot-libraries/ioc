@@ -1,13 +1,13 @@
-import { RollupOptions } from 'rollup';
-import { nodeResolve } from '@rollup/plugin-node-resolve';
+import fs from 'node:fs';
+import path from 'node:path';
 import commonjs from '@rollup/plugin-commonjs';
-import typescript from 'rollup-plugin-typescript2';
-import serve from 'rollup-plugin-serve';
 import html from '@rollup/plugin-html';
+import { nodeResolve } from '@rollup/plugin-node-resolve';
+import type { RollupOptions } from 'rollup';
 import pluginDelete from 'rollup-plugin-delete';
 import livereload from 'rollup-plugin-livereload';
-import fs from 'fs';
-import path from 'path';
+import serve from 'rollup-plugin-serve';
+import typescript from 'rollup-plugin-typescript2';
 
 const examples = fs.readdirSync('./examples').filter(it => {
     const stat = fs.statSync(`./examples/${it}`);

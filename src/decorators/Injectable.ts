@@ -1,8 +1,8 @@
 import { InstanceScope } from '../foundation';
 import { ClassMetadata, GlobalMetadata } from '../metadata';
 import { MetadataInstanceManager } from '../metadata/MetadataInstanceManager';
-import { Newable } from '../types';
-import { Instance } from '../types/Instance';
+import type { Newable } from '../types';
+import type { Instance } from '../types/Instance';
 
 export interface InjectableOptions {
     produce: string | symbol | Array<string | symbol>;
@@ -14,7 +14,7 @@ export interface InjectableOptions {
  * In most cases, @Injectable can be omitted unless explicit configuration is required.
  */
 export function Injectable(options?: InjectableOptions): ClassDecorator {
-    return <TFunction extends Function>(target: TFunction): TFunction | void => {
+    return <TFunction extends Function>(target: TFunction): TFunction | undefined => {
         if (typeof options?.produce === 'undefined') {
             return target;
         }

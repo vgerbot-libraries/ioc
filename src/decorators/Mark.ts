@@ -1,15 +1,15 @@
 import 'reflect-metadata';
-import { MetadataInstanceManager } from '../metadata/MetadataInstanceManager';
 import { ClassMetadata } from '../metadata/ClassMetadata';
+import { MetadataInstanceManager } from '../metadata/MetadataInstanceManager';
 
 export function Mark(key: string | symbol, value: unknown = true): Function {
-    return function (
+    return (
         ...args:
             | Parameters<ClassDecorator>
             | Parameters<MethodDecorator>
             | Parameters<PropertyDecorator>
             | Parameters<ParameterDecorator>
-    ) {
+    ) => {
         if (args.length === 1) {
             // class decorator
             const metadata = MetadataInstanceManager.getMetadata(args[0], ClassMetadata);

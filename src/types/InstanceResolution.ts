@@ -1,5 +1,5 @@
-import { Identifier } from './Identifier';
-import { KeyOf } from './KeyOf';
+import type { Identifier } from './Identifier';
+import type { KeyOf } from './KeyOf';
 
 export interface SaveInstanceOptions<T, O> {
     identifier: Identifier<T>;

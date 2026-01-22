@@ -1,7 +1,7 @@
-import { OutputOptions, RollupOptions } from 'rollup';
-import path from 'path';
-import { nodeResolve } from '@rollup/plugin-node-resolve';
+import path from 'node:path';
 import commonjs from '@rollup/plugin-commonjs';
+import { nodeResolve } from '@rollup/plugin-node-resolve';
+import type { OutputOptions, RollupOptions } from 'rollup';
 import typescript from 'rollup-plugin-typescript2';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires

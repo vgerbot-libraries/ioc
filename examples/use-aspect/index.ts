@@ -1,7 +1,7 @@
 import { ApplicationContext } from '../../src';
-import { Aspect, JoinPoint } from '../../src/aop/Aspect';
-import { UseAspects } from '../../src/aop/decorators/UseAspects';
 import { Advice } from '../../src/aop/Advice';
+import type { Aspect, JoinPoint } from '../../src/aop/Aspect';
+import { UseAspects } from '../../src/aop/decorators/UseAspects';
 
 const appCtx = new ApplicationContext();
 
@@ -21,7 +21,7 @@ appCtx.getInstance(Service).chat();
 
 class TestAfterReturnAspect implements Aspect {
     execute(jp: JoinPoint) {
-        return jp.returnValue + '-aspect';
+        return `${jp.returnValue}-aspect`;
     }
 }
 

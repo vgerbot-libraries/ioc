@@ -1,11 +1,11 @@
-import { Before } from '../../../src/aop/decorators/Before';
-import { Pointcut } from '../../../src/aop/Pointcut';
-import { JoinPoint, ProceedingJoinPoint } from '../../../src/aop/Aspect';
 import { ApplicationContext } from '../../../src';
+import type { JoinPoint, ProceedingJoinPoint } from '../../../src/aop/Aspect';
 import { After } from '../../../src/aop/decorators/After';
-import { Thrown } from '../../../src/aop/decorators/Thrown';
-import { Finally } from '../../../src/aop/decorators/Finally';
 import { Around } from '../../../src/aop/decorators/Around';
+import { Before } from '../../../src/aop/decorators/Before';
+import { Finally } from '../../../src/aop/decorators/Finally';
+import { Thrown } from '../../../src/aop/decorators/Thrown';
+import { Pointcut } from '../../../src/aop/Pointcut';
 
 describe('AOP decorators', () => {
     describe('@Before', () => {
@@ -20,7 +20,7 @@ describe('AOP decorators', () => {
             }
 
             // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-            // @ts-ignore
+            // @ts-expect-error
 
             class BeforeAspect {
                 @Before(Pointcut.of(Test, 'testMethod'))
@@ -49,7 +49,7 @@ describe('AOP decorators', () => {
             }
 
             // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-            // @ts-ignore
+            // @ts-expect-error
             class BeforeAspect {
                 @After(Pointcut.of(Test, 'testMethod'))
                 testAspectMethod(joinPoint: JoinPoint) {
@@ -75,7 +75,7 @@ describe('AOP decorators', () => {
             }
 
             // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-            // @ts-ignore
+            // @ts-expect-error
             class BeforeAspect {
                 @Thrown(Pointcut.of(Test, 'testMethod'))
                 testAspectMethod(joinPoint: JoinPoint) {
@@ -98,7 +98,7 @@ describe('AOP decorators', () => {
             }
 
             // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-            // @ts-ignore
+            // @ts-expect-error
             class BeforeAspect {
                 @Thrown(Pointcut.of(Test, 'testMethod'))
                 testAspectMethod(joinPoint: JoinPoint) {
@@ -129,7 +129,7 @@ describe('AOP decorators', () => {
             const afterTest1 = jest.fn();
             const afterTest2 = jest.fn();
             // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-            // @ts-ignore
+            // @ts-expect-error
 
             class TestAspect {
                 @Finally(Pointcut.of(Test, 'testMethod'))
@@ -161,7 +161,7 @@ describe('AOP decorators', () => {
             }
 
             // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-            // @ts-ignore
+            // @ts-expect-error
 
             class TestAspect {
                 @Around(Pointcut.of(Test, 'testMethod'))
@@ -186,11 +186,11 @@ describe('AOP decorators', () => {
             }
 
             // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-            // @ts-ignore
+            // @ts-expect-error
 
             class TestAspect {
                 @Around(Pointcut.of(Test, 'testMethod'))
-                around(joinPoint: ProceedingJoinPoint) {
+                around(_joinPoint: ProceedingJoinPoint) {
                     testAspectMethod();
                 }
             }
@@ -212,7 +212,7 @@ describe('AOP decorators', () => {
             }
 
             // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-            // @ts-ignore
+            // @ts-expect-error
 
             class TestAspect {
                 @Before(Pointcut.of(Test, 'testMethod'))
@@ -224,7 +224,7 @@ describe('AOP decorators', () => {
                     testAspectAfterMethod();
                 }
                 @Around(Pointcut.of(Test, 'testMethod'))
-                around(joinPoint: ProceedingJoinPoint) {
+                around(_joinPoint: ProceedingJoinPoint) {
                     testAspectMethod();
                 }
             }

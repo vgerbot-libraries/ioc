@@ -1,7 +1,7 @@
-import { ApplicationContext, Factory, PartialInstAwareProcessor } from '../../src';
+import { ApplicationContext, Factory, type PartialInstAwareProcessor } from '../../src';
 
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
+// @ts-expect-error
 class FertilizerProducer {
     @Factory('urea')
     produceUrea() {

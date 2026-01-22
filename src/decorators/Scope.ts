@@ -1,7 +1,7 @@
-import { InstanceScope } from '../foundation/InstanceScope';
+import type { InstanceScope } from '../foundation/InstanceScope';
 import { ClassMetadata } from '../metadata/ClassMetadata';
 import { MetadataInstanceManager } from '../metadata/MetadataInstanceManager';
-import { Newable } from '../types/Newable';
+import type { Newable } from '../types/Newable';
 
 export function Scope(scope: InstanceScope | string): ClassDecorator {
     return <TFunction extends Function>(target: TFunction) => {

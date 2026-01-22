@@ -1,14 +1,15 @@
 // eslint-disable @typescript-eslint/no-explicit-any
-import { InstanceScope } from '../foundation/InstanceScope';
-import { JsServiceClass } from '../types/JsServiceClass';
-import { Metadata, MetadataReader } from '../types/Metadata';
-import { Lifecycle } from '../foundation/Lifecycle';
-import { Newable } from '../types/Newable';
+
 import { createDefaultValueMap } from '../common/DefaultValueMap';
+import type { InjectionType } from '../foundation/InjectionType';
+import type { InstanceScope } from '../foundation/InstanceScope';
+import type { Lifecycle } from '../foundation/Lifecycle';
+import type { JsServiceClass } from '../types/JsServiceClass';
+import type { KeyOf } from '../types/KeyOf';
+import type { MemberKey } from '../types/MemberKey';
+import type { Metadata, MetadataReader } from '../types/Metadata';
+import type { Newable } from '../types/Newable';
 import { MetadataInstanceManager } from './MetadataInstanceManager';
-import { MemberKey } from '../types/MemberKey';
-import { KeyOf } from '../types/KeyOf';
-import { InjectionType } from '../foundation/InjectionType';
 
 const CLASS_METADATA_KEY = 'ioc:class-metadata';
 
@@ -82,7 +83,7 @@ export class ClassMetadata<T> implements Metadata<ClassMetadataReader<T>, Newabl
         return MetadataInstanceManager.getMetadata(ctor, ClassMetadata);
     }
     static getReader<T>(ctor: Newable<T>) {
-        return this.getInstance(ctor).reader();
+        return ClassMetadata.getInstance(ctor).reader();
     }
 
     init(target: Newable<T>) {

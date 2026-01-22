@@ -1,8 +1,8 @@
-import { Evaluator } from '../types/Evaluator';
-import { ApplicationContext } from '../foundation/ApplicationContext';
+import type { ApplicationContext } from '../foundation/ApplicationContext';
+import type { Evaluator } from '../types/Evaluator';
 
 export class EnvironmentEvaluator implements Evaluator {
-    eval<T>(context: ApplicationContext, expression: string): T | undefined {
+    eval<T>(_context: ApplicationContext, expression: string): T | undefined {
         return process.env[expression] as T | undefined;
     }
 }

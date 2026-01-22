@@ -1,5 +1,5 @@
-import { InstanceScope } from '../foundation/InstanceScope';
-import { InjectionType } from '../foundation/InjectionType';
+import type { InjectionType } from '../foundation/InjectionType';
+import type { InstanceScope } from '../foundation/InstanceScope';
 
 export interface JsServiceClass<T> extends Function {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any

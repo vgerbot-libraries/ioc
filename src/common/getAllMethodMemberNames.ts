@@ -1,4 +1,4 @@
-import { Newable } from '../types/Newable';
+import type { Newable } from '../types/Newable';
 
 function getMethodDescriptors(prototype: object): Record<string, PropertyDescriptor> {
     if (
@@ -16,9 +16,11 @@ function getMethodDescriptors(prototype: object): Record<string, PropertyDescrip
 
 export function getAllMethodMemberNames<T>(cls: Newable<T>) {
     const descriptors = getMethodDescriptors(cls.prototype);
-    delete descriptors['constructor'];
     const methodNames = new Set<string | symbol>();
     Reflect.ownKeys(descriptors).forEach(key => {
+        if (key === 'constructor') {
+            return;
+        }
         const member = cls.prototype[key];
         if (typeof member === 'function') {
             methodNames.add(key);

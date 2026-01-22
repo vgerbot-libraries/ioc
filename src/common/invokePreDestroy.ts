@@ -1,6 +1,6 @@
-import { MetadataInstanceManager } from '../metadata/MetadataInstanceManager';
-import { ClassMetadata } from '../metadata/ClassMetadata';
 import { Lifecycle } from '../foundation/Lifecycle';
+import { ClassMetadata } from '../metadata/ClassMetadata';
+import { MetadataInstanceManager } from '../metadata/MetadataInstanceManager';
 
 export function invokePreDestroy(instance: unknown) {
     const clazz = instance?.constructor;

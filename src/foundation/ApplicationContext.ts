@@ -4,30 +4,30 @@ import { isNodeJs } from '../common/isNodeJs';
 import { ArgvEvaluator } from '../evaluator/ArgvEvaluator';
 import { EnvironmentEvaluator } from '../evaluator/EnvironmentEvaluator';
 import { JSONDataEvaluator } from '../evaluator/JSONDataEvaluator';
-import { ClassMetadata, ClassMetadataReader } from '../metadata/ClassMetadata';
+import { ClassMetadata, type ClassMetadataReader } from '../metadata/ClassMetadata';
 import { FunctionMetadata } from '../metadata/FunctionMetadata';
 import { GlobalMetadata } from '../metadata/GlobalMetadata';
 import { MetadataInstanceManager } from '../metadata/MetadataInstanceManager';
 import { GlobalSharedInstanceResolution } from '../resolution/GlobalSharedInstanceResolution';
 import { SingletonInstanceResolution } from '../resolution/SingletonInstanceResolution';
 import { TransientInstanceResolution } from '../resolution/TransientInstanceResolution';
-import { AnyFunction } from '../types/AnyFunction';
-import { ApplicationContextOptions } from '../types/ApplicationContextOptions';
-import { EvaluationOptions, ExpressionType } from '../types/EvaluateOptions';
-import { Evaluator } from '../types/Evaluator';
-import { FactoryIdentifier } from '../types/FactoryIdentifier';
-import { Identifier } from '../types/Identifier';
-import { Instance } from '../types/Instance';
-import { InstanceResolution } from '../types/InstanceResolution';
-import { PartialInstAwareProcessor } from '../types/InstantiationAwareProcessor';
-import { JSONData } from '../types/JSONData';
-import { Newable } from '../types/Newable';
-import { ServiceFactory } from '../types/ServiceFactory';
+import type { AnyFunction } from '../types/AnyFunction';
+import type { ApplicationContextOptions } from '../types/ApplicationContextOptions';
+import { type EvaluationOptions, ExpressionType } from '../types/EvaluateOptions';
+import type { Evaluator } from '../types/Evaluator';
+import type { FactoryIdentifier } from '../types/FactoryIdentifier';
+import type { Identifier } from '../types/Identifier';
+import type { Instance } from '../types/Instance';
+import type { InstanceResolution } from '../types/InstanceResolution';
+import type { PartialInstAwareProcessor } from '../types/InstantiationAwareProcessor';
+import type { JSONData } from '../types/JSONData';
+import type { Newable } from '../types/Newable';
+import type { ServiceFactory } from '../types/ServiceFactory';
 import { ComponentInstanceBuilder } from './ComponentInstanceBuilder';
-import { EventEmitter, EventListener } from './EventEmitter';
+import { EventEmitter, type EventListener } from './EventEmitter';
 import { InstanceScope } from './InstanceScope';
 import { InstantiationAwareProcessorManager } from './InstantiationAwareProcessorManager';
-import { hasArgs, hasInjections, InvokeFunctionOptions } from './InvokeFunctionOptions';
+import { hasArgs, hasInjections, type InvokeFunctionOptions } from './InvokeFunctionOptions';
 import { Lifecycle } from './Lifecycle';
 import { LifecycleManager } from './LifecycleManager';
 
@@ -278,10 +278,10 @@ export class ApplicationContext {
     registerInstAwareProcessor(clazz: Newable<PartialInstAwareProcessor>) {
         this.instAwareProcessorManager.appendInstAwareProcessorClass(clazz);
     }
-    registerBeforeInstantiationProcessor(processor: <T>(constructor: Newable<T>, args: unknown[]) => T | undefined | void) {
+    registerBeforeInstantiationProcessor(processor: <T>(constructor: Newable<T>, args: unknown[]) => T | undefined | undefined) {
         this.instAwareProcessorManager.appendInstAwareProcessorClass(
             class InnerProcessor implements PartialInstAwareProcessor {
-                beforeInstantiation<T>(constructor: Newable<T>, args: unknown[]): void | T | undefined {
+                beforeInstantiation<T>(constructor: Newable<T>, args: unknown[]): undefined | T | undefined {
                     return processor(constructor, args);
                 }
             }
@@ -307,6 +307,6 @@ export class ApplicationContext {
     }
     destroyTransientInstance<T>(instance: T) {
         const resolution = this.resolutions.get(InstanceScope.TRANSIENT);
-        resolution?.destroyThat && resolution.destroyThat(instance);
+        resolution?.destroyThat?.(instance);
     }
 }

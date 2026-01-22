@@ -1,7 +1,7 @@
-import { GlobalMetadata } from '../metadata/GlobalMetadata';
 import { ClassMetadata } from '../metadata/ClassMetadata';
+import { GlobalMetadata } from '../metadata/GlobalMetadata';
 import { MetadataInstanceManager } from '../metadata/MetadataInstanceManager';
-import { Newable } from '../types/Newable';
+import type { Newable } from '../types/Newable';
 
 export function Alias(aliasName: string | symbol): ClassDecorator {
     return <TFunction extends Function>(target: TFunction) => {

@@ -1,6 +1,6 @@
 import { ApplicationContext, InstanceScope, PostInject, PreDestroy, PreInject, Scope } from '../../src';
-import { PartialInstAwareProcessor } from '../../src/types/InstantiationAwareProcessor';
-import { Newable } from '../../src/types/Newable';
+import type { PartialInstAwareProcessor } from '../../src/types/InstantiationAwareProcessor';
+import type { Newable } from '../../src/types/Newable';
 
 function generateId() {
     return (~~(Math.random() * 10000000)).toString(16);

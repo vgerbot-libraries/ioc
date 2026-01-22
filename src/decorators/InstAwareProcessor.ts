@@ -1,9 +1,9 @@
-import { Newable } from '../types/Newable';
-import { PartialInstAwareProcessor } from '../types/InstantiationAwareProcessor';
 import { GlobalMetadata } from '../metadata/GlobalMetadata';
+import type { PartialInstAwareProcessor } from '../types/InstantiationAwareProcessor';
+import type { Newable } from '../types/Newable';
 
 export function InstAwareProcessor() {
-    return function <Cls extends Newable<PartialInstAwareProcessor>>(target: Cls) {
+    return <Cls extends Newable<PartialInstAwareProcessor>>(target: Cls) => {
         GlobalMetadata.getInstance().recordProcessorClass(target);
         return target;
     };

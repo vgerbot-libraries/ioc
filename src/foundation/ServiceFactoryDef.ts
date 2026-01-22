@@ -1,7 +1,7 @@
-import { ServiceFactory } from '../types/ServiceFactory';
-import { Identifier } from '../types/Identifier';
-import { ClassMetadata } from '../metadata/ClassMetadata';
-import { ApplicationContext } from './ApplicationContext';
+import type { ClassMetadata } from '../metadata/ClassMetadata';
+import type { Identifier } from '../types/Identifier';
+import type { ServiceFactory } from '../types/ServiceFactory';
+import type { ApplicationContext } from './ApplicationContext';
 import { InstanceScope } from './InstanceScope';
 
 export class ServiceFactoryDef<T> {

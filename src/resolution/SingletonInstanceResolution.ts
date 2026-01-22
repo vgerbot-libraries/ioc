@@ -1,7 +1,7 @@
-import { GetInstanceOptions, InstanceResolution, SaveInstanceOptions } from '../types/InstanceResolution';
-import { Identifier } from '../types/Identifier';
-import { ComponentInstanceWrapper } from '../foundation/ComponentInstanceWrapper';
 import { invokePreDestroy } from '../common/invokePreDestroy';
+import { ComponentInstanceWrapper } from '../foundation/ComponentInstanceWrapper';
+import type { Identifier } from '../types/Identifier';
+import type { GetInstanceOptions, InstanceResolution, SaveInstanceOptions } from '../types/InstanceResolution';
 
 export class SingletonInstanceResolution implements InstanceResolution {
     private readonly INSTANCE_MAP = new Map<Identifier, ComponentInstanceWrapper>();

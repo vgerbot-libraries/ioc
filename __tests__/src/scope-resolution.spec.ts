@@ -1,5 +1,5 @@
-import { ApplicationContext, InstanceResolution, InstanceScope, PreDestroy, Scope } from '../../src';
-import { GetInstanceOptions } from '../../src/types/InstanceResolution';
+import { ApplicationContext, type InstanceResolution, InstanceScope, PreDestroy, Scope } from '../../src';
+import type { GetInstanceOptions } from '../../src/types/InstanceResolution';
 
 describe('InstanceScope', () => {
     describe('SINGLETON', () => {

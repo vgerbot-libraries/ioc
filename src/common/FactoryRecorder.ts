@@ -1,7 +1,7 @@
 import { InstanceScope } from '../foundation/InstanceScope';
 import { ServiceFactoryDef } from '../foundation/ServiceFactoryDef';
-import { FactoryIdentifier } from '../types/FactoryIdentifier';
-import { Identifier } from '../types/Identifier';
+import type { FactoryIdentifier } from '../types/FactoryIdentifier';
+import type { Identifier } from '../types/Identifier';
 import type { ServiceFactory } from '../types/ServiceFactory';
 
 export class FactoryRecorder {

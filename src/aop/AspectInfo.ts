@@ -1,6 +1,6 @@
-import { Newable } from '../types/Newable';
-import { Advice } from './Advice';
-import { Pointcut } from './Pointcut';
+import type { Newable } from '../types/Newable';
+import type { Advice } from './Advice';
+import type { Pointcut } from './Pointcut';
 
 export interface AspectInfo<T> {
     aspectClass: Newable<T>;

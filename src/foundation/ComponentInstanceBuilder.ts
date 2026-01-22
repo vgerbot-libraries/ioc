@@ -1,17 +1,17 @@
-import { Newable } from '../types/Newable';
-import { ClassMetadata, ClassMetadataReader } from '../metadata/ClassMetadata';
-import { ApplicationContext } from './ApplicationContext';
-import { Instance } from '../types/Instance';
-import { ServiceFactoryDef } from './ServiceFactoryDef';
-import { GlobalMetadata } from '../metadata/GlobalMetadata';
 import { lazyProp } from '@vgerbot/lazy';
-import { MetadataInstanceManager } from '../metadata/MetadataInstanceManager';
-import { InstantiationAwareProcessorManager } from './InstantiationAwareProcessorManager';
-import { LifecycleManager } from './LifecycleManager';
 import { FactoryRecorder } from '../common/FactoryRecorder';
-import { AnyFunction } from '../types/AnyFunction';
-import { Identifier } from '../types/Identifier';
-import { ServiceFactory } from '../types/ServiceFactory';
+import { ClassMetadata, type ClassMetadataReader } from '../metadata/ClassMetadata';
+import { GlobalMetadata } from '../metadata/GlobalMetadata';
+import { MetadataInstanceManager } from '../metadata/MetadataInstanceManager';
+import type { AnyFunction } from '../types/AnyFunction';
+import type { Identifier } from '../types/Identifier';
+import type { Instance } from '../types/Instance';
+import type { Newable } from '../types/Newable';
+import type { ServiceFactory } from '../types/ServiceFactory';
+import type { ApplicationContext } from './ApplicationContext';
+import type { InstantiationAwareProcessorManager } from './InstantiationAwareProcessorManager';
+import { LifecycleManager } from './LifecycleManager';
+import { ServiceFactoryDef } from './ServiceFactoryDef';
 
 export class ComponentInstanceBuilder<T> {
     private getConstructorArgs: () => unknown[] = () => [];
@@ -90,7 +90,7 @@ export class ComponentInstanceBuilder<T> {
         function defineProperties(this: ComponentInstanceBuilder<T>, instance: Instance<T> | undefined) {
             properties.forEach((value, key) => {
                 const getter = value(instance as T);
-                this.defineProperty(instance, typeof key === 'number' ? key + '' : key, getter);
+                this.defineProperty(instance, typeof key === 'number' ? `${key}` : key, getter);
             });
         }
     }
@@ -99,7 +99,7 @@ export class ComponentInstanceBuilder<T> {
             lazyProp(instance, key, getter);
         } else {
             // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-            // @ts-ignore
+            // @ts-expect-error
             instance[key] = getter();
         }
     }

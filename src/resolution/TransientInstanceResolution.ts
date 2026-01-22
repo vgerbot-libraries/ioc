@@ -1,5 +1,5 @@
-import { InstanceResolution, SaveInstanceOptions } from '../types/InstanceResolution';
 import { invokePreDestroy } from '../common/invokePreDestroy';
+import type { InstanceResolution, SaveInstanceOptions } from '../types/InstanceResolution';
 
 export class TransientInstanceResolution implements InstanceResolution {
     private readonly instances = new Set<unknown>();

@@ -1,4 +1,4 @@
-import { Bind, ApplicationContext, Inject } from '../../src/index';
+import { ApplicationContext, Bind, Inject } from '../../src/index';
 
 @Bind('service-name')
 class Service {}

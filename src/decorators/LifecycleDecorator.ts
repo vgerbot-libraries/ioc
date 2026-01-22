@@ -1,5 +1,5 @@
 import 'reflect-metadata';
-import { Lifecycle } from '../foundation/Lifecycle';
+import type { Lifecycle } from '../foundation/Lifecycle';
 import { ClassMetadata } from '../metadata/ClassMetadata';
 import { MetadataInstanceManager } from '../metadata/MetadataInstanceManager';
 

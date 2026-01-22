@@ -1,10 +1,10 @@
-import { PartialInstAwareProcessor } from '../types/InstantiationAwareProcessor';
-import type { ApplicationContext } from '../foundation/ApplicationContext';
-import { createAspect } from './createAspect';
-import { Newable } from '../types/Newable';
-import { AspectMetadata } from './AspectMetadta';
-import { Identifier } from '../types/Identifier';
 import { recordProxyTarget } from '../common/ProxyTargetRecorder';
+import type { ApplicationContext } from '../foundation/ApplicationContext';
+import type { Identifier } from '../types/Identifier';
+import type { PartialInstAwareProcessor } from '../types/InstantiationAwareProcessor';
+import type { Newable } from '../types/Newable';
+import { AspectMetadata } from './AspectMetadta';
+import { createAspect } from './createAspect';
 
 export abstract class AOPInstantiationAwareProcessor implements PartialInstAwareProcessor {
     static create(appCtx: ApplicationContext): Newable<AOPInstantiationAwareProcessor> {

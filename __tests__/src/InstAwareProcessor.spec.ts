@@ -1,5 +1,5 @@
+import type { PartialInstAwareProcessor } from '../../src';
 import { InstAwareProcessor } from '../../src/decorators/InstAwareProcessor';
-import { PartialInstAwareProcessor } from '../../src';
 import { GlobalMetadata } from '../../src/metadata/GlobalMetadata';
 
 describe('@InstAwareProcessor', () => {

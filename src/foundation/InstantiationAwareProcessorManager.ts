@@ -1,9 +1,9 @@
-import { Newable } from '../types/Newable';
-import { InstantiationAwareProcessor, PartialInstAwareProcessor } from '../types/InstantiationAwareProcessor';
 import { lazyMember } from '@vgerbot/lazy';
-import { ApplicationContext } from './ApplicationContext';
-import { Instance } from '../types/Instance';
 import { GlobalMetadata } from '../metadata/GlobalMetadata';
+import type { Instance } from '../types/Instance';
+import type { InstantiationAwareProcessor, PartialInstAwareProcessor } from '../types/InstantiationAwareProcessor';
+import type { Newable } from '../types/Newable';
+import type { ApplicationContext } from './ApplicationContext';
 
 export class InstantiationAwareProcessorManager {
     private instAwareProcessorClasses: Set<Newable<PartialInstAwareProcessor>> = new Set();
@@ -52,7 +52,7 @@ export class InstantiationAwareProcessorManager {
         return this.instAwareProcessorInstances.reduce((instance, processor) => {
             if (processor.afterInstantiation) {
                 const result = processor.afterInstantiation(instance);
-                if (!!result) {
+                if (result) {
                     return result as Instance<T>;
                 }
             }

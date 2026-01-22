@@ -19,7 +19,7 @@ describe('JSONDataEvaluator', () => {
     });
     it('Should throw an error if the expression length is greater than 120', () => {
         expect(() => {
-            evaluator.eval(ctx, 'a:' + Array(121).fill('a').join(''));
+            evaluator.eval(ctx, `a:${Array(121).fill('a').join('')}`);
         }).toThrowError('Incorrect expression syntax, expression length cannot be greater than 120, but actual: 121');
     });
     it('Should throw an error if the expression including parentheses', () => {

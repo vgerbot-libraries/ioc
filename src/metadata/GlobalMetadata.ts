@@ -1,13 +1,13 @@
-import { Metadata } from '../types/Metadata';
-import { Identifier } from '../types/Identifier';
-import { ServiceFactory } from '../types/ServiceFactory';
-import { FactoryIdentifier } from '../types/FactoryIdentifier';
-import { ClassMetadata } from './ClassMetadata';
-import { ServiceFactoryDef } from '../foundation/ServiceFactoryDef';
-import { Newable } from '../types/Newable';
-import { PartialInstAwareProcessor } from '../types/InstantiationAwareProcessor';
 import { FactoryRecorder } from '../common/FactoryRecorder';
 import { InstanceScope } from '../foundation/InstanceScope';
+import type { ServiceFactoryDef } from '../foundation/ServiceFactoryDef';
+import type { FactoryIdentifier } from '../types/FactoryIdentifier';
+import type { Identifier } from '../types/Identifier';
+import type { PartialInstAwareProcessor } from '../types/InstantiationAwareProcessor';
+import type { Metadata } from '../types/Metadata';
+import type { Newable } from '../types/Newable';
+import type { ServiceFactory } from '../types/ServiceFactory';
+import type { ClassMetadata } from './ClassMetadata';
 
 export interface GlobalMetadataReader {
     getComponentFactory<T>(key: FactoryIdentifier): ServiceFactoryDef<T> | undefined;
@@ -20,7 +20,7 @@ export class GlobalMetadata implements Metadata<GlobalMetadataReader, void> {
         return GlobalMetadata.INSTANCE;
     }
     static getReader() {
-        return this.getInstance().reader();
+        return GlobalMetadata.getInstance().reader();
     }
     private classAliasMetadataMap = new Map<string | symbol, ClassMetadata<unknown>>();
     private componentFactories = new FactoryRecorder();

@@ -1,10 +1,10 @@
-import { Pointcut } from '../Pointcut';
+import type { Newable } from '../../types/Newable';
 import { Advice } from '../Advice';
 import { addAspect } from '../addAspect';
-import { Newable } from '../../types/Newable';
+import type { Pointcut } from '../Pointcut';
 
 export function Thrown(pointcut: Pointcut): MethodDecorator {
-    return function (target, propertyKey) {
+    return (target, propertyKey) => {
         addAspect(target.constructor as Newable<unknown>, propertyKey, Advice.Thrown, pointcut);
     };
 }

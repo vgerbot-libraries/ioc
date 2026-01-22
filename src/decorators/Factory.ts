@@ -1,9 +1,9 @@
-import { GlobalMetadata } from '../metadata/GlobalMetadata';
-import { Newable } from '../types/Newable';
-import { FactoryIdentifier } from '../types/FactoryIdentifier';
-import { Instance } from '../types/Instance';
 import { isNotDefined } from '../common/isNotDefined';
 import { InstanceScope } from '../foundation';
+import { GlobalMetadata } from '../metadata/GlobalMetadata';
+import type { FactoryIdentifier } from '../types/FactoryIdentifier';
+import type { Instance } from '../types/Instance';
+import type { Newable } from '../types/Newable';
 
 export function Factory(produceIdentifier?: FactoryIdentifier, scope: InstanceScope = InstanceScope.SINGLETON): MethodDecorator {
     return (target: object, propertyKey: string | symbol) => {

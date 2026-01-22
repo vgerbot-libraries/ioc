@@ -1,8 +1,8 @@
-import { Evaluator } from '../types/Evaluator';
-import { ApplicationContext } from '../foundation/ApplicationContext';
+import type { ApplicationContext } from '../foundation/ApplicationContext';
+import type { Evaluator } from '../types/Evaluator';
 
 export class ArgvEvaluator implements Evaluator {
-    eval<T, A = string[]>(context: ApplicationContext, expression: string, args?: A): T | undefined {
+    eval<T, A = string[]>(_context: ApplicationContext, expression: string, args?: A): T | undefined {
         const argv = args || process.argv;
 
         const minimist = require('minimist');

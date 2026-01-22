@@ -1,7 +1,7 @@
 import 'reflect-metadata';
-import { Metadata } from '../types/Metadata';
-import { Identifier } from '../types/Identifier';
-import { InstanceScope } from '../foundation/InstanceScope';
+import type { InstanceScope } from '../foundation/InstanceScope';
+import type { Identifier } from '../types/Identifier';
+import type { Metadata } from '../types/Metadata';
 
 export const FUNCTION_METADATA_KEY = Symbol('ioc:function-metadata');
 

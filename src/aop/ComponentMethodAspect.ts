@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Aspect, JoinPoint } from './Aspect';
-import { Newable } from '../types/Newable';
+
+import type { Newable } from '../types/Newable';
+import type { Aspect, JoinPoint } from './Aspect';
 
 export abstract class ComponentMethodAspect implements Aspect {
     public static create(clazz: Newable<unknown>, methodName: string | symbol): Newable<Aspect> {

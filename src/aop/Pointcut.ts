@@ -1,8 +1,8 @@
-import { Newable } from '../types/Newable';
 import { getAllMethodMemberNames } from '../common/getAllMethodMemberNames';
-import { Identifier } from '../types/Identifier';
 import { ClassMetadata } from '../metadata';
 import { MetadataInstanceManager } from '../metadata/MetadataInstanceManager';
+import type { Identifier } from '../types/Identifier';
+import type { Newable } from '../types/Newable';
 
 type MemberIdentifier = string | symbol;
 
@@ -25,7 +25,7 @@ export abstract class Pointcut {
      * @deprecated
      */
     static testMatch<T>(cls: Newable<T>, regex: RegExp) {
-        return this.match(cls, regex);
+        return Pointcut.match(cls, regex);
     }
     static match<T>(cls: Newable<T>, regex: RegExp) {
         return new MemberMatchPointcut(cls, regex);

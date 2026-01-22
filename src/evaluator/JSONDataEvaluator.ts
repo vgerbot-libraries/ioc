@@ -1,10 +1,10 @@
-import { Evaluator } from '../types/Evaluator';
-import { ApplicationContext } from '../foundation/ApplicationContext';
-import { JSONData } from '../types/JSONData';
+import type { ApplicationContext } from '../foundation/ApplicationContext';
+import type { Evaluator } from '../types/Evaluator';
+import type { JSONData } from '../types/JSONData';
 
 export class JSONDataEvaluator implements Evaluator {
     private readonly namespaceDataMap = new Map<string, JSONData>();
-    eval<T>(context: ApplicationContext, expression: string): T | undefined {
+    eval<T>(_context: ApplicationContext, expression: string): T | undefined {
         const colonIndex = expression.indexOf(':');
         if (colonIndex === -1) {
             throw new Error('Incorrect expression, namespace not specified');
@@ -60,5 +60,5 @@ function compileExpression(expression: string) {
 }
 let VAR_SEQUENCE = Date.now();
 function varName(prefix: string) {
-    return prefix + '' + (VAR_SEQUENCE++).toString(16);
+    return `${prefix}${(VAR_SEQUENCE++).toString(16)}`;
 }

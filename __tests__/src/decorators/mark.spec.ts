@@ -1,5 +1,4 @@
-import { Mark } from '../../../src';
-import { ApplicationContext } from '../../../src';
+import { ApplicationContext, Mark } from '../../../src';
 
 describe('@Mark decorator', () => {
     it('should mark a class with a custom value', () => {
@@ -8,7 +7,7 @@ describe('@Mark decorator', () => {
 
         const app = new ApplicationContext();
         const info = app.getClassMetadata(MyClass).getCtorMarkInfo();
-        expect(info['myKey']).toBe('customValue');
+        expect(info.myKey).toBe('customValue');
     });
     it('should mark a method with a custom value', () => {
         class MyClass {
@@ -20,7 +19,7 @@ describe('@Mark decorator', () => {
 
         const app = new ApplicationContext();
         const info = app.getClassMetadata(MyClass).getMembersMarkInfo('method');
-        expect(info['myKey']).toBe('customValue');
+        expect(info.myKey).toBe('customValue');
     });
     it('should mark a property with a custom value', () => {
         class MyClass {
@@ -30,7 +29,7 @@ describe('@Mark decorator', () => {
 
         const app = new ApplicationContext();
         const info = app.getClassMetadata(MyClass).getMembersMarkInfo('property');
-        expect(info['myKey']).toBe('customValue');
+        expect(info.myKey).toBe('customValue');
     });
     it('should mark a parameter with a custom value', () => {
         class MyClass {
@@ -41,6 +40,6 @@ describe('@Mark decorator', () => {
 
         const app = new ApplicationContext();
         const info = app.getClassMetadata(MyClass).getParameterMarkInfo('method');
-        expect(info[0]['myKey']).toBe('customValue');
+        expect(info[0].myKey).toBe('customValue');
     });
 });

@@ -1,14 +1,14 @@
-import { Newable } from '../types/Newable';
-import { ClassMetadata } from '../metadata/ClassMetadata';
-import { Identifier } from '../types/Identifier';
-import { MetadataInstanceManager } from '../metadata/MetadataInstanceManager';
 import { isNotDefined } from '../common/isNotDefined';
 import { InjectionType } from '../foundation/InjectionType';
 import { GlobalMetadata } from '../metadata';
+import { ClassMetadata } from '../metadata/ClassMetadata';
+import { MetadataInstanceManager } from '../metadata/MetadataInstanceManager';
+import type { Identifier } from '../types/Identifier';
+import type { Newable } from '../types/Newable';
 
 export function Inject<T>(identifier?: Identifier<T>) {
-    return function <Target>(target: Target, propertyKey: string | symbol, parameterIndex?: number) {
-        let injectClass: Newable<unknown> | undefined = undefined;
+    return <Target>(target: Target, propertyKey: string | symbol, parameterIndex?: number) => {
+        let injectClass: Newable<unknown> | undefined;
         if (typeof target === 'function' && typeof parameterIndex === 'number') {
             // constructor parameter
             const targetConstr = target as Newable<T>;
@@ -23,7 +23,7 @@ export function Inject<T>(identifier?: Identifier<T>) {
             const classMetadata = MetadataInstanceManager.getMetadata(targetConstr, ClassMetadata);
             classMetadata.setConstructorParameterType(parameterIndex, InjectionType.of(injectClass, identifier));
         } else if (typeof target === 'object' && target !== null && propertyKey !== undefined) {
-            let injectClass: Newable<unknown> | undefined = undefined;
+            let injectClass: Newable<unknown> | undefined;
             if (typeof identifier === 'function') {
                 injectClass = identifier;
             } else {

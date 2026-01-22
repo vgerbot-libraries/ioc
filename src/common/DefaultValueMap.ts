@@ -1,7 +1,7 @@
 export function createDefaultValueMap<K, V>(factory: (key: K) => V) {
     const map = new Map<K, V>();
     const originGet = map.get.bind(map);
-    map.get = function (key: K) {
+    map.get = (key: K) => {
         if (map.has(key)) {
             return originGet(key) as V;
         } else {

@@ -1,7 +1,7 @@
-import { ApplicationContext } from '../foundation';
+import type { ApplicationContext } from '../foundation';
+import { InjectionType } from '../foundation/InjectionType';
 import { ClassMetadata, GlobalMetadata } from '../metadata';
 import { MetadataInstanceManager } from '../metadata/MetadataInstanceManager';
-import { InjectionType } from '../foundation/InjectionType';
 
 export function Generate<T, V>(generator: (this: T, appCtx: ApplicationContext) => V): PropertyDecorator {
     return (target: object, propertyKey: string | symbol) => {

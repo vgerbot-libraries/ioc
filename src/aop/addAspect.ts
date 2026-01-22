@@ -1,7 +1,7 @@
-import { Pointcut } from './Pointcut';
-import { Newable } from '../types/Newable';
-import { Advice } from './Advice';
+import type { Newable } from '../types/Newable';
+import type { Advice } from './Advice';
 import { AspectMetadata } from './AspectMetadta';
+import type { Pointcut } from './Pointcut';
 
 export function addAspect(
     componentAspectClass: Newable<unknown>,

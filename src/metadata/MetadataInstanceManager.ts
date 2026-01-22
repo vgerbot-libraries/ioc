@@ -1,4 +1,4 @@
-import { Metadata, MetadataClass, MetadataReader } from '../types/Metadata';
+import type { Metadata, MetadataClass, MetadataReader } from '../types/Metadata';
 import 'reflect-metadata';
 import { createDefaultValueMap } from '../common/DefaultValueMap';
 

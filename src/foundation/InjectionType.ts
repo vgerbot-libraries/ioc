@@ -1,5 +1,5 @@
-import { Identifier } from '../types/Identifier';
-import { Newable } from '../types/Newable';
+import type { Identifier } from '../types/Identifier';
+import type { Newable } from '../types/Newable';
 
 export class InjectionType {
     static ofClazz(clazz: Newable<unknown>) {

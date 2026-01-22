@@ -1,7 +1,7 @@
 import { ApplicationContext } from '../../../src';
-import { Aspect, JoinPoint } from '../../../src/aop/Aspect';
-import { UseAspects } from '../../../src/aop/decorators/UseAspects';
 import { Advice } from '../../../src/aop/Advice';
+import type { Aspect, JoinPoint } from '../../../src/aop/Aspect';
+import { UseAspects } from '../../../src/aop/decorators/UseAspects';
 
 describe('@UseAspect', () => {
     it('should return a method decorator', () => {
@@ -121,7 +121,7 @@ describe('@UseAspect', () => {
 
             class TestAspect implements Aspect {
                 execute(jp: JoinPoint) {
-                    return jp.returnValue + '-aspect';
+                    return `${jp.returnValue}-aspect`;
                 }
             }
 

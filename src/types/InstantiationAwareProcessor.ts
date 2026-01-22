@@ -1,7 +1,7 @@
-import { Newable } from './Newable';
+import type { Newable } from './Newable';
 
 export interface InstantiationAwareProcessor {
-    beforeInstantiation<T>(constructor: Newable<T>, args: unknown[]): T | undefined | void;
+    beforeInstantiation<T>(constructor: Newable<T>, args: unknown[]): T | undefined | undefined;
     afterInstantiation<T extends object>(instance: T): T;
 }
 

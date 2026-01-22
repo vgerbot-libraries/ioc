@@ -1,0 +1,9 @@
+.husky/**
+.github/**
+dist/**
+docs/**
+coverage/**
+report/**
+**/*.config.js
+**/*.config.ts
+**/*.d.ts
