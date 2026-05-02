@@ -7,8 +7,8 @@
     "browser": "dist/index.umd.js",
     "distDir": "dist/",
     "library": "IoC",
-    "types": "dist/src/index.d.ts",
-    "typings": "dist/src/index.d.ts",
+    "types": "dist/index.d.ts",
+    "typings": "dist/index.d.ts",
     "scripts": {
         "test": "cross-env NODE_ENV=test jest",
         "debug": "cross-env NODE_ENV=test DEBUG=true node --inspect-brk ./node_modules/jest/bin/jest.js --runInBand",
@@ -66,6 +66,7 @@
         "prettier": "^3.4.2",
         "rollup": "^3.15.0",
         "rollup-jest": "^3.1.0",
+        "rollup-plugin-dts": "^5.3.1",
         "rollup-plugin-delete": "^2.0.0",
         "rollup-plugin-livereload": "^2.0.5",
         "rollup-plugin-serve": "^2.0.2",
