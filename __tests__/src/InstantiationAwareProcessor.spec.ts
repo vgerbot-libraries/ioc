@@ -15,7 +15,7 @@ describe('InstantiationAwareProcessor', () => {
             app.registerInstAwareProcessor(
                 class implements PartialInstAwareProcessor {
                     beforeInstantiation<T>(_constructor: Newable<T>, _args: unknown[]): T | undefined | undefined {
-                        fn();
+                        return fn();
                     }
                 }
             );
@@ -50,7 +50,7 @@ describe('InstantiationAwareProcessor', () => {
             app.registerInstAwareProcessor(
                 class implements PartialInstAwareProcessor {
                     beforeInstantiation<T>(_constructor: Newable<T>, _args: unknown[]): T | undefined | undefined {
-                        fn0();
+                        return fn0();
                     }
                 }
             );
@@ -58,14 +58,14 @@ describe('InstantiationAwareProcessor', () => {
                 class implements PartialInstAwareProcessor {
                     beforeInstantiation<T>(constructor: Newable<T>, _args: unknown[]): T | undefined | undefined {
                         fn1();
-                        return new constructor(...args);
+                        return new constructor(..._args);
                     }
                 }
             );
             app.registerInstAwareProcessor(
                 class implements PartialInstAwareProcessor {
                     beforeInstantiation<T>(_constructor: Newable<T>, _args: unknown[]): T | undefined | undefined {
-                        fn2();
+                        return fn2();
                     }
                 }
             );

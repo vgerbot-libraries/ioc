@@ -1,31 +1,30 @@
-import { lazyMember } from '@vgerbot/lazy';
 import { GlobalMetadata } from '../metadata/GlobalMetadata';
 import type { Instance } from '../types/Instance';
 import type { InstantiationAwareProcessor, PartialInstAwareProcessor } from '../types/InstantiationAwareProcessor';
 import type { Newable } from '../types/Newable';
 import type { ApplicationContext } from './ApplicationContext';
+import { lazy, recreateWhen } from '@vgerbot/lazily';
+import { when } from '@vgerbot/lazily';
 
 export class InstantiationAwareProcessorManager {
     private instAwareProcessorClasses: Set<Newable<PartialInstAwareProcessor>> = new Set();
-    @lazyMember<InstantiationAwareProcessorManager, keyof InstantiationAwareProcessorManager, PartialInstAwareProcessor[]>({
-        evaluate: instance => {
-            const globalInstAwareProcessorClasses = GlobalMetadata.getReader().getInstAwareProcessorClasses();
-            const instAwareProcessorClasses = globalInstAwareProcessorClasses.concat(
-                Array.from(instance.instAwareProcessorClasses)
-            );
-            return instAwareProcessorClasses.map(it => instance.container.getInstance<PartialInstAwareProcessor, void>(it));
-        },
-        resetBy: [
-            instance => instance.instAwareProcessorClasses.size,
-            () => {
-                const globalInstAwareProcessorClasses = GlobalMetadata.getReader().getInstAwareProcessorClasses();
-                return globalInstAwareProcessorClasses.length;
-            }
-        ]
-    })
-    private instAwareProcessorInstances!: Array<PartialInstAwareProcessor>;
+    private readonly instAwareProcessorInstances: Array<PartialInstAwareProcessor> = lazy(() => {
+        const globalInstAwareProcessorClasses = GlobalMetadata.getReader().getInstAwareProcessorClasses();
+        const instAwareProcessorClasses = globalInstAwareProcessorClasses.concat(Array.from(this.instAwareProcessorClasses));
+        return instAwareProcessorClasses.map(it => this.container.getInstance<PartialInstAwareProcessor, void>(it));
+    });
 
-    constructor(private readonly container: ApplicationContext) {}
+    constructor(private readonly container: ApplicationContext) {
+        recreateWhen(
+            this.instAwareProcessorInstances,
+            when(t =>
+                t.or(
+                    t.changed(() => this.instAwareProcessorClasses.size),
+                    t.changed(() => GlobalMetadata.getReader().getInstAwareProcessorClasses().length)
+                )
+            )
+        );
+    }
     appendInstAwareProcessorClass(instAwareProcessorClass: Newable<PartialInstAwareProcessor>) {
         this.instAwareProcessorClasses.add(instAwareProcessorClass);
     }

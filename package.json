@@ -83,7 +83,7 @@
     },
     "homepage": "https://github.com/vgerbot-libraries/ioc#readme",
     "dependencies": {
-        "@vgerbot/lazy": "^1.0.7",
+        "@vgerbot/lazily": "^0.1.3",
         "reflect-metadata": "^0.1.13"
     },
     "optionalDependencies": {

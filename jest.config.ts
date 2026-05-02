@@ -2,13 +2,12 @@
 export default {
     verbose: true,
     transform: {
-        '\\.tsx?$': [
-            'ts-jest',
-            {
-                tsconfig: './__tests__/tsconfig.json'
-            }
-        ]
+        '\\.[tj]sx?$': ['ts-jest', { tsconfig: './__tests__/tsconfig.json' }]
     },
+    moduleNameMapper: {
+        '^@vgerbot/lazily$': '<rootDir>/node_modules/@vgerbot/lazily/dist/index.esm.js'
+    },
+    transformIgnorePatterns: ['/node_modules/(?!.*@vgerbot[/+]lazily)'],
     testEnvironment: 'node', // dom
     testMatch: ['**/__tests__/**/*.spec.ts'],
     moduleFileExtensions: ['ts', 'js'],

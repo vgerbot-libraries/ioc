@@ -1,4 +1,3 @@
-import { lazyProp } from '@vgerbot/lazy';
 import { FactoryRecorder } from '../common/FactoryRecorder';
 import { ClassMetadata, type ClassMetadataReader } from '../metadata/ClassMetadata';
 import { GlobalMetadata } from '../metadata/GlobalMetadata';
@@ -12,6 +11,7 @@ import type { ApplicationContext } from './ApplicationContext';
 import type { InstantiationAwareProcessorManager } from './InstantiationAwareProcessorManager';
 import { LifecycleManager } from './LifecycleManager';
 import { ServiceFactoryDef } from './ServiceFactoryDef';
+import { value } from '@vgerbot/lazily';
 
 export class ComponentInstanceBuilder<T> {
     private getConstructorArgs: () => unknown[] = () => [];
@@ -96,7 +96,14 @@ export class ComponentInstanceBuilder<T> {
     }
     private defineProperty<T, V>(instance: T, key: string | symbol, getter: () => V) {
         if (this.lazyMode) {
-            lazyProp(instance, key, getter);
+            const lazyValue = value(() => ({
+                value: getter()
+            }));
+            Object.defineProperty(instance, key, {
+                get: () => {
+                    return lazyValue.get().value;
+                }
+            });
         } else {
             // eslint-disable-next-line @typescript-eslint/ban-ts-comment
             // @ts-expect-error
