@@ -121,7 +121,7 @@ declare class ServiceFactoryDef<T> {
     readonly identifier: Identifier;
     readonly scope: InstanceScope | string;
     static createFromClassMetadata<T>(metadata: ClassMetadata<T>): ServiceFactoryDef<unknown>;
-    readonly factories: Map<ServiceFactory<T, unknown>, Identifier[]>;
+    readonly factories: Map<ServiceFactory<T, unknown>, Identifier<unknown>[]>;
     /**
      * @param identifier The unique identifier of this factories
      * @param isSingle Indicates whether the identifier defines only one factory.
@@ -442,7 +442,7 @@ declare class FunctionMetadata implements Metadata<FunctionMetadataReader, Funct
     setIsFactory(isFactory: boolean): void;
     init(): void;
     reader(): {
-        getParameters: () => Identifier[];
+        getParameters: () => Identifier<unknown>[];
         isFactory: () => boolean;
         getScope: () => InstanceScope | undefined;
     };
@@ -458,8 +458,8 @@ declare class GlobalMetadata implements Metadata<GlobalMetadataReader, void> {
     static getInstance(): GlobalMetadata;
     static getReader(): {
         getComponentFactory: <T>(key: FactoryIdentifier) => ServiceFactoryDef<T> | undefined;
-        getClassMetadata: <T>(aliasName: string | symbol) => ClassMetadata<T> | undefined;
-        getInstAwareProcessorClasses: () => Array<Newable<PartialInstAwareProcessor>>;
+        getClassMetadata: <T_1>(aliasName: string | symbol) => ClassMetadata<T_1> | undefined;
+        getInstAwareProcessorClasses: () => Newable<PartialInstAwareProcessor>[];
     };
     private classAliasMetadataMap;
     private componentFactories;
@@ -475,7 +475,7 @@ declare class GlobalMetadata implements Metadata<GlobalMetadataReader, void> {
     init(): void;
     reader(): {
         getComponentFactory: <T>(key: FactoryIdentifier) => ServiceFactoryDef<T> | undefined;
-        getClassMetadata: <T>(aliasName: string | symbol) => ClassMetadata<T> | undefined;
+        getClassMetadata: <T_1>(aliasName: string | symbol) => ClassMetadata<T_1> | undefined;
         getInstAwareProcessorClasses: () => Array<Newable<PartialInstAwareProcessor>>;
     };
 }
@@ -491,58 +491,58 @@ export {
     ApplicationContext,
     Argv,
     Around,
-    type Aspect,
-    type AspectInfo,
+    Aspect,
+    AspectInfo,
     Before,
     Bind,
-    type ClassMarkInfo,
+    ClassMarkInfo,
     ClassMetadata,
-    type ClassMetadataReader,
+    ClassMetadataReader,
     ComponentMethodAspect,
     Env,
-    type EvaluationOptions,
-    type Evaluator,
+    EvaluationOptions,
+    Evaluator,
     ExpressionType,
     FUNCTION_METADATA_KEY,
     Factory,
     Finally,
     FunctionMetadata,
-    type FunctionMetadataReader,
+    FunctionMetadataReader,
     Generate,
-    type GetInstanceOptions,
+    GetInstanceOptions,
     GlobalMetadata,
-    type GlobalMetadataReader,
-    type Identifier,
+    GlobalMetadataReader,
+    Identifier,
     Inject,
     Injectable,
-    type InjectableOptions,
+    InjectableOptions,
     InjectionType,
     InstAwareProcessor,
-    type InstanceResolution,
+    InstanceResolution,
     InstanceScope,
-    type InstantiationAwareProcessor,
+    InstantiationAwareProcessor,
     JSONData,
-    type JoinPoint,
+    JoinPoint,
     Lifecycle,
     LifecycleDecorator,
     Mark,
-    type MarkInfo,
+    MarkInfo,
     MarkInfoContainer,
-    type MemberKey,
-    type Newable,
+    MemberKey,
+    Newable,
     ParameterMarkInfoContainer,
-    type PartialInstAwareProcessor,
+    PartialInstAwareProcessor,
     Pointcut,
     PostInject,
     PreDestroy,
     PreInject,
-    type ProceedingAspect,
-    type ProceedingJoinPoint,
-    type SaveInstanceOptions,
+    ProceedingAspect,
+    ProceedingJoinPoint,
+    SaveInstanceOptions,
     Scope,
     Thrown,
-    type UseAspectMap,
-    type UseAspectMetadataReader,
+    UseAspectMap,
+    UseAspectMetadataReader,
     UseAspects,
     Value,
     createFactoryWrapper
