@@ -1,6 +1,5 @@
 import { isNotDefined } from '../common/isNotDefined';
 import { InjectionType } from '../foundation/InjectionType';
-import { GlobalMetadata } from '../metadata';
 import { ClassMetadata } from '../metadata/ClassMetadata';
 import { MetadataInstanceManager } from '../metadata/MetadataInstanceManager';
 import type { Identifier } from '../types/Identifier';
@@ -24,20 +23,16 @@ export function Inject<T>(identifier?: Identifier<T>) {
             classMetadata.setConstructorParameterType(parameterIndex, InjectionType.of(injectClass, identifier));
         } else if (typeof target === 'object' && target !== null && propertyKey !== undefined) {
             let injectClass: Newable<unknown> | undefined;
+            const metadata = MetadataInstanceManager.getMetadata(target.constructor, ClassMetadata);
             if (typeof identifier === 'function') {
                 injectClass = identifier;
+            } else if (identifier && typeof identifier !== 'function') {
+                metadata.recordPropertyType(propertyKey, InjectionType.ofIdentifier(identifier));
+                return;
             } else {
                 injectClass = Reflect.getMetadata('design:type', target, propertyKey);
             }
-            const metadata = MetadataInstanceManager.getMetadata(target.constructor, ClassMetadata);
             if (isNotDefined(injectClass)) {
-                if (identifier && typeof identifier !== 'function') {
-                    const factoryDef = GlobalMetadata.getInstance().reader().getComponentFactory(identifier);
-                    if (factoryDef) {
-                        metadata.recordPropertyType(propertyKey, InjectionType.ofIdentifier(identifier));
-                        return;
-                    }
-                }
                 throw new Error('Type not recognized, injection cannot be performed');
             } else {
                 metadata.recordPropertyType(propertyKey, InjectionType.of(injectClass, identifier));
