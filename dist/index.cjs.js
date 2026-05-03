@@ -5,12 +5,12 @@ var lazily = require('@vgerbot/lazily');
 
 exports.Advice = void 0;
 (function (Advice) {
-    Advice[(Advice['Before'] = 0)] = 'Before';
-    Advice[(Advice['After'] = 1)] = 'After';
-    Advice[(Advice['Around'] = 2)] = 'Around';
-    Advice[(Advice['AfterReturn'] = 3)] = 'AfterReturn';
-    Advice[(Advice['Thrown'] = 4)] = 'Thrown';
-    Advice[(Advice['Finally'] = 5)] = 'Finally';
+    Advice[Advice["Before"] = 0] = "Before";
+    Advice[Advice["After"] = 1] = "After";
+    Advice[Advice["Around"] = 2] = "Around";
+    Advice[Advice["AfterReturn"] = 3] = "AfterReturn";
+    Advice[Advice["Thrown"] = 4] = "Thrown";
+    Advice[Advice["Finally"] = 5] = "Finally";
 })(exports.Advice || (exports.Advice = {}));
 
 /******************************************************************************
@@ -29,112 +29,86 @@ PERFORMANCE OF THIS SOFTWARE.
 ***************************************************************************** */
 /* global Reflect, Promise, SuppressedError, Symbol, Iterator */
 
-var extendStatics = function (d, b) {
-    extendStatics =
-        Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array &&
-            function (d, b) {
-                d.__proto__ = b;
-            }) ||
-        function (d, b) {
-            for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p];
-        };
+var extendStatics = function(d, b) {
+    extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
     return extendStatics(d, b);
 };
 
 function __extends(d, b) {
-    if (typeof b !== 'function' && b !== null)
-        throw new TypeError('Class extends value ' + String(b) + ' is not a constructor or null');
+    if (typeof b !== "function" && b !== null)
+        throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
     extendStatics(d, b);
-    function __() {
-        this.constructor = d;
-    }
-    d.prototype = b === null ? Object.create(b) : ((__.prototype = b.prototype), new __());
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 }
 
-var __assign = function () {
-    __assign =
-        Object.assign ||
-        function __assign(t) {
-            for (var s, i = 1, n = arguments.length; i < n; i++) {
-                s = arguments[i];
-                for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p)) t[p] = s[p];
-            }
-            return t;
-        };
+var __assign = function() {
+    __assign = Object.assign || function __assign(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p)) t[p] = s[p];
+        }
+        return t;
+    };
     return __assign.apply(this, arguments);
 };
 
 function __decorate(decorators, target, key, desc) {
-    var c = arguments.length,
-        r = c < 3 ? target : desc === null ? (desc = Object.getOwnPropertyDescriptor(target, key)) : desc,
-        d;
-    if (typeof Reflect === 'object' && typeof Reflect.decorate === 'function')
-        r = Reflect.decorate(decorators, target, key, desc);
-    else
-        for (var i = decorators.length - 1; i >= 0; i--)
-            if ((d = decorators[i])) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 }
 
 function __metadata(metadataKey, metadataValue) {
-    if (typeof Reflect === 'object' && typeof Reflect.metadata === 'function')
-        return Reflect.metadata(metadataKey, metadataValue);
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(metadataKey, metadataValue);
 }
 
 function __values(o) {
-    var s = typeof Symbol === 'function' && Symbol.iterator,
-        m = s && o[s],
-        i = 0;
+    var s = typeof Symbol === "function" && Symbol.iterator, m = s && o[s], i = 0;
     if (m) return m.call(o);
-    if (o && typeof o.length === 'number')
-        return {
-            next: function () {
-                if (o && i >= o.length) o = void 0;
-                return { value: o && o[i++], done: !o };
-            }
-        };
-    throw new TypeError(s ? 'Object is not iterable.' : 'Symbol.iterator is not defined.');
+    if (o && typeof o.length === "number") return {
+        next: function () {
+            if (o && i >= o.length) o = void 0;
+            return { value: o && o[i++], done: !o };
+        }
+    };
+    throw new TypeError(s ? "Object is not iterable." : "Symbol.iterator is not defined.");
 }
 
 function __read(o, n) {
-    var m = typeof Symbol === 'function' && o[Symbol.iterator];
+    var m = typeof Symbol === "function" && o[Symbol.iterator];
     if (!m) return o;
-    var i = m.call(o),
-        r,
-        ar = [],
-        e;
+    var i = m.call(o), r, ar = [], e;
     try {
         while ((n === void 0 || n-- > 0) && !(r = i.next()).done) ar.push(r.value);
-    } catch (error) {
-        e = { error: error };
-    } finally {
+    }
+    catch (error) { e = { error: error }; }
+    finally {
         try {
-            if (r && !r.done && (m = i['return'])) m.call(i);
-        } finally {
-            if (e) throw e.error;
+            if (r && !r.done && (m = i["return"])) m.call(i);
         }
+        finally { if (e) throw e.error; }
     }
     return ar;
 }
 
 function __spreadArray(to, from, pack) {
-    if (pack || arguments.length === 2)
-        for (var i = 0, l = from.length, ar; i < l; i++) {
-            if (ar || !(i in from)) {
-                if (!ar) ar = Array.prototype.slice.call(from, 0, i);
-                ar[i] = from[i];
-            }
+    if (pack || arguments.length === 2) for (var i = 0, l = from.length, ar; i < l; i++) {
+        if (ar || !(i in from)) {
+            if (!ar) ar = Array.prototype.slice.call(from, 0, i);
+            ar[i] = from[i];
         }
+    }
     return to.concat(ar || Array.prototype.slice.call(from));
 }
 
-typeof SuppressedError === 'function'
-    ? SuppressedError
-    : function (error, suppressed, message) {
-          var e = new Error(message);
-          return (e.name = 'SuppressedError'), (e.error = error), (e.suppressed = suppressed), e;
-      };
+typeof SuppressedError === "function" ? SuppressedError : function (error, suppressed, message) {
+    var e = new Error(message);
+    return e.name = "SuppressedError", e.error = error, e.suppressed = suppressed, e;
+};
 
 function createDefaultValueMap(factory) {
     var map = new Map();
@@ -142,7 +116,8 @@ function createDefaultValueMap(factory) {
     map.get = function (key) {
         if (map.has(key)) {
             return originGet(key);
-        } else {
+        }
+        else {
             var defaultValue = factory(key);
             map.set(key, defaultValue);
             return map.get(key);
@@ -153,11 +128,7 @@ function createDefaultValueMap(factory) {
 
 var AOPClassMetadata = /** @class */ (function () {
     function AOPClassMetadata() {
-        this.aspectMap = createDefaultValueMap(function () {
-            return createDefaultValueMap(function () {
-                return [];
-            });
-        });
+        this.aspectMap = createDefaultValueMap(function () { return createDefaultValueMap(function () { return []; }); });
     }
     AOPClassMetadata.getReflectKey = function () {
         return 'aop:use-aspect-metadata';
@@ -182,16 +153,17 @@ var AOPClassMetadata = /** @class */ (function () {
         };
     };
     return AOPClassMetadata;
-})();
+}());
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 var ComponentMethodAspect = /** @class */ (function () {
-    function ComponentMethodAspect() {}
+    function ComponentMethodAspect() {
+    }
     ComponentMethodAspect.create = function (clazz, methodName) {
         return /** @class */ (function (_super) {
             __extends(ComponentMethodAspectImpl, _super);
             function ComponentMethodAspectImpl() {
-                return (_super !== null && _super.apply(this, arguments)) || this;
+                return _super !== null && _super.apply(this, arguments) || this;
             }
             ComponentMethodAspectImpl.prototype.execute = function (jp) {
                 var aspectInstance = jp.ctx.getInstance(clazz);
@@ -199,10 +171,10 @@ var ComponentMethodAspect = /** @class */ (function () {
                 return func.call(this.aspectInstance, jp);
             };
             return ComponentMethodAspectImpl;
-        })(ComponentMethodAspect);
+        }(ComponentMethodAspect));
     };
     return ComponentMethodAspect;
-})();
+}());
 
 var AspectMetadata = /** @class */ (function () {
     function AspectMetadata() {
@@ -237,7 +209,7 @@ var AspectMetadata = /** @class */ (function () {
     };
     AspectMetadata.INSTANCE = new AspectMetadata();
     return AspectMetadata;
-})();
+}());
 
 function addAspect(componentAspectClass, methodName, advice, pointcut) {
     AspectMetadata.getInstance().append(componentAspectClass, methodName, advice, pointcut);
@@ -287,12 +259,10 @@ function Thrown(pointcut) {
 }
 
 function getMethodDescriptors(prototype) {
-    if (
-        typeof prototype !== 'object' ||
+    if (typeof prototype !== 'object' ||
         prototype === null ||
         Object.prototype === prototype ||
-        Function.prototype === prototype
-    ) {
+        Function.prototype === prototype) {
         return {};
     }
     var superPrototype = Object.getPrototypeOf(prototype);
@@ -314,11 +284,10 @@ function getAllMethodMemberNames(cls) {
     return methodNames;
 }
 
-var metadataInstanceMap = createDefaultValueMap(function () {
-    return new Set();
-});
+var metadataInstanceMap = createDefaultValueMap(function () { return new Set(); });
 var MetadataInstanceManager = /** @class */ (function () {
-    function MetadataInstanceManager() {}
+    function MetadataInstanceManager() {
+    }
     MetadataInstanceManager.getMetadata = function (target, metadataClass) {
         var key = metadataClass.getReflectKey();
         var metadata = Reflect.getMetadata(key, target);
@@ -335,15 +304,13 @@ var MetadataInstanceManager = /** @class */ (function () {
         return Array.from(metadataInstanceMap.get(metadataClass));
     };
     return MetadataInstanceManager;
-})();
+}());
 
 // eslint-disable @typescript-eslint/no-explicit-any
 var CLASS_METADATA_KEY = 'ioc:class-metadata';
 var MarkInfoContainer = /** @class */ (function () {
     function MarkInfoContainer() {
-        this.map = createDefaultValueMap(function () {
-            return {};
-        });
+        this.map = createDefaultValueMap(function () { return ({}); });
     }
     MarkInfoContainer.prototype.getMarkInfo = function (method) {
         return this.map.get(method);
@@ -356,7 +323,7 @@ var MarkInfoContainer = /** @class */ (function () {
         return new Set(this.map.keys());
     };
     return MarkInfoContainer;
-})();
+}());
 var ParameterMarkInfoContainer = /** @class */ (function () {
     function ParameterMarkInfoContainer() {
         this.map = createDefaultValueMap(function () {
@@ -373,7 +340,7 @@ var ParameterMarkInfoContainer = /** @class */ (function () {
         paramsMarkInfo[index] = markInfo;
     };
     return ParameterMarkInfoContainer;
-})();
+}());
 var ClassMetadata = /** @class */ (function () {
     function ClassMetadata() {
         this.constructorParameterTypes = [];
@@ -489,9 +456,7 @@ var ClassMetadata = /** @class */ (function () {
         var _a;
         var superReader = (_a = this.getSuperClassMetadata()) === null || _a === void 0 ? void 0 : _a.reader();
         return {
-            getClass: function () {
-                return _this.clazz;
-            },
+            getClass: function () { return _this.clazz; },
             getScope: function () {
                 return _this.scope;
             },
@@ -499,14 +464,12 @@ var ClassMetadata = /** @class */ (function () {
                 return _this.constructorParameterTypes.slice(0);
             },
             getMethods: function (lifecycle) {
-                var superMethods =
-                    (superReader === null || superReader === void 0 ? void 0 : superReader.getMethods(lifecycle)) || [];
+                var superMethods = (superReader === null || superReader === void 0 ? void 0 : superReader.getMethods(lifecycle)) || [];
                 var thisMethods = _this.getMethods(lifecycle);
                 return Array.from(new Set(superMethods.concat(thisMethods)));
             },
             getPropertyTypeMap: function () {
-                var superPropertyTypeMap =
-                    superReader === null || superReader === void 0 ? void 0 : superReader.getPropertyTypeMap();
+                var superPropertyTypeMap = superReader === null || superReader === void 0 ? void 0 : superReader.getPropertyTypeMap();
                 var thisPropertyTypesMap = _this.propertyTypesMap;
                 if (!superPropertyTypeMap) {
                     return new Map(thisPropertyTypesMap);
@@ -524,9 +487,7 @@ var ClassMetadata = /** @class */ (function () {
                 var superMethods = superReader === null || superReader === void 0 ? void 0 : superReader.getAllMarkedMembers();
                 var thisMembers = _this.marks.members.getMembers();
                 var result = superMethods ? new Set(superMethods) : new Set();
-                thisMembers.forEach(function (it) {
-                    return result.add(it);
-                });
+                thisMembers.forEach(function (it) { return result.add(it); });
                 return result;
             },
             getMembersMarkInfo: function (key) {
@@ -538,7 +499,7 @@ var ClassMetadata = /** @class */ (function () {
         };
     };
     return ClassMetadata;
-})();
+}());
 
 var FUNCTION_METADATA_KEY = Symbol('ioc:function-metadata');
 var FunctionMetadata = /** @class */ (function () {
@@ -567,22 +528,18 @@ var FunctionMetadata = /** @class */ (function () {
             getParameters: function () {
                 return _this.parameters.slice(0);
             },
-            isFactory: function () {
-                return _this.isFactory;
-            },
-            getScope: function () {
-                return _this.scope;
-            }
+            isFactory: function () { return _this.isFactory; },
+            getScope: function () { return _this.scope; }
         };
     };
     return FunctionMetadata;
-})();
+}());
 
 exports.InstanceScope = void 0;
 (function (InstanceScope) {
-    InstanceScope['SINGLETON'] = 'ioc-resolution:container-singleton';
-    InstanceScope['TRANSIENT'] = 'ioc-resolution:transient';
-    InstanceScope['GLOBAL_SHARED_SINGLETON'] = 'ioc-resolution:global-shared-singleton';
+    InstanceScope["SINGLETON"] = "ioc-resolution:container-singleton";
+    InstanceScope["TRANSIENT"] = "ioc-resolution:transient";
+    InstanceScope["GLOBAL_SHARED_SINGLETON"] = "ioc-resolution:global-shared-singleton";
 })(exports.InstanceScope || (exports.InstanceScope = {}));
 
 var ServiceFactoryDef = /** @class */ (function () {
@@ -607,11 +564,9 @@ var ServiceFactoryDef = /** @class */ (function () {
         return def;
     };
     ServiceFactoryDef.prototype.append = function (factory, injections) {
-        if (injections === void 0) {
-            injections = [];
-        }
+        if (injections === void 0) { injections = []; }
         if (this.scope === exports.InstanceScope.SINGLETON && this.factories.size === 1 && this.factories.has(factory)) {
-            throw new Error(''.concat(this.identifier.toString(), ' is A singleton! But multiple factories are defined!'));
+            throw new Error("".concat(this.identifier.toString(), " is A singleton! But multiple factories are defined!"));
         }
         this.factories.set(factory, injections);
     };
@@ -627,9 +582,7 @@ var ServiceFactoryDef = /** @class */ (function () {
         // } else {
         // }
         var producers = Array.from(this.factories).map(function (_a) {
-            var _b = __read(_a, 2),
-                factory = _b[0],
-                injections = _b[1];
+            var _b = __read(_a, 2), factory = _b[0], injections = _b[1];
             var fn = factory(container, owner);
             return function () {
                 return container.invoke(fn, {
@@ -638,29 +591,24 @@ var ServiceFactoryDef = /** @class */ (function () {
             };
         });
         return function () {
-            return producers.map(function (it) {
-                return it();
-            });
+            return producers.map(function (it) { return it(); });
         };
     };
     return ServiceFactoryDef;
-})();
+}());
 
 var FactoryRecorder = /** @class */ (function () {
     function FactoryRecorder() {
         this.factories = new Map();
     }
     FactoryRecorder.prototype.append = function (identifier, factory, injections, scope) {
-        if (injections === void 0) {
-            injections = [];
-        }
-        if (scope === void 0) {
-            scope = exports.InstanceScope.SINGLETON;
-        }
+        if (injections === void 0) { injections = []; }
+        if (scope === void 0) { scope = exports.InstanceScope.SINGLETON; }
         var def = this.factories.get(identifier);
         if (def) {
             def.append(factory, injections);
-        } else {
+        }
+        else {
             def = new ServiceFactoryDef(identifier, scope);
             def.append(factory, injections);
         }
@@ -676,7 +624,7 @@ var FactoryRecorder = /** @class */ (function () {
         return this.factories.entries();
     };
     return FactoryRecorder;
-})();
+}());
 
 var GlobalMetadata = /** @class */ (function () {
     function GlobalMetadata() {
@@ -691,12 +639,8 @@ var GlobalMetadata = /** @class */ (function () {
         return GlobalMetadata.getInstance().reader();
     };
     GlobalMetadata.prototype.recordFactory = function (symbol, factory, injections, scope) {
-        if (injections === void 0) {
-            injections = [];
-        }
-        if (scope === void 0) {
-            scope = exports.InstanceScope.SINGLETON;
-        }
+        if (injections === void 0) { injections = []; }
+        if (scope === void 0) { scope = exports.InstanceScope.SINGLETON; }
         this.componentFactories.append(symbol, factory, injections, scope);
     };
     GlobalMetadata.prototype.recordClassAlias = function (aliasName, metadata) {
@@ -724,10 +668,11 @@ var GlobalMetadata = /** @class */ (function () {
     };
     GlobalMetadata.INSTANCE = new GlobalMetadata();
     return GlobalMetadata;
-})();
+}());
 
 var Pointcut = /** @class */ (function () {
-    function Pointcut() {}
+    function Pointcut() {
+    }
     Pointcut.combine = function () {
         var pointcuts = [];
         for (var _i = 0; _i < arguments.length; _i++) {
@@ -769,18 +714,12 @@ var Pointcut = /** @class */ (function () {
             for (var _i = 0; _i < arguments.length; _i++) {
                 methodNames[_i] = arguments[_i];
             }
-            return new OrPointcut(
-                classes.map(function (cls) {
-                    return Pointcut.of.apply(Pointcut, __spreadArray([cls], __read(methodNames), false));
-                })
-            );
+            return new OrPointcut(classes.map(function (cls) { return Pointcut.of.apply(Pointcut, __spreadArray([cls], __read(methodNames), false)); }));
         };
         var match = function (regex) {
-            return new OrPointcut(
-                classes.map(function (cls) {
-                    return new MemberMatchPointcut(cls, regex);
-                })
-            );
+            return new OrPointcut(classes.map(function (cls) {
+                return new MemberMatchPointcut(cls, regex);
+            }));
         };
         return {
             of: of,
@@ -792,16 +731,14 @@ var Pointcut = /** @class */ (function () {
         };
     };
     Pointcut.marked = function (type, value) {
-        if (value === void 0) {
-            value = true;
-        }
+        if (value === void 0) { value = true; }
         return new MarkedPointcut(type, value);
     };
     Pointcut.class = function (cls) {
         return new ClassPointcut(cls);
     };
     return Pointcut;
-})();
+}());
 var OrPointcut = /** @class */ (function (_super) {
     __extends(OrPointcut, _super);
     function OrPointcut(pointcuts) {
@@ -810,12 +747,10 @@ var OrPointcut = /** @class */ (function (_super) {
         return _this;
     }
     OrPointcut.prototype.test = function (jpIdentifier, jpMember) {
-        return this.pointcuts.some(function (it) {
-            return it.test(jpIdentifier, jpMember);
-        });
+        return this.pointcuts.some(function (it) { return it.test(jpIdentifier, jpMember); });
     };
     return OrPointcut;
-})(Pointcut);
+}(Pointcut));
 var PrecitePointcut = /** @class */ (function (_super) {
     __extends(PrecitePointcut, _super);
     function PrecitePointcut(methodEntries) {
@@ -828,13 +763,11 @@ var PrecitePointcut = /** @class */ (function (_super) {
         return !!members && members.has(jpMember);
     };
     return PrecitePointcut;
-})(Pointcut);
+}(Pointcut));
 var MarkedPointcut = /** @class */ (function (_super) {
     __extends(MarkedPointcut, _super);
     function MarkedPointcut(markedType, markedValue) {
-        if (markedValue === void 0) {
-            markedValue = true;
-        }
+        if (markedValue === void 0) { markedValue = true; }
         var _this = _super.call(this) || this;
         _this.markedType = markedType;
         _this.markedValue = markedValue;
@@ -849,7 +782,7 @@ var MarkedPointcut = /** @class */ (function (_super) {
         return markInfo[this.markedType] === this.markedValue;
     };
     return MarkedPointcut;
-})(Pointcut);
+}(Pointcut));
 var MemberMatchPointcut = /** @class */ (function (_super) {
     __extends(MemberMatchPointcut, _super);
     function MemberMatchPointcut(clazz, regex) {
@@ -862,7 +795,7 @@ var MemberMatchPointcut = /** @class */ (function (_super) {
         return jpIdentifier === this.clazz && typeof jpMember === 'string' && !!this.regex.test(jpMember);
     };
     return MemberMatchPointcut;
-})(Pointcut);
+}(Pointcut));
 var ClassPointcut = /** @class */ (function (_super) {
     __extends(ClassPointcut, _super);
     function ClassPointcut(clazz) {
@@ -874,7 +807,7 @@ var ClassPointcut = /** @class */ (function (_super) {
         return jpIdentifier === this.clazz;
     };
     return ClassPointcut;
-})(Pointcut);
+}(Pointcut));
 
 function UseAspects(advice, aspects) {
     return function (target, propertyKey) {
@@ -894,24 +827,23 @@ function Alias(aliasName) {
 
 exports.ExpressionType = void 0;
 (function (ExpressionType) {
-    ExpressionType['ENV'] = 'inject-environment-variables';
-    ExpressionType['JSON_PATH'] = 'inject-json-data';
-    ExpressionType['ARGV'] = 'inject-argv';
+    ExpressionType["ENV"] = "inject-environment-variables";
+    ExpressionType["JSON_PATH"] = "inject-json-data";
+    ExpressionType["ARGV"] = "inject-argv";
 })(exports.ExpressionType || (exports.ExpressionType = {}));
 
 var isNodeJs = (function () {
     try {
         return process.versions.node !== null;
-    } catch (_e) {
+    }
+    catch (_e) {
         return false;
     }
 })();
 
 var InjectionType = /** @class */ (function () {
     function InjectionType(clazz, identifier) {
-        if (identifier === void 0) {
-            identifier = clazz;
-        }
+        if (identifier === void 0) { identifier = clazz; }
         this.clazz = clazz;
         this.identifier = identifier;
     }
@@ -922,12 +854,10 @@ var InjectionType = /** @class */ (function () {
         return new InjectionType(Object, identifier);
     };
     InjectionType.of = function (clazz, identifier) {
-        if (identifier === void 0) {
-            identifier = clazz;
-        }
+        if (identifier === void 0) { identifier = clazz; }
         return new InjectionType(clazz, identifier);
     };
-    Object.defineProperty(InjectionType.prototype, 'isNewable', {
+    Object.defineProperty(InjectionType.prototype, "isNewable", {
         get: function () {
             return this.identifier === this.clazz;
         },
@@ -935,14 +865,14 @@ var InjectionType = /** @class */ (function () {
         configurable: true
     });
     return InjectionType;
-})();
+}());
 
 function Value(expression, type, externalArgs) {
     switch (type) {
         case exports.ExpressionType.ENV:
         case exports.ExpressionType.ARGV:
             if (!isNodeJs) {
-                throw new Error('The "'.concat(type, '" evaluator only supports nodejs environment!'));
+                throw new Error("The \"".concat(type, "\" evaluator only supports nodejs environment!"));
             }
     }
     return function (target, propertyKey) {
@@ -962,9 +892,7 @@ function Value(expression, type, externalArgs) {
 }
 
 function Argv(name, argv) {
-    if (argv === void 0) {
-        argv = process.argv;
-    }
+    if (argv === void 0) { argv = process.argv; }
     return Value(name, exports.ExpressionType.ARGV, argv);
 }
 
@@ -1034,13 +962,7 @@ var AspectUtils = /** @class */ (function () {
         }
     };
     AspectUtils.prototype.extract = function () {
-        var _a = this,
-            aroundHooks = _a.aroundHooks,
-            beforeHooks = _a.beforeHooks,
-            afterHooks = _a.afterHooks,
-            afterReturnHooks = _a.afterReturnHooks,
-            finallyHooks = _a.finallyHooks,
-            thrownHooks = _a.thrownHooks;
+        var _a = this, aroundHooks = _a.aroundHooks, beforeHooks = _a.beforeHooks, afterHooks = _a.afterHooks, afterReturnHooks = _a.afterReturnHooks, finallyHooks = _a.finallyHooks, thrownHooks = _a.thrownHooks;
         var fn = aroundHooks.reduceRight(function (prev, next) {
             return function () {
                 var args = [];
@@ -1068,9 +990,11 @@ var AspectUtils = /** @class */ (function () {
                         isPromise = true;
                         returnValue = returnValue.catch(onError).finally(onFinally);
                     }
-                } catch (error) {
+                }
+                catch (error) {
                     onError(error);
-                } finally {
+                }
+                finally {
                     if (!isPromise) {
                         onFinally();
                     }
@@ -1079,47 +1003,37 @@ var AspectUtils = /** @class */ (function () {
                     return returnValue.then(function (value) {
                         return onAfter(value);
                     });
-                } else {
+                }
+                else {
                     return onAfter(returnValue);
                 }
             };
-            return invoke(
-                function (error) {
-                    if (thrownHooks.length > 0) {
-                        thrownHooks.forEach(function (hook) {
-                            return hook.call(_this, error, args);
-                        });
-                    } else {
-                        throw error;
-                    }
-                },
-                function () {
-                    finallyHooks.forEach(function (hook) {
-                        return hook.call(_this, args);
-                    });
-                },
-                function (value) {
-                    afterHooks.forEach(function (hook) {
-                        hook.call(_this, args);
-                    });
-                    return afterReturnHooks.reduce(function (retVal, hook) {
-                        return hook.call(_this, retVal, args);
-                    }, value);
+            return invoke(function (error) {
+                if (thrownHooks.length > 0) {
+                    thrownHooks.forEach(function (hook) { return hook.call(_this, error, args); });
                 }
-            );
+                else {
+                    throw error;
+                }
+            }, function () {
+                finallyHooks.forEach(function (hook) { return hook.call(_this, args); });
+            }, function (value) {
+                afterHooks.forEach(function (hook) {
+                    hook.call(_this, args);
+                });
+                return afterReturnHooks.reduce(function (retVal, hook) {
+                    return hook.call(_this, retVal, args);
+                }, value);
+            });
         };
     };
     return AspectUtils;
-})();
+}());
 
 function createAspect(appCtx, target, methodName, methodFunc, aspects) {
     var createAspectCtx = function (advice, args, returnValue, error) {
-        if (returnValue === void 0) {
-            returnValue = null;
-        }
-        if (error === void 0) {
-            error = null;
-        }
+        if (returnValue === void 0) { returnValue = null; }
+        if (error === void 0) { error = null; }
         return {
             target: target,
             methodName: methodName,
@@ -1131,43 +1045,15 @@ function createAspect(appCtx, target, methodName, methodFunc, aspects) {
         };
     };
     var aspectUtils = new AspectUtils(methodFunc);
-    var ClassToInstance = function (aspectInfo) {
-        return appCtx.getInstance(aspectInfo.aspectClass);
-    };
+    var ClassToInstance = function (aspectInfo) { return appCtx.getInstance(aspectInfo.aspectClass); };
     var targetConstructor = target.constructor;
-    var allMatchAspects = aspects.filter(function (it) {
-        return it.pointcut.test(targetConstructor, methodName);
-    });
-    var beforeAdviceAspects = allMatchAspects
-        .filter(function (it) {
-            return it.advice === exports.Advice.Before;
-        })
-        .map(ClassToInstance);
-    var afterAdviceAspects = allMatchAspects
-        .filter(function (it) {
-            return it.advice === exports.Advice.After;
-        })
-        .map(ClassToInstance);
-    var tryCatchAdviceAspects = allMatchAspects
-        .filter(function (it) {
-            return it.advice === exports.Advice.Thrown;
-        })
-        .map(ClassToInstance);
-    var tryFinallyAdviceAspects = allMatchAspects
-        .filter(function (it) {
-            return it.advice === exports.Advice.Finally;
-        })
-        .map(ClassToInstance);
-    var afterReturnAdviceAspects = allMatchAspects
-        .filter(function (it) {
-            return it.advice === exports.Advice.AfterReturn;
-        })
-        .map(ClassToInstance);
-    var aroundAdviceAspects = allMatchAspects
-        .filter(function (it) {
-            return it.advice === exports.Advice.Around;
-        })
-        .map(ClassToInstance);
+    var allMatchAspects = aspects.filter(function (it) { return it.pointcut.test(targetConstructor, methodName); });
+    var beforeAdviceAspects = allMatchAspects.filter(function (it) { return it.advice === exports.Advice.Before; }).map(ClassToInstance);
+    var afterAdviceAspects = allMatchAspects.filter(function (it) { return it.advice === exports.Advice.After; }).map(ClassToInstance);
+    var tryCatchAdviceAspects = allMatchAspects.filter(function (it) { return it.advice === exports.Advice.Thrown; }).map(ClassToInstance);
+    var tryFinallyAdviceAspects = allMatchAspects.filter(function (it) { return it.advice === exports.Advice.Finally; }).map(ClassToInstance);
+    var afterReturnAdviceAspects = allMatchAspects.filter(function (it) { return it.advice === exports.Advice.AfterReturn; }).map(ClassToInstance);
+    var aroundAdviceAspects = allMatchAspects.filter(function (it) { return it.advice === exports.Advice.Around; }).map(ClassToInstance);
     if (beforeAdviceAspects.length > 0) {
         aspectUtils.append(exports.Advice.Before, function (args) {
             var joinPoint = createAspectCtx(exports.Advice.Before, args);
@@ -1213,9 +1099,7 @@ function createAspect(appCtx, target, methodName, methodFunc, aspects) {
             aspectUtils.append(exports.Advice.Around, function (originFn, args) {
                 var joinPoint = createAspectCtx(exports.Advice.Around, args, null);
                 joinPoint.proceed = function (jpArgs) {
-                    if (jpArgs === void 0) {
-                        jpArgs = args;
-                    }
+                    if (jpArgs === void 0) { jpArgs = args; }
                     return originFn(jpArgs);
                 };
                 return aspect.execute(joinPoint);
@@ -1226,17 +1110,18 @@ function createAspect(appCtx, target, methodName, methodFunc, aspects) {
 }
 
 var AOPInstantiationAwareProcessor = /** @class */ (function () {
-    function AOPInstantiationAwareProcessor() {}
+    function AOPInstantiationAwareProcessor() {
+    }
     AOPInstantiationAwareProcessor.create = function (appCtx) {
         return /** @class */ (function (_super) {
             __extends(class_1, _super);
             function class_1() {
-                var _this = (_super !== null && _super.apply(this, arguments)) || this;
+                var _this = _super !== null && _super.apply(this, arguments) || this;
                 _this.appCtx = appCtx;
                 return _this;
             }
             return class_1;
-        })(AOPInstantiationAwareProcessor);
+        }(AOPInstantiationAwareProcessor));
     };
     AOPInstantiationAwareProcessor.prototype.afterInstantiation = function (instance) {
         var _this = this;
@@ -1282,10 +1167,11 @@ var AOPInstantiationAwareProcessor = /** @class */ (function () {
         return proxyResult;
     };
     return AOPInstantiationAwareProcessor;
-})();
+}());
 
 var ArgvEvaluator = /** @class */ (function () {
-    function ArgvEvaluator() {}
+    function ArgvEvaluator() {
+    }
     ArgvEvaluator.prototype.eval = function (_context, expression, args) {
         var argv = args || process.argv;
         var minimist = require('minimist');
@@ -1293,15 +1179,16 @@ var ArgvEvaluator = /** @class */ (function () {
         return map[expression];
     };
     return ArgvEvaluator;
-})();
+}());
 
 var EnvironmentEvaluator = /** @class */ (function () {
-    function EnvironmentEvaluator() {}
+    function EnvironmentEvaluator() {
+    }
     EnvironmentEvaluator.prototype.eval = function (_context, expression) {
         return process.env[expression];
     };
     return EnvironmentEvaluator;
-})();
+}());
 
 var JSONDataEvaluator = /** @class */ (function () {
     function JSONDataEvaluator() {
@@ -1315,7 +1202,7 @@ var JSONDataEvaluator = /** @class */ (function () {
         var namespace = expression.substring(0, colonIndex);
         var exp = expression.substring(colonIndex + 1);
         if (!this.namespaceDataMap.has(namespace)) {
-            throw new Error('Incorrect expression: namespace not recorded: "'.concat(namespace, '"'));
+            throw new Error("Incorrect expression: namespace not recorded: \"".concat(namespace, "\""));
         }
         var data = this.namespaceDataMap.get(namespace);
         return runExpression(exp, data);
@@ -1327,47 +1214,38 @@ var JSONDataEvaluator = /** @class */ (function () {
         return this.namespaceDataMap.get(namespace);
     };
     return JSONDataEvaluator;
-})();
+}());
 function runExpression(expression, rootContext) {
     var fn = compileExpression(expression);
     return fn(rootContext);
 }
 function compileExpression(expression) {
     if (expression.indexOf(',') > -1) {
-        throw new Error("Incorrect expression syntax, The ',' is not allowed in expression: \"".concat(expression, '"'));
+        throw new Error("Incorrect expression syntax, The ',' is not allowed in expression: \"".concat(expression, "\""));
     }
     if (expression.length > 120) {
-        throw new Error(
-            'Incorrect expression syntax, expression length cannot be greater than 120, but actual: '.concat(expression.length)
-        );
+        throw new Error("Incorrect expression syntax, expression length cannot be greater than 120, but actual: ".concat(expression.length));
     }
     if (/\(.*?\)/.test(expression)) {
-        throw new Error('Incorrect expression syntax, parentheses are not allowed in expression: "'.concat(expression, '"'));
+        throw new Error("Incorrect expression syntax, parentheses are not allowed in expression: \"".concat(expression, "\""));
     }
     expression = expression.trim();
     if (expression === '') {
-        return function (root) {
-            return root;
-        };
+        return function (root) { return root; };
     }
     var rootVarName = varName('context');
-    return new Function(
-        rootVarName,
-        '\n        "use strict";\n        try {\n            return '
-            .concat(rootVarName, '.')
-            .concat(expression, ';\n        } catch(error) { throw error }\n    ')
-    );
+    return new Function(rootVarName, "\n        \"use strict\";\n        try {\n            return ".concat(rootVarName, ".").concat(expression, ";\n        } catch(error) { throw error }\n    "));
 }
 var VAR_SEQUENCE = Date.now();
 function varName(prefix) {
-    return ''.concat(prefix).concat((VAR_SEQUENCE++).toString(16));
+    return "".concat(prefix).concat((VAR_SEQUENCE++).toString(16));
 }
 
 exports.Lifecycle = void 0;
 (function (Lifecycle) {
-    Lifecycle['PRE_INJECT'] = 'ioc-scope:pre-inject';
-    Lifecycle['POST_INJECT'] = 'ioc-scope:post-inject';
-    Lifecycle['PRE_DESTROY'] = 'ioc-scope:pre-destroy';
+    Lifecycle["PRE_INJECT"] = "ioc-scope:pre-inject";
+    Lifecycle["POST_INJECT"] = "ioc-scope:post-inject";
+    Lifecycle["PRE_DESTROY"] = "ioc-scope:pre-destroy";
 })(exports.Lifecycle || (exports.Lifecycle = {}));
 
 function invokePreDestroy(instance) {
@@ -1395,7 +1273,7 @@ var ComponentInstanceWrapper = /** @class */ (function () {
         return this.serialNo > other.serialNo ? -1 : this.serialNo < other.serialNo ? 1 : 0;
     };
     return ComponentInstanceWrapper;
-})();
+}());
 
 var SingletonInstanceResolution = /** @class */ (function () {
     function SingletonInstanceResolution() {
@@ -1413,20 +1291,19 @@ var SingletonInstanceResolution = /** @class */ (function () {
     };
     SingletonInstanceResolution.prototype.destroy = function () {
         var instanceWrappers = Array.from(this.INSTANCE_MAP.values());
-        instanceWrappers.sort(function (a, b) {
-            return a.compareTo(b);
-        });
+        instanceWrappers.sort(function (a, b) { return a.compareTo(b); });
         instanceWrappers.forEach(function (instanceWrapper) {
             invokePreDestroy(instanceWrapper.instance);
         });
         this.INSTANCE_MAP.clear();
     };
     return SingletonInstanceResolution;
-})();
+}());
 
 var SINGLETON_INSTANCE_SINGLETON = new SingletonInstanceResolution();
 var GlobalSharedInstanceResolution = /** @class */ (function () {
-    function GlobalSharedInstanceResolution() {}
+    function GlobalSharedInstanceResolution() {
+    }
     GlobalSharedInstanceResolution.prototype.getInstance = function (options) {
         return SINGLETON_INSTANCE_SINGLETON.getInstance(options);
     };
@@ -1440,7 +1317,7 @@ var GlobalSharedInstanceResolution = /** @class */ (function () {
         // PASS;
     };
     return GlobalSharedInstanceResolution;
-})();
+}());
 
 var TransientInstanceResolution = /** @class */ (function () {
     function TransientInstanceResolution() {
@@ -1472,7 +1349,7 @@ var TransientInstanceResolution = /** @class */ (function () {
         this.instances.delete(instance);
     };
     return TransientInstanceResolution;
-})();
+}());
 
 var LifecycleManager = /** @class */ (function () {
     function LifecycleManager(componentClass, container) {
@@ -1501,16 +1378,14 @@ var LifecycleManager = /** @class */ (function () {
         });
     };
     return LifecycleManager;
-})();
+}());
 
 var ComponentInstanceBuilder = /** @class */ (function () {
     function ComponentInstanceBuilder(componentClass, container, instAwareProcessorManager) {
         this.componentClass = componentClass;
         this.container = container;
         this.instAwareProcessorManager = instAwareProcessorManager;
-        this.getConstructorArgs = function () {
-            return [];
-        };
+        this.getConstructorArgs = function () { return []; };
         this.propertyFactories = new FactoryRecorder();
         this.lazyMode = true;
         this.lifecycleResolver = new LifecycleManager(componentClass, container);
@@ -1535,22 +1410,20 @@ var ComponentInstanceBuilder = /** @class */ (function () {
         var _loop_1 = function (propertyName, propertyType) {
             if (propertyType.isNewable) {
                 this_1.propertyFactories.append(propertyName, function (container, owner) {
-                    return function () {
-                        return container.getInstance(propertyType.clazz, owner);
-                    };
+                    return function () { return container.getInstance(propertyType.clazz, owner); };
                 });
-                return 'continue';
+                return "continue";
             }
             var identifier = propertyType.identifier;
             var factoryDef = this_1.container.getFactory(identifier);
             if (factoryDef) {
                 this_1.propertyFactories.set(propertyName, factoryDef);
-                return 'continue';
+                return "continue";
             }
             var propertyClassMetadata = globalMetadataReader.getClassMetadata(identifier);
             if (propertyClassMetadata) {
                 this_1.propertyFactories.set(propertyName, ServiceFactoryDef.createFromClassMetadata(propertyClassMetadata));
-                return 'continue';
+                return "continue";
             }
             var propertyFactoryDef = globalMetadataReader.getComponentFactory(identifier);
             if (propertyFactoryDef) {
@@ -1559,24 +1432,17 @@ var ComponentInstanceBuilder = /** @class */ (function () {
         };
         var this_1 = this;
         try {
-            for (
-                var propertyTypes_1 = __values(propertyTypes), propertyTypes_1_1 = propertyTypes_1.next();
-                !propertyTypes_1_1.done;
-                propertyTypes_1_1 = propertyTypes_1.next()
-            ) {
-                var _b = __read(propertyTypes_1_1.value, 2),
-                    propertyName = _b[0],
-                    propertyType = _b[1];
+            for (var propertyTypes_1 = __values(propertyTypes), propertyTypes_1_1 = propertyTypes_1.next(); !propertyTypes_1_1.done; propertyTypes_1_1 = propertyTypes_1.next()) {
+                var _b = __read(propertyTypes_1_1.value, 2), propertyName = _b[0], propertyType = _b[1];
                 _loop_1(propertyName, propertyType);
             }
-        } catch (e_1_1) {
-            e_1 = { error: e_1_1 };
-        } finally {
+        }
+        catch (e_1_1) { e_1 = { error: e_1_1 }; }
+        finally {
             try {
                 if (propertyTypes_1_1 && !propertyTypes_1_1.done && (_a = propertyTypes_1.return)) _a.call(propertyTypes_1);
-            } finally {
-                if (e_1) throw e_1.error;
             }
+            finally { if (e_1) throw e_1.error; }
         }
     };
     ComponentInstanceBuilder.prototype.build = function () {
@@ -1590,7 +1456,8 @@ var ComponentInstanceBuilder = /** @class */ (function () {
             defineProperties.call(this, instance);
             this.lifecycleResolver.invokePostInjectMethod(instance);
             return instance;
-        } else {
+        }
+        else {
             var instance = this.instAwareProcessorManager.beforeInstantiation(this.componentClass, args);
             if (!instance) {
                 instance = new ((_b = this.componentClass).bind.apply(_b, __spreadArray([void 0], __read(args), false)))();
@@ -1605,23 +1472,22 @@ var ComponentInstanceBuilder = /** @class */ (function () {
             var _this = this;
             properties.forEach(function (value, key) {
                 var getter = value(instance);
-                _this.defineProperty(instance, typeof key === 'number' ? ''.concat(key) : key, getter);
+                _this.defineProperty(instance, typeof key === 'number' ? "".concat(key) : key, getter);
             });
         }
     };
     ComponentInstanceBuilder.prototype.defineProperty = function (instance, key, getter) {
         if (this.lazyMode) {
-            var lazyValue_1 = lazily.value(function () {
-                return {
-                    value: getter()
-                };
-            });
+            var lazyValue_1 = lazily.value(function () { return ({
+                value: getter()
+            }); });
             Object.defineProperty(instance, key, {
                 get: function () {
                     return lazyValue_1.get().value;
                 }
             });
-        } else {
+        }
+        else {
             // eslint-disable-next-line @typescript-eslint/ban-ts-comment
             // @ts-expect-error
             instance[key] = getter();
@@ -1637,16 +1503,9 @@ var ComponentInstanceBuilder = /** @class */ (function () {
             var isArray = !injectionType.isNewable && injectionType.clazz === Array;
             if (!isArray) {
                 if (factoryDef.factories.size > 1) {
-                    throw new Error(
-                        'Multiple matching injectables found for property injection,\nbut property '.concat(
-                            key.toString(),
-                            ' is not an array,\n                        It is ambiguous to determine which object should be injected!'
-                        )
-                    );
+                    throw new Error("Multiple matching injectables found for property injection,\nbut property ".concat(key.toString(), " is not an array,\n                        It is ambiguous to determine which object should be injected!"));
                 }
-                var _e = __read(factoryDef.factories.entries().next().value, 2),
-                    factory_1 = _e[0],
-                    injections_1 = _e[1];
+                var _e = __read(factoryDef.factories.entries().next().value, 2), factory_1 = _e[0], injections_1 = _e[1];
                 result.set(key, function (instance) {
                     var producer = factory_1(_this.container, instance);
                     return function () {
@@ -1655,19 +1514,16 @@ var ComponentInstanceBuilder = /** @class */ (function () {
                         });
                     };
                 });
-            } else {
+            }
+            else {
                 result.set(key, function (instance) {
                     var producerAndInjections = Array.from(factoryDef.factories).map(function (_a) {
-                        var _b = __read(_a, 2),
-                            factory = _b[0],
-                            injections = _b[1];
+                        var _b = __read(_a, 2), factory = _b[0], injections = _b[1];
                         return [factory(_this.container, instance), injections];
                     });
                     return function () {
                         return producerAndInjections.map(function (_a) {
-                            var _b = __read(_a, 2),
-                                producer = _b[0],
-                                injections = _b[1];
+                            var _b = __read(_a, 2), producer = _b[0], injections = _b[1];
                             return _this.container.invoke(producer, {
                                 injections: injections
                             });
@@ -1678,24 +1534,21 @@ var ComponentInstanceBuilder = /** @class */ (function () {
         };
         try {
             for (var _b = __values(this.propertyFactories.iterator()), _c = _b.next(); !_c.done; _c = _b.next()) {
-                var _d = __read(_c.value, 2),
-                    key = _d[0],
-                    factoryDef = _d[1];
+                var _d = __read(_c.value, 2), key = _d[0], factoryDef = _d[1];
                 _loop_2(key, factoryDef);
             }
-        } catch (e_2_1) {
-            e_2 = { error: e_2_1 };
-        } finally {
+        }
+        catch (e_2_1) { e_2 = { error: e_2_1 }; }
+        finally {
             try {
                 if (_c && !_c.done && (_a = _b.return)) _a.call(_b);
-            } finally {
-                if (e_2) throw e_2.error;
             }
+            finally { if (e_2) throw e_2.error; }
         }
         return result;
     };
     return ComponentInstanceBuilder;
-})();
+}());
 
 var EventEmitter = /** @class */ (function () {
     function EventEmitter() {
@@ -1707,7 +1560,8 @@ var EventEmitter = /** @class */ (function () {
             if (listeners.indexOf(listener) === -1) {
                 listeners.push(listener);
             }
-        } else {
+        }
+        else {
             listeners = [listener];
             this.events.set(type, listeners);
         }
@@ -1725,14 +1579,12 @@ var EventEmitter = /** @class */ (function () {
         for (var _i = 1; _i < arguments.length; _i++) {
             args[_i - 1] = arguments[_i];
         }
-        (_a = this.events.get(type)) === null || _a === void 0
-            ? void 0
-            : _a.forEach(function (fn) {
-                  fn.apply(void 0, __spreadArray([], __read(args), false));
-              });
+        (_a = this.events.get(type)) === null || _a === void 0 ? void 0 : _a.forEach(function (fn) {
+            fn.apply(void 0, __spreadArray([], __read(args), false));
+        });
     };
     return EventEmitter;
-})();
+}());
 
 var InstantiationAwareProcessorManager = /** @class */ (function () {
     function InstantiationAwareProcessorManager(container) {
@@ -1742,23 +1594,11 @@ var InstantiationAwareProcessorManager = /** @class */ (function () {
         this.instAwareProcessorInstances = lazily.lazy(function () {
             var globalInstAwareProcessorClasses = GlobalMetadata.getReader().getInstAwareProcessorClasses();
             var instAwareProcessorClasses = globalInstAwareProcessorClasses.concat(Array.from(_this.instAwareProcessorClasses));
-            return instAwareProcessorClasses.map(function (it) {
-                return _this.container.getInstance(it);
-            });
+            return instAwareProcessorClasses.map(function (it) { return _this.container.getInstance(it); });
         });
-        lazily.recreateWhen(
-            this.instAwareProcessorInstances,
-            lazily.when(function (t) {
-                return t.or(
-                    t.changed(function () {
-                        return _this.instAwareProcessorClasses.size;
-                    }),
-                    t.changed(function () {
-                        return GlobalMetadata.getReader().getInstAwareProcessorClasses().length;
-                    })
-                );
-            })
-        );
+        lazily.recreateWhen(this.instAwareProcessorInstances, lazily.when(function (t) {
+            return t.or(t.changed(function () { return _this.instAwareProcessorClasses.size; }), t.changed(function () { return GlobalMetadata.getReader().getInstAwareProcessorClasses().length; }));
+        }));
     }
     InstantiationAwareProcessorManager.prototype.appendInstAwareProcessorClass = function (instAwareProcessorClass) {
         this.instAwareProcessorClasses.add(instAwareProcessorClass);
@@ -1801,7 +1641,7 @@ var InstantiationAwareProcessorManager = /** @class */ (function () {
         return globalInstAwareProcessorClasses.concat(Array.from(this.instAwareProcessorClasses));
     };
     return InstantiationAwareProcessorManager;
-})();
+}());
 
 function hasArgs(options) {
     return 'args' in options;
@@ -1815,9 +1655,7 @@ var PRE_DESTROY_THAT_EVENT_KEY = 'container:event:pre-destroy-that';
 var INSTANCE_PRE_DESTROY_METHOD = Symbol('solidium:instance-pre-destroy');
 var ApplicationContext = /** @class */ (function () {
     function ApplicationContext(options) {
-        if (options === void 0) {
-            options = {};
-        }
+        if (options === void 0) { options = {}; }
         var _a;
         this.resolutions = new Map();
         this.factories = new FactoryRecorder();
@@ -1849,12 +1687,10 @@ var ApplicationContext = /** @class */ (function () {
         if (factoryDef) {
             var producer = factoryDef.produce(this, owner);
             var resolution_1 = this.getScropeResolutionInstance(factoryDef.scope);
-            if (
-                !resolution_1.shouldGenerate({
-                    identifier: symbol,
-                    owner: owner
-                })
-            ) {
+            if (!resolution_1.shouldGenerate({
+                identifier: symbol,
+                owner: owner
+            })) {
                 return resolution_1.getInstance({
                     identifier: symbol,
                     owner: owner
@@ -1881,11 +1717,13 @@ var ApplicationContext = /** @class */ (function () {
                 return it;
             });
             return results.length === 1 ? results[0] : results;
-        } else {
+        }
+        else {
             var classMetadata = GlobalMetadata.getInstance().reader().getClassMetadata(symbol);
             if (!classMetadata) {
-                throw new Error('Class alias not found: '.concat(symbol.toString()));
-            } else {
+                throw new Error("Class alias not found: ".concat(symbol.toString()));
+            }
+            else {
                 var clazz = classMetadata.reader().getClass();
                 return this.getInstanceByClass(clazz, owner);
             }
@@ -1897,9 +1735,8 @@ var ApplicationContext = /** @class */ (function () {
         }
         var reader = ClassMetadata.getInstance(componentClass).reader();
         var scope = reader.getScope();
-        var resolution =
-            this.resolutions.get(scope !== null && scope !== void 0 ? scope : this.defaultScope) ||
-            this.resolutions.get(this.defaultScope);
+        var resolution = (this.resolutions.get(scope !== null && scope !== void 0 ? scope : this.defaultScope) ||
+            this.resolutions.get(this.defaultScope));
         var getInstanceOptions = {
             identifier: componentClass,
             owner: owner,
@@ -1912,7 +1749,8 @@ var ApplicationContext = /** @class */ (function () {
             resolution.saveInstance(saveInstanceOptions);
             this.attachPreDestroyHook(instance);
             return instance;
-        } else {
+        }
+        else {
             return resolution.getInstance(getInstanceOptions);
         }
     };
@@ -1951,20 +1789,17 @@ var ApplicationContext = /** @class */ (function () {
         return factory;
     };
     ApplicationContext.prototype.bindFactory = function (symbol, factory, injections, scope) {
-        if (scope === void 0) {
-            scope = exports.InstanceScope.SINGLETON;
-        }
+        if (scope === void 0) { scope = exports.InstanceScope.SINGLETON; }
         this.factories.append(symbol, factory, injections, scope);
     };
     ApplicationContext.prototype.invoke = function (func, options) {
         var _this = this;
-        if (options === void 0) {
-            options = {};
-        }
+        if (options === void 0) { options = {}; }
         var fn;
         if (arguments.length > 1) {
             fn = func.bind(options.context);
-        } else {
+        }
+        else {
             fn = func;
         }
         if (hasArgs(options)) {
@@ -1973,7 +1808,8 @@ var ApplicationContext = /** @class */ (function () {
         var argsIndentifiers = [];
         if (hasInjections(options)) {
             argsIndentifiers = options.injections;
-        } else {
+        }
+        else {
             var metadata = MetadataInstanceManager.getMetadata(fn, FunctionMetadata).reader();
             argsIndentifiers = metadata.getParameters();
         }
@@ -1985,7 +1821,7 @@ var ApplicationContext = /** @class */ (function () {
                     return instance;
                 }
                 if (instance.length > 1) {
-                    throw new Error('Multiple matching injectables found for parameter at '.concat(index, '.'));
+                    throw new Error("Multiple matching injectables found for parameter at ".concat(index, "."));
                 }
                 return instance[0];
             }
@@ -2006,7 +1842,7 @@ var ApplicationContext = /** @class */ (function () {
     ApplicationContext.prototype.evaluate = function (expression, options) {
         var evaluatorClass = this.evaluatorClasses.get(options.type);
         if (!evaluatorClass) {
-            throw new TypeError('Unknown evaluator name: '.concat(options.type));
+            throw new TypeError("Unknown evaluator name: ".concat(options.type));
         }
         var evaluator = this.getInstance(evaluatorClass);
         return evaluator.eval(this, expression, options.externalArgs);
@@ -2021,25 +1857,13 @@ var ApplicationContext = /** @class */ (function () {
     };
     ApplicationContext.prototype.bindInstance = function (identifier, instance) {
         var resolution = this.resolutions.get(exports.InstanceScope.SINGLETON);
-        resolution === null || resolution === void 0
-            ? void 0
-            : resolution.saveInstance({
-                  identifier: identifier,
-                  instance: instance
-              });
+        resolution === null || resolution === void 0 ? void 0 : resolution.saveInstance({
+            identifier: identifier,
+            instance: instance
+        });
     };
     ApplicationContext.prototype.registerInstanceScopeResolution = function (scope, resolutionConstructor, constructorArgs) {
-        this.resolutions.set(
-            scope,
-            new (resolutionConstructor.bind.apply(
-                resolutionConstructor,
-                __spreadArray(
-                    [void 0],
-                    __read(constructorArgs !== null && constructorArgs !== void 0 ? constructorArgs : []),
-                    false
-                )
-            ))()
-        );
+        this.resolutions.set(scope, new (resolutionConstructor.bind.apply(resolutionConstructor, __spreadArray([void 0], __read((constructorArgs !== null && constructorArgs !== void 0 ? constructorArgs : [])), false)))());
     };
     ApplicationContext.prototype.getScropeResolutionInstance = function (scope) {
         var _a;
@@ -2062,26 +1886,24 @@ var ApplicationContext = /** @class */ (function () {
         this.instAwareProcessorManager.appendInstAwareProcessorClass(clazz);
     };
     ApplicationContext.prototype.registerBeforeInstantiationProcessor = function (processor) {
-        this.instAwareProcessorManager.appendInstAwareProcessorClass(
-            /** @class */ (function () {
-                function InnerProcessor() {}
-                InnerProcessor.prototype.beforeInstantiation = function (constructor, args) {
-                    return processor(constructor, args);
-                };
-                return InnerProcessor;
-            })()
-        );
+        this.instAwareProcessorManager.appendInstAwareProcessorClass(/** @class */ (function () {
+            function InnerProcessor() {
+            }
+            InnerProcessor.prototype.beforeInstantiation = function (constructor, args) {
+                return processor(constructor, args);
+            };
+            return InnerProcessor;
+        }()));
     };
     ApplicationContext.prototype.registerAfterInstantiationProcessor = function (processor) {
-        this.instAwareProcessorManager.appendInstAwareProcessorClass(
-            /** @class */ (function () {
-                function InnerProcessor() {}
-                InnerProcessor.prototype.afterInstantiation = function (instance) {
-                    return processor(instance);
-                };
-                return InnerProcessor;
-            })()
-        );
+        this.instAwareProcessorManager.appendInstAwareProcessorClass(/** @class */ (function () {
+            function InnerProcessor() {
+            }
+            InnerProcessor.prototype.afterInstantiation = function (instance) {
+                return processor(instance);
+            };
+            return InnerProcessor;
+        }()));
     };
     ApplicationContext.prototype.onPreDestroy = function (listener) {
         return this.eventEmitter.on(PRE_DESTROY_EVENT_KEY, listener);
@@ -2095,17 +1917,13 @@ var ApplicationContext = /** @class */ (function () {
     ApplicationContext.prototype.destroyTransientInstance = function (instance) {
         var _a;
         var resolution = this.resolutions.get(exports.InstanceScope.TRANSIENT);
-        (_a = resolution === null || resolution === void 0 ? void 0 : resolution.destroyThat) === null || _a === void 0
-            ? void 0
-            : _a.call(resolution, instance);
+        (_a = resolution === null || resolution === void 0 ? void 0 : resolution.destroyThat) === null || _a === void 0 ? void 0 : _a.call(resolution, instance);
     };
     return ApplicationContext;
-})();
+}());
 
 function Factory(produceIdentifier, scope) {
-    if (scope === void 0) {
-        scope = exports.InstanceScope.SINGLETON;
-    }
+    if (scope === void 0) { scope = exports.InstanceScope.SINGLETON; }
     return function (target, propertyKey) {
         var metadata = GlobalMetadata.getInstance();
         var clazz = target.constructor;
@@ -2116,29 +1934,23 @@ function Factory(produceIdentifier, scope) {
             throw new Error('The return type not recognized, cannot perform instance creation!');
         }
         var injections = Reflect.getMetadata('design:paramtypes', target, propertyKey);
-        metadata.recordFactory(
-            produceIdentifier,
-            function (container, owner) {
-                var instance = container.getInstance(clazz, owner);
-                var func = instance[propertyKey];
-                if (typeof func === 'function') {
-                    return function () {
-                        var args = [];
-                        for (var _i = 0; _i < arguments.length; _i++) {
-                            args[_i] = arguments[_i];
-                        }
-                        var instance = container.getInstance(clazz);
-                        return func.apply(instance, args);
-                    };
-                } else {
-                    return function () {
-                        return func;
-                    };
-                }
-            },
-            injections,
-            scope
-        );
+        metadata.recordFactory(produceIdentifier, function (container, owner) {
+            var instance = container.getInstance(clazz, owner);
+            var func = instance[propertyKey];
+            if (typeof func === 'function') {
+                return function () {
+                    var args = [];
+                    for (var _i = 0; _i < arguments.length; _i++) {
+                        args[_i] = arguments[_i];
+                    }
+                    var instance = container.getInstance(clazz);
+                    return func.apply(instance, args);
+                };
+            }
+            else {
+                return function () { return func; };
+            }
+        }, injections, scope);
     };
 }
 
@@ -2148,9 +1960,7 @@ function Generate(generator) {
         var value_symbol = Symbol('');
         metadata.recordPropertyType(propertyKey, InjectionType.ofIdentifier(value_symbol));
         GlobalMetadata.getInstance().recordFactory(value_symbol, function (container, owner) {
-            return function () {
-                return generator.call(owner, container);
-            };
+            return function () { return generator.call(owner, container); };
         });
     };
 }
@@ -2163,7 +1973,8 @@ function Inject(identifier) {
             var targetConstr = target;
             if (typeof identifier === 'function') {
                 injectClass = identifier;
-            } else {
+            }
+            else {
                 injectClass = Reflect.getMetadata('design:paramtypes', target, propertyKey)[parameterIndex];
             }
             if (isNotDefined(injectClass)) {
@@ -2171,20 +1982,24 @@ function Inject(identifier) {
             }
             var classMetadata = MetadataInstanceManager.getMetadata(targetConstr, ClassMetadata);
             classMetadata.setConstructorParameterType(parameterIndex, InjectionType.of(injectClass, identifier));
-        } else if (typeof target === 'object' && target !== null && propertyKey !== undefined) {
+        }
+        else if (typeof target === 'object' && target !== null && propertyKey !== undefined) {
             var injectClass_1;
             var metadata = MetadataInstanceManager.getMetadata(target.constructor, ClassMetadata);
             if (typeof identifier === 'function') {
                 injectClass_1 = identifier;
-            } else if (identifier && typeof identifier !== 'function') {
+            }
+            else if (identifier && typeof identifier !== 'function') {
                 metadata.recordPropertyType(propertyKey, InjectionType.ofIdentifier(identifier));
                 return;
-            } else {
+            }
+            else {
                 injectClass_1 = Reflect.getMetadata('design:type', target, propertyKey);
             }
             if (isNotDefined(injectClass_1)) {
                 throw new Error('Type not recognized, injection cannot be performed');
-            } else {
+            }
+            else {
                 metadata.recordPropertyType(propertyKey, InjectionType.of(injectClass_1, identifier));
             }
         }
@@ -2205,20 +2020,12 @@ function Injectable(options) {
         var classMetadata = MetadataInstanceManager.getMetadata(target, ClassMetadata);
         produces.forEach(function (produce) {
             var _a, _b;
-            metadata.recordFactory(
-                produce,
-                function (container, owner) {
-                    return function () {
-                        var instance = container.getInstance(target, owner);
-                        return instance;
-                    };
-                },
-                [],
-                (_b = (_a = classMetadata.reader().getScope()) !== null && _a !== void 0 ? _a : options.scope) !== null &&
-                    _b !== void 0
-                    ? _b
-                    : exports.InstanceScope.SINGLETON
-            );
+            metadata.recordFactory(produce, function (container, owner) {
+                return function () {
+                    var instance = container.getInstance(target, owner);
+                    return instance;
+                };
+            }, [], (_b = (_a = classMetadata.reader().getScope()) !== null && _a !== void 0 ? _a : options.scope) !== null && _b !== void 0 ? _b : exports.InstanceScope.SINGLETON);
         });
         return target;
     };
@@ -2232,7 +2039,7 @@ function InstAwareProcessor() {
 }
 
 function JSONData(namespace, jsonpath) {
-    return Value(''.concat(namespace, ':').concat(jsonpath), exports.ExpressionType.JSON_PATH);
+    return Value("".concat(namespace, ":").concat(jsonpath), exports.ExpressionType.JSON_PATH);
 }
 
 /**
@@ -2247,9 +2054,7 @@ var LifecycleDecorator = function (lifecycle) {
 };
 
 function Mark(key, value) {
-    if (value === void 0) {
-        value = true;
-    }
+    if (value === void 0) { value = true; }
     return function () {
         var args = [];
         for (var _i = 0; _i < arguments.length; _i++) {
@@ -2259,26 +2064,22 @@ function Mark(key, value) {
             // class decorator
             var metadata = MetadataInstanceManager.getMetadata(args[0], ClassMetadata);
             metadata.marker().ctor(key, value);
-        } else if (args.length === 2) {
+        }
+        else if (args.length === 2) {
             // property decorator
-            var _a = __read(args, 2),
-                prototype = _a[0],
-                propertyKey = _a[1];
+            var _a = __read(args, 2), prototype = _a[0], propertyKey = _a[1];
             var metadata = MetadataInstanceManager.getMetadata(prototype.constructor, ClassMetadata);
             metadata.marker().member(propertyKey).mark(key, value);
-        } else if (args.length === 3 && typeof args[2] === 'number') {
+        }
+        else if (args.length === 3 && typeof args[2] === 'number') {
             // parameter decorator
-            var _b = __read(args, 3),
-                prototype = _b[0],
-                propertyKey = _b[1],
-                index = _b[2];
+            var _b = __read(args, 3), prototype = _b[0], propertyKey = _b[1], index = _b[2];
             var metadata = MetadataInstanceManager.getMetadata(prototype.constructor, ClassMetadata);
             metadata.marker().parameter(propertyKey, index).mark(key, value);
-        } else {
+        }
+        else {
             // method decorator
-            var _c = __read(args, 2),
-                prototype = _c[0],
-                propertyKey = _c[1];
+            var _c = __read(args, 2), prototype = _c[0], propertyKey = _c[1];
             var metadata = MetadataInstanceManager.getMetadata(prototype.constructor, ClassMetadata);
             metadata.marker().member(propertyKey).mark(key, value);
         }
@@ -2289,21 +2090,15 @@ function Mark(key, value) {
  * Urn calls the methods annotated with @PostInject only once, just after the injection of properties.
  * @annotation
  */
-var PostInject = function () {
-    return LifecycleDecorator(exports.Lifecycle.POST_INJECT);
-};
+var PostInject = function () { return LifecycleDecorator(exports.Lifecycle.POST_INJECT); };
 
-var PreDestroy = function () {
-    return LifecycleDecorator(exports.Lifecycle.PRE_DESTROY);
-};
+var PreDestroy = function () { return LifecycleDecorator(exports.Lifecycle.PRE_DESTROY); };
 
 /**
  * Urn calls the methods annotated with @PostInject only once, just after the injection of properties.
  * @annotation
  */
-var PreInject = function () {
-    return LifecycleDecorator(exports.Lifecycle.PRE_INJECT);
-};
+var PreInject = function () { return LifecycleDecorator(exports.Lifecycle.PRE_INJECT); };
 
 function Scope(scope) {
     return function (target) {
@@ -2314,26 +2109,22 @@ function Scope(scope) {
 
 function createFactoryWrapper(produceIdentifier, produce, owner) {
     var TheFactory = /** @class */ (function () {
-        function TheFactory() {}
+        function TheFactory() {
+        }
         TheFactory.prototype.produce = function () {
             return produce;
         };
         TheFactory.preventTreeShaking = function () {
             return owner;
         };
-        __decorate(
-            [
-                Factory(produceIdentifier),
-                __metadata('design:type', Function),
-                __metadata('design:paramtypes', []),
-                __metadata('design:returntype', void 0)
-            ],
-            TheFactory.prototype,
-            'produce',
-            null
-        );
+        __decorate([
+            Factory(produceIdentifier),
+            __metadata("design:type", Function),
+            __metadata("design:paramtypes", []),
+            __metadata("design:returntype", void 0)
+        ], TheFactory.prototype, "produce", null);
         return TheFactory;
-    })();
+    }());
     return TheFactory.preventTreeShaking();
 }
 

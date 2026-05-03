@@ -34,15 +34,15 @@ declare class InjectionType {
 }
 
 declare enum InstanceScope {
-    SINGLETON = 'ioc-resolution:container-singleton',
-    TRANSIENT = 'ioc-resolution:transient',
-    GLOBAL_SHARED_SINGLETON = 'ioc-resolution:global-shared-singleton'
+    SINGLETON = "ioc-resolution:container-singleton",
+    TRANSIENT = "ioc-resolution:transient",
+    GLOBAL_SHARED_SINGLETON = "ioc-resolution:global-shared-singleton"
 }
 
 declare enum Lifecycle {
-    PRE_INJECT = 'ioc-scope:pre-inject',
-    POST_INJECT = 'ioc-scope:post-inject',
-    PRE_DESTROY = 'ioc-scope:pre-destroy'
+    PRE_INJECT = "ioc-scope:pre-inject",
+    POST_INJECT = "ioc-scope:post-inject",
+    PRE_DESTROY = "ioc-scope:pre-destroy"
 }
 
 type MemberKey = string | symbol | number;
@@ -95,10 +95,7 @@ declare class ClassMetadata<T> implements Metadata<ClassMetadataReader<T>, Newab
         member: (propertyKey: string | symbol | number) => {
             mark: (key: string | symbol, value: unknown) => void;
         };
-        parameter: (
-            propertyKey: string | symbol,
-            index: number
-        ) => {
+        parameter: (propertyKey: string | symbol, index: number) => {
             mark: (key: string | symbol, value: unknown) => void;
         };
     };
@@ -143,9 +140,9 @@ interface EvaluationOptions<O, E extends string, A = unknown> {
     externalArgs?: A;
 }
 declare enum ExpressionType {
-    ENV = 'inject-environment-variables',
-    JSON_PATH = 'inject-json-data',
-    ARGV = 'inject-argv'
+    ENV = "inject-environment-variables",
+    JSON_PATH = "inject-json-data",
+    ARGV = "inject-argv"
 }
 
 interface Evaluator {
@@ -177,7 +174,8 @@ interface InstantiationAwareProcessor {
     beforeInstantiation<T>(constructor: Newable<T>, args: unknown[]): T | undefined | undefined;
     afterInstantiation<T extends object>(instance: T): T;
 }
-interface PartialInstAwareProcessor extends Partial<InstantiationAwareProcessor> {}
+interface PartialInstAwareProcessor extends Partial<InstantiationAwareProcessor> {
+}
 
 type Primary = string | number | boolean | null;
 interface JsonMap {
@@ -197,9 +195,7 @@ type InvokeFunctionInjections = {
 type InvokeFunctionBasicOptions<T> = {
     context?: T;
 };
-type InvokeFunctionOptions<T> =
-    | (InvokeFunctionBasicOptions<T> & InvokeFunctionArgs)
-    | (InvokeFunctionBasicOptions<T> & Partial<InvokeFunctionInjections>);
+type InvokeFunctionOptions<T> = (InvokeFunctionBasicOptions<T> & InvokeFunctionArgs) | (InvokeFunctionBasicOptions<T> & Partial<InvokeFunctionInjections>);
 
 declare class ApplicationContext {
     private readonly resolutions;
@@ -218,23 +214,14 @@ declare class ApplicationContext {
     private attachPreDestroyHook;
     private createComponentInstanceBuilder;
     getFactory(key: FactoryIdentifier): ServiceFactoryDef<unknown> | undefined;
-    bindFactory<T>(
-        symbol: FactoryIdentifier,
-        factory: ServiceFactory<T, unknown>,
-        injections?: Identifier[],
-        scope?: InstanceScope
-    ): void;
+    bindFactory<T>(symbol: FactoryIdentifier, factory: ServiceFactory<T, unknown>, injections?: Identifier[], scope?: InstanceScope): void;
     invoke<R, Ctx>(func: AnyFunction<R, Ctx>, options?: InvokeFunctionOptions<Ctx>): R;
     destroy(): void;
     evaluate<T, O, A>(expression: string, options: EvaluationOptions<O, string, A>): T | undefined;
     recordJSONData(namespace: string, data: JSONData$1): void;
     getJSONData(namespace: string): JSONData$1 | undefined;
     bindInstance<T>(identifier: string | symbol, instance: T): void;
-    registerInstanceScopeResolution<T extends Newable<InstanceResolution>>(
-        scope: InstanceScope | string,
-        resolutionConstructor: T,
-        constructorArgs?: ConstructorParameters<T>
-    ): void;
+    registerInstanceScopeResolution<T extends Newable<InstanceResolution>>(scope: InstanceScope | string, resolutionConstructor: T, constructorArgs?: ConstructorParameters<T>): void;
     getScropeResolutionInstance(scope: InstanceScope | string): InstanceResolution | undefined;
     registerEvaluator(name: string, evaluatorClass: Newable<Evaluator>): void;
     /**
@@ -246,9 +233,7 @@ declare class ApplicationContext {
      * @since 1.0.0
      */
     registerInstAwareProcessor(clazz: Newable<PartialInstAwareProcessor>): void;
-    registerBeforeInstantiationProcessor(
-        processor: <T>(constructor: Newable<T>, args: unknown[]) => T | undefined | undefined
-    ): void;
+    registerBeforeInstantiationProcessor(processor: <T>(constructor: Newable<T>, args: unknown[]) => T | undefined | undefined): void;
     registerAfterInstantiationProcessor(processor: <T extends object>(instance: T) => T): void;
     onPreDestroy(listener: EventListener): () => void;
     onPreDestroyThat(listener: (instance: object) => void): () => void;
@@ -382,9 +367,7 @@ declare function Factory(produceIdentifier?: FactoryIdentifier, scope?: Instance
 
 declare function Generate<T, V>(generator: (this: T, appCtx: ApplicationContext) => V): PropertyDecorator;
 
-declare function Inject<T>(
-    identifier?: Identifier<T>
-): <Target>(target: Target, propertyKey: string | symbol, parameterIndex?: number) => void;
+declare function Inject<T>(identifier?: Identifier<T>): <Target>(target: Target, propertyKey: string | symbol, parameterIndex?: number) => void;
 
 interface InjectableOptions {
     produce: string | symbol | Array<string | symbol>;
@@ -464,12 +447,7 @@ declare class GlobalMetadata implements Metadata<GlobalMetadataReader, void> {
     private classAliasMetadataMap;
     private componentFactories;
     private readonly processorClasses;
-    recordFactory<T>(
-        symbol: FactoryIdentifier,
-        factory: ServiceFactory<T, unknown>,
-        injections?: Identifier[],
-        scope?: InstanceScope | string
-    ): void;
+    recordFactory<T>(symbol: FactoryIdentifier, factory: ServiceFactory<T, unknown>, injections?: Identifier[], scope?: InstanceScope | string): void;
     recordClassAlias<T>(aliasName: string | symbol, metadata: ClassMetadata<T>): void;
     recordProcessorClass(clazz: Newable<PartialInstAwareProcessor>): void;
     init(): void;
@@ -482,68 +460,4 @@ declare class GlobalMetadata implements Metadata<GlobalMetadataReader, void> {
 
 declare function createFactoryWrapper<T>(produceIdentifier: FactoryIdentifier, produce: unknown, owner: T): T;
 
-export {
-    AOPClassMetadata,
-    Advice,
-    After,
-    AfterReturn,
-    Alias,
-    ApplicationContext,
-    Argv,
-    Around,
-    Aspect,
-    AspectInfo,
-    Before,
-    Bind,
-    ClassMarkInfo,
-    ClassMetadata,
-    ClassMetadataReader,
-    ComponentMethodAspect,
-    Env,
-    EvaluationOptions,
-    Evaluator,
-    ExpressionType,
-    FUNCTION_METADATA_KEY,
-    Factory,
-    Finally,
-    FunctionMetadata,
-    FunctionMetadataReader,
-    Generate,
-    GetInstanceOptions,
-    GlobalMetadata,
-    GlobalMetadataReader,
-    Identifier,
-    Inject,
-    Injectable,
-    InjectableOptions,
-    InjectionType,
-    InstAwareProcessor,
-    InstanceResolution,
-    InstanceScope,
-    InstantiationAwareProcessor,
-    JSONData,
-    JoinPoint,
-    Lifecycle,
-    LifecycleDecorator,
-    Mark,
-    MarkInfo,
-    MarkInfoContainer,
-    MemberKey,
-    Newable,
-    ParameterMarkInfoContainer,
-    PartialInstAwareProcessor,
-    Pointcut,
-    PostInject,
-    PreDestroy,
-    PreInject,
-    ProceedingAspect,
-    ProceedingJoinPoint,
-    SaveInstanceOptions,
-    Scope,
-    Thrown,
-    UseAspectMap,
-    UseAspectMetadataReader,
-    UseAspects,
-    Value,
-    createFactoryWrapper
-};
+export { AOPClassMetadata, Advice, After, AfterReturn, Alias, ApplicationContext, Argv, Around, Aspect, AspectInfo, Before, Bind, ClassMarkInfo, ClassMetadata, ClassMetadataReader, ComponentMethodAspect, Env, EvaluationOptions, Evaluator, ExpressionType, FUNCTION_METADATA_KEY, Factory, Finally, FunctionMetadata, FunctionMetadataReader, Generate, GetInstanceOptions, GlobalMetadata, GlobalMetadataReader, Identifier, Inject, Injectable, InjectableOptions, InjectionType, InstAwareProcessor, InstanceResolution, InstanceScope, InstantiationAwareProcessor, JSONData, JoinPoint, Lifecycle, LifecycleDecorator, Mark, MarkInfo, MarkInfoContainer, MemberKey, Newable, ParameterMarkInfoContainer, PartialInstAwareProcessor, Pointcut, PostInject, PreDestroy, PreInject, ProceedingAspect, ProceedingJoinPoint, SaveInstanceOptions, Scope, Thrown, UseAspectMap, UseAspectMetadataReader, UseAspects, Value, createFactoryWrapper };
