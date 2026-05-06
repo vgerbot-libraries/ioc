@@ -237,13 +237,29 @@ export class ApplicationContext {
         const evaluator = this.getInstance(evaluatorClass);
         return evaluator.eval(this, expression, options.externalArgs);
     }
+    /**
+     * @deprecated
+     * @param namespace
+     * @param data
+     */
     recordJSONData(namespace: string, data: JSONData) {
         const evaluator = this.getInstance(JSONDataEvaluator);
         evaluator.recordData(namespace, data);
     }
+    /**
+     * @deprecated
+     * @param namespace
+     * @returns
+     */
     getJSONData(namespace: string) {
         const evaluator = this.getInstance(JSONDataEvaluator);
         return evaluator.getJSONData(namespace);
+    }
+    setProperties(namespace: string, data: JSONData) {
+        return this.recordJSONData(namespace, data);
+    }
+    getProperties(namespace: string) {
+        return this.getJSONData(namespace);
     }
     bindInstance<T>(identifier: string | symbol, instance: T) {
         const resolution = this.resolutions.get(InstanceScope.SINGLETON);
