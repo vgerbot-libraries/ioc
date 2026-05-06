@@ -33,9 +33,17 @@
         "url": "git+https://github.com/vgerbot-libraries/ioc.git"
     },
     "keywords": [
-        "ioc"
+        "ioc",
+        "inversion of control",
+        "dependency injection",
+        "dependency inversion",
+        "AOP",
+        "di",
+        "inject",
+        "aspect",
+        "typescript"
     ],
-    "author": "JianXin Yang <vgerbot@gmail.com>",
+    "author": "ChienhsinYang <vgerbot@gmail.com>",
     "files": [
         "dist"
     ],
